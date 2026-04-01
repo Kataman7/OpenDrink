@@ -6,7 +6,7 @@ export class DrawQuestionUseCase {
     this.questionRepositoryPort = questionRepositoryPort;
   }
 
-  async execute({ gameMode, intensity, lang }) {
+  async execute({ gameMode, intensity, lang, previousPlayerId = null }) {
     const players = await this.playerRepositoryPort.getAllPlayers();
     if (!players || players.length === 0) {
       throw new NoPlayersError();
@@ -21,9 +21,16 @@ export class DrawQuestionUseCase {
       throw new NoQuestionsAvailableError(gameMode);
     }
 
-    const playerIndex = Math.floor(Math.random() * players.length);
-    const selectedPlayer = players[playerIndex];
+    const selectedPlayer = this.pickPlayer(players, previousPlayerId);
 
     return { player: selectedPlayer, question };
+  }
+
+  pickPlayer(players, previousPlayerId) {
+    if (players.length === 1) return players[0];
+
+    const candidates = players.filter((player) => player.id !== previousPlayerId);
+    const randomIndex = Math.floor(Math.random() * candidates.length);
+    return candidates[randomIndex];
   }
 }

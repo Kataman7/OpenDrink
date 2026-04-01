@@ -35,8 +35,9 @@ export class GamePresenter {
     this.currentScreen = SCREEN_LOBBY;
     this.selectedGameMode = null;
     this.selectedIntensity = null;
-    this.selectedLang = 'fr';
+    this.selectedLang = 'en';
     this.players = [];
+    this.previousPlayerId = null;
     this.restoredPlayerNames = [];
     this.preferencesStore = new PreferencesStore();
 
@@ -182,8 +183,10 @@ export class GamePresenter {
         gameMode: this.selectedGameMode,
         intensity: this.selectedIntensity,
         lang: this.selectedLang,
+        previousPlayerId: this.previousPlayerId,
       });
       this.renderRound(round);
+      this.previousPlayerId = round.player.id;
     } catch (error) {
       this.showError(error.message);
     }
@@ -192,6 +195,7 @@ export class GamePresenter {
   async onBackToLobbyClick() {
     this.selectedGameMode = null;
     this.selectedIntensity = null;
+    this.previousPlayerId = null;
     this.switchScreen(SCREEN_LOBBY);
   }
 

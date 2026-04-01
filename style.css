@@ -35,7 +35,7 @@ body {
 }
 
 #app {
-  height: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -45,12 +45,12 @@ body {
 }
 
 .screen {
-  flex: 1;
+  flex: 1 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--spacing);
-  height: 100%;
+  min-height: calc(100vh - 48px);
 }
 
 .screen-inner {
@@ -292,6 +292,24 @@ body {
   font-weight: 500;
   z-index: 1000;
   animation: slideUp 0.3s ease;
+}
+
+.site-footer {
+  flex: 0 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 10px 16px 14px;
+}
+
+.site-footer a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.site-footer a:hover {
+  color: var(--color-secondary);
 }
 
 @keyframes slideUp {

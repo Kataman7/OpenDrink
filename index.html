@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#0f0f1a" />
+    <title>OpenDrink</title>
+    <script type="module" crossorigin src="/assets/index-BGad-HD1.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-57Idl5ri.css">
+  </head>
+  <body>
+    <div id="app">
+
+      <!-- SCREEN: LOBBY -->
+      <section id="screen-lobby" class="screen">
+        <div class="screen-inner">
+          <h1 class="title">OpenDrink</h1>
+          <p class="subtitle">Add players to start</p>
+
+          <div class="field-group">
+            <label class="field-label" for="lang-select">Language</label>
+            <select id="lang-select" class="input-field select-field"></select>
+          </div>
+
+          <div class="input-row">
+            <input
+              type="text"
+              id="player-name-input"
+              class="input-field"
+              placeholder="Player name"
+              maxlength="20"
+              autocomplete="off"
+            />
+            <button id="btn-add-player" class="btn btn-primary">+</button>
+          </div>
+
+          <p id="player-count" class="player-count">0 players</p>
+          <ul id="player-list" class="player-list"></ul>
+
+          <button id="btn-start-game" class="btn btn-large btn-accent">
+            Start game
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN: MODE -->
+      <section id="screen-mode" class="screen hidden">
+        <div class="screen-inner">
+          <h2 class="title">Choose mode</h2>
+          <div class="mode-buttons">
+            <button class="btn btn-large btn-mode" data-mode="never_have_i_ever">
+              <span class="btn-mode-icon">🍻</span>
+              Never Have I Ever
+            </button>
+            <button class="btn btn-large btn-mode" data-mode="action_truth">
+              <span class="btn-mode-icon">🎭</span>
+              Truth or Dare
+            </button>
+          </div>
+          <button id="btn-back-lobby" class="btn btn-secondary btn-small">
+            Back
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN: INTENSITY -->
+      <section id="screen-intensity" class="screen hidden">
+        <div class="screen-inner">
+          <h2 class="title">Intensity</h2>
+          <div class="mode-buttons">
+            <button class="btn btn-large btn-intensity" data-intensity="soft">
+              <span class="btn-mode-icon">😊</span>
+              Soft
+            </button>
+            <button class="btn btn-large btn-intensity" data-intensity="hot">
+              <span class="btn-mode-icon">🔥</span>
+              Hot
+            </button>
+            <button class="btn btn-large btn-intensity" data-intensity="mixed">
+              <span class="btn-mode-icon">🎲</span>
+              Mixed
+            </button>
+          </div>
+          <button id="btn-back-lobby" class="btn btn-secondary btn-small">
+            Back
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN: GAME -->
+      <section id="screen-game" class="screen hidden">
+        <div class="screen-inner game-screen-inner">
+          <div class="game-card">
+            <p id="player-name" class="game-player"></p>
+            <p id="question-type" class="game-type"></p>
+            <p id="question-text" class="game-text"></p>
+          </div>
+          <button id="btn-next" class="btn btn-large btn-primary">
+            Next
+          </button>
+          <button id="btn-back-lobby" class="btn btn-secondary btn-small">
+            Back to lobby
+          </button>
+        </div>
+      </section>
+
+      <!-- ERROR TOAST -->
+      <div id="error-toast" class="error-toast hidden"></div>
+
+    </div>
+
+  </body>
+</html>

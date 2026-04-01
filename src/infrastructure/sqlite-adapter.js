@@ -54,6 +54,9 @@ export class PlayersDatabaseAdapter {
 
   savePlayer(name) {
     this.db.run('INSERT INTO players (name) VALUES (?)', [name]);
+    const insertResult = this.db.exec('SELECT last_insert_rowid()');
+    if (!insertResult.length || !insertResult[0].values.length) return null;
+    return insertResult[0].values[0][0];
   }
 
   getAllPlayers() {
@@ -64,6 +67,10 @@ export class PlayersDatabaseAdapter {
 
   clearPlayers() {
     this.db.run('DELETE FROM players');
+  }
+
+  removePlayerById(playerId) {
+    this.db.run('DELETE FROM players WHERE id = ?', [playerId]);
   }
 }
 
@@ -85,7 +92,7 @@ export class SqlJsPlayerRepositoryAdapter extends PlayerRepositoryPort {
   }
 
   async savePlayer(name) {
-    this.playersDb.savePlayer(name);
+    return this.playersDb.savePlayer(name);
   }
 
   async getAllPlayers() {
@@ -94,6 +101,10 @@ export class SqlJsPlayerRepositoryAdapter extends PlayerRepositoryPort {
 
   async clearPlayers() {
     this.playersDb.clearPlayers();
+  }
+
+  async removePlayerById(playerId) {
+    this.playersDb.removePlayerById(playerId);
   }
 }
 

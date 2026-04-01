@@ -7,7 +7,7 @@ export class AddPlayerUseCase {
 
   async execute({ name }) {
     const player = new Player({ name });
-    await this.playerRepositoryPort.savePlayer(player.name);
-    return player;
+    const playerId = await this.playerRepositoryPort.savePlayer(player.name);
+    return new Player({ id: playerId, name: player.name });
   }
 }

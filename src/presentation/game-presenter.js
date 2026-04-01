@@ -1,6 +1,7 @@
 import { InitializeDatabaseUseCase } from '../application/usecases/initialize-database.js';
 import { AddPlayerUseCase } from '../application/usecases/add-player.js';
 import { DrawQuestionUseCase } from '../application/usecases/draw-question.js';
+import { RemovePlayerUseCase } from '../application/usecases/remove-player.js';
 import {
   SqlJsDatabaseAdapter,
   SqlJsQuestionRepositoryAdapter,
@@ -54,6 +55,7 @@ export class GamePresenter {
 
     this.initializeDatabaseUseCase = new InitializeDatabaseUseCase({ databasePort });
     this.addPlayerUseCase = new AddPlayerUseCase({ playerRepositoryPort });
+    this.removePlayerUseCase = new RemovePlayerUseCase({ playerRepositoryPort });
     this.drawQuestionUseCase = new DrawQuestionUseCase({ playerRepositoryPort, questionRepositoryPort });
   }
 
@@ -102,6 +104,7 @@ export class GamePresenter {
     if (!(target instanceof HTMLElement)) return;
     if (target.id === 'btn-add-player') return this.onAddPlayerClick();
     if (target.id === 'btn-start-game') return this.onStartGameClick();
+    if (target.classList.contains('btn-remove-player')) return this.onRemovePlayerClick(target);
     if (target.classList.contains('btn-mode')) return this.onModeClick(target);
     if (target.classList.contains('btn-intensity')) return this.onIntensityClick(target);
     if (target.id === 'btn-next') return this.onNextClick();
@@ -160,6 +163,21 @@ export class GamePresenter {
       return;
     }
     this.switchScreen(SCREEN_MODE);
+  }
+
+  async onRemovePlayerClick(target) {
+    const playerId = Number(target.dataset.playerId);
+    if (!playerId) return;
+
+    await this.removePlayerUseCase.execute({ playerId });
+    this.players = this.players.filter((player) => player.id !== playerId);
+
+    if (this.previousPlayerId === playerId) {
+      this.previousPlayerId = null;
+    }
+
+    this.renderPlayerList();
+    this.persistPreferences();
   }
 
   hasEnoughPlayers() {
@@ -231,8 +249,17 @@ export class GamePresenter {
   renderPlayerList() {
     const playerList = document.getElementById('player-list');
     const playerCount = document.getElementById('player-count');
-    playerList.innerHTML = this.players.map((player) => `<li class="player-tag">${player.name}</li>`).join('');
+    playerList.innerHTML = this.players.map((player) => this.renderPlayerTag(player)).join('');
     playerCount.textContent = `${this.players.length} player${this.players.length > 1 ? 's' : ''}`;
+  }
+
+  renderPlayerTag(player) {
+    return `
+      <li class="player-tag" data-player-id="${player.id}">
+        <span>${player.name}</span>
+        <button class="btn-remove-player" data-player-id="${player.id}" aria-label="Remove ${player.name}">×</button>
+      </li>
+    `;
   }
 
   render() {

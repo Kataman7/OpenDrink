@@ -204,6 +204,29 @@ body {
   font-weight: 500;
   color: var(--color-secondary);
   border: 1px solid rgba(0, 206, 201, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-remove-player {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove-player:hover {
+  color: #ff7675;
+  background: rgba(255, 118, 117, 0.12);
 }
 
 /* MODE BUTTONS */

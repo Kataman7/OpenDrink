@@ -6,20 +6,20 @@
     <meta name="theme-color" content="#0f0f1a" />
     <link rel="icon" type="image/x-icon" href="/icon.ico" />
     <title>OpenDrink</title>
-    <script type="module" crossorigin src="/assets/index-Bi7N7I6k.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-9V5b-yKl.css">
+    <script type="module" crossorigin src="/assets/index-Czv-D3Kf.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-M6a2rIlp.css">
   </head>
   <body>
-    <div id="app">
+    <div id="app" class="app-shell">
 
       <!-- SCREEN: LOBBY -->
       <section id="screen-lobby" class="screen">
         <div class="screen-inner">
-          <h1 class="title">OpenDrink</h1>
-          <p class="subtitle">Add players to start</p>
+          <h1 class="title" data-i18n="app.title">OpenDrink</h1>
+          <p class="subtitle" data-i18n="lobby.subtitle">Add players to start</p>
 
           <div class="field-group">
-            <label class="field-label" for="lang-select">Language</label>
+            <label class="field-label" for="lang-select" data-i18n="lobby.language">Language</label>
             <select id="lang-select" class="input-field select-field"></select>
           </div>
 
@@ -29,62 +29,65 @@
               id="player-name-input"
               class="input-field"
               placeholder="Player name"
+              data-i18n-placeholder="lobby.playerPlaceholder"
               maxlength="20"
               autocomplete="off"
             />
-            <button id="btn-add-player" class="btn btn-primary">+</button>
+            <button id="btn-add-player" class="btn btn-primary" data-action="add-player">+</button>
           </div>
 
           <p id="player-count" class="player-count">0 players</p>
           <ul id="player-list" class="player-list"></ul>
 
-          <button id="btn-start-game" class="btn btn-large btn-accent">
-            Start game
-          </button>
+          <button id="btn-start-game" class="btn btn-large btn-accent" data-action="start-game" data-i18n="lobby.startGame">Start game</button>
         </div>
       </section>
 
       <!-- SCREEN: MODE -->
       <section id="screen-mode" class="screen hidden">
         <div class="screen-inner">
-          <h2 class="title">Choose mode</h2>
+          <h2 class="title" data-i18n="mode.title">Choose mode</h2>
           <div class="mode-buttons">
-            <button class="btn btn-large btn-mode" data-mode="never_have_i_ever">
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="never_have_i_ever">
               <span class="btn-mode-icon">🍻</span>
-              Never Have I Ever
+              <span data-i18n="mode.neverHaveIEver">Never Have I Ever</span>
             </button>
-            <button class="btn btn-large btn-mode" data-mode="action_truth">
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="action_truth">
               <span class="btn-mode-icon">🎭</span>
-              Truth or Dare
+              <span data-i18n="mode.truthOrDare">Truth or Dare</span>
+            </button>
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="would_you_rather">
+              <span class="btn-mode-icon">⚡</span>
+              <span data-i18n="mode.wouldYouRather">Would You Rather</span>
+            </button>
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="who_could">
+              <span class="btn-mode-icon">🕵️</span>
+              <span data-i18n="mode.whoCould">Who Could</span>
             </button>
           </div>
-          <button id="btn-back-lobby" class="btn btn-secondary btn-small">
-            Back
-          </button>
+          <button id="btn-back-lobby" class="btn btn-secondary btn-small" data-action="back-lobby" data-i18n="common.back">Back</button>
         </div>
       </section>
 
       <!-- SCREEN: INTENSITY -->
       <section id="screen-intensity" class="screen hidden">
         <div class="screen-inner">
-          <h2 class="title">Intensity</h2>
+          <h2 class="title" data-i18n="intensity.title">Intensity</h2>
           <div class="mode-buttons">
-            <button class="btn btn-large btn-intensity" data-intensity="soft">
+            <button class="btn btn-large btn-intensity" data-action="select-intensity" data-intensity="soft">
               <span class="btn-mode-icon">😊</span>
-              Soft
+              <span data-i18n="intensity.soft">Soft</span>
             </button>
-            <button class="btn btn-large btn-intensity" data-intensity="hot">
+            <button class="btn btn-large btn-intensity" data-action="select-intensity" data-intensity="hot">
               <span class="btn-mode-icon">🔥</span>
-              Hot
+              <span data-i18n="intensity.hot">Hot</span>
             </button>
-            <button class="btn btn-large btn-intensity" data-intensity="mixed">
+            <button class="btn btn-large btn-intensity" data-action="select-intensity" data-intensity="mixed">
               <span class="btn-mode-icon">🎲</span>
-              Mixed
+              <span data-i18n="intensity.mixed">Mixed</span>
             </button>
           </div>
-          <button id="btn-back-lobby" class="btn btn-secondary btn-small">
-            Back
-          </button>
+          <button id="btn-back-lobby" class="btn btn-secondary btn-small" data-action="back-lobby" data-i18n="common.back">Back</button>
         </div>
       </section>
 
@@ -95,13 +98,14 @@
             <p id="player-name" class="game-player"></p>
             <p id="question-type" class="game-type"></p>
             <p id="question-text" class="game-text"></p>
+            <div id="wyr-choices" class="wyr-choices hidden">
+              <p id="wyr-choice-a" class="wyr-choice"></p>
+              <p id="wyr-separator" class="wyr-separator" data-i18n="game.or">OR</p>
+              <p id="wyr-choice-b" class="wyr-choice"></p>
+            </div>
           </div>
-          <button id="btn-next" class="btn btn-large btn-primary">
-            Next
-          </button>
-          <button id="btn-back-lobby" class="btn btn-secondary btn-small">
-            Back to lobby
-          </button>
+          <button id="btn-next" class="btn btn-large btn-primary" data-action="next-round" data-i18n="game.next">Next</button>
+          <button id="btn-back-lobby" class="btn btn-secondary btn-small" data-action="back-lobby" data-i18n="game.backToLobby">Back to lobby</button>
         </div>
       </section>
 

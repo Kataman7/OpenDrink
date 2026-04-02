@@ -1,0 +1,92 @@
+const DEFAULT_LANG = 'en';
+
+export class GameState {
+  constructor({ screens }) {
+    this.screens = screens;
+    this.screen = screens.lobby;
+    this.selectedGameMode = null;
+    this.selectedIntensity = null;
+    this.selectedLang = DEFAULT_LANG;
+    this.players = [];
+    this.previousPlayerId = null;
+    this.restoredPlayerNames = [];
+  }
+
+  applyPreferences(preferences) {
+    this.selectedLang = preferences.lang || DEFAULT_LANG;
+    this.restoredPlayerNames = Array.isArray(preferences.players) ? preferences.players : [];
+  }
+
+  consumeRestoredPlayerNames() {
+    const names = [...this.restoredPlayerNames];
+    this.restoredPlayerNames = [];
+    return names;
+  }
+
+  updateLanguage(lang) {
+    this.selectedLang = lang;
+  }
+
+  addPlayer(player) {
+    this.players.push(player);
+  }
+
+  removePlayerById(playerId) {
+    this.players = this.players.filter((player) => player.id !== playerId);
+    if (this.previousPlayerId === playerId) this.previousPlayerId = null;
+  }
+
+  hasEnoughPlayers(minPlayers) {
+    return this.players.length >= minPlayers;
+  }
+
+  selectMode(mode) {
+    this.selectedGameMode = mode;
+  }
+
+  selectIntensity(intensity) {
+    this.selectedIntensity = intensity;
+  }
+
+  setPreviousPlayer(playerId) {
+    this.previousPlayerId = playerId;
+  }
+
+  switchScreen(screen) {
+    this.screen = screen;
+  }
+
+  isLobbyScreen() {
+    return this.screen === this.screens.lobby;
+  }
+
+  resetRoundSelection() {
+    this.selectedGameMode = null;
+    this.selectedIntensity = null;
+    this.previousPlayerId = null;
+  }
+
+  toPreferencesPayload() {
+    return {
+      lang: this.selectedLang,
+      players: this.players.map((player) => player.name),
+    };
+  }
+
+  buildRoundRequest() {
+    return {
+      gameMode: this.selectedGameMode,
+      intensity: this.selectedIntensity,
+      lang: this.selectedLang,
+      previousPlayerId: this.previousPlayerId,
+    };
+  }
+
+  buildRoundLabelInput(promptKind) {
+    return {
+      gameMode: this.selectedGameMode,
+      intensity: this.selectedIntensity,
+      promptKind,
+    };
+  }
+}

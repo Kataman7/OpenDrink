@@ -16,10 +16,6 @@ export class PlayerRepositoryPort {
   async removePlayerById(playerId) {
     throw new Error('PlayerRepositoryPort.removePlayerById must be implemented');
   }
-
-  async clearPlayers() {
-    throw new Error('PlayerRepositoryPort.clearPlayers must be implemented');
-  }
 }
 
 export class DatabasePort {

@@ -1,6 +1,6 @@
 import initSqlJs from 'sql.js/dist/sql-asm.js';
 import { Question } from '../domain/entities.js';
-import { GameMode, buildQuestionQuery } from '../domain/value-objects.js';
+import { GameMode, buildQuestionQuery, buildWouldYouRatherQuery } from '../domain/value-objects.js';
 import {
   QuestionRepositoryPort,
   PlayerRepositoryPort,
@@ -20,12 +20,25 @@ export class QuestionsDatabaseAdapter {
   }
 
   getRandomQuestion({ gameMode, intensity, lang }) {
+    if (gameMode === GameMode.WOULD_YOU_RATHER) {
+      return this.getRandomWouldYouRatherQuestion({ intensity, lang });
+    }
+
     const gameKey = this.pickGameKey(gameMode);
     const query = buildQuestionQuery(gameKey, intensity);
     const result = this.db.exec(query.sql, query.params(lang));
     if (!result.length || !result[0].values.length) return null;
     const promptKind = this.getPromptKind(gameKey);
     return new Question({ sentence: result[0].values[0][0], promptKind });
+  }
+
+  getRandomWouldYouRatherQuestion({ intensity, lang }) {
+    const query = buildWouldYouRatherQuery(intensity);
+    const result = this.db.exec(query.sql, query.params(lang));
+    if (!result.length || !result[0].values.length) return null;
+
+    const [choiceA, choiceB] = result[0].values[0];
+    return new Question({ choiceA, choiceB, promptKind: 'would_you_rather' });
   }
 
   pickGameKey(gameMode) {
@@ -37,6 +50,7 @@ export class QuestionsDatabaseAdapter {
   getPromptKind(gameKey) {
     if (gameKey === 'tod') return 'truth';
     if (gameKey === 'dare_chooser') return 'dare';
+    if (gameKey === 'qpr') return 'who_could';
     return null;
   }
 }
@@ -63,10 +77,6 @@ export class PlayersDatabaseAdapter {
     const result = this.db.exec('SELECT id, name FROM players');
     if (!result.length) return [];
     return result[0].values.map(([id, name]) => ({ id, name }));
-  }
-
-  clearPlayers() {
-    this.db.run('DELETE FROM players');
   }
 
   removePlayerById(playerId) {
@@ -97,10 +107,6 @@ export class SqlJsPlayerRepositoryAdapter extends PlayerRepositoryPort {
 
   async getAllPlayers() {
     return this.playersDb.getAllPlayers();
-  }
-
-  async clearPlayers() {
-    this.playersDb.clearPlayers();
   }
 
   async removePlayerById(playerId) {

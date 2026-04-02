@@ -11,11 +11,15 @@ export class Player {
 }
 
 export class Question {
-  constructor({ sentence, promptKind = null }) {
-    if (!sentence || sentence.trim().length === 0) {
+  constructor({ sentence = '', promptKind = null, choiceA = null, choiceB = null }) {
+    const hasSentence = Boolean(sentence && sentence.trim().length > 0);
+    const hasChoices = Boolean(choiceA && choiceB);
+    if (!hasSentence && !hasChoices) {
       throw new QuestionTextEmptyError();
     }
-    this.sentence = sentence.trim();
+    this.sentence = hasSentence ? sentence.trim() : '';
     this.promptKind = promptKind;
+    this.choiceA = choiceA;
+    this.choiceB = choiceB;
   }
 }

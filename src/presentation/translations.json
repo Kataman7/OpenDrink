@@ -1,0 +1,100 @@
+{
+  "en": {
+    "app": {
+      "title": "OpenDrink"
+    },
+    "lobby": {
+      "subtitle": "Add players to start",
+      "language": "Language",
+      "playerPlaceholder": "Player name",
+      "startGame": "Start game",
+      "playerCountOne": "{count} player",
+      "playerCountOther": "{count} players",
+      "removePlayer": "Remove {name}"
+    },
+    "mode": {
+      "title": "Choose mode",
+      "neverHaveIEver": "Never Have I Ever",
+      "truthOrDare": "Truth or Dare",
+      "wouldYouRather": "Would You Rather",
+      "whoCould": "Who Could"
+    },
+    "intensity": {
+      "title": "Intensity",
+      "soft": "Soft",
+      "hot": "Hot",
+      "mixed": "Mixed"
+    },
+    "game": {
+      "next": "Next",
+      "backToLobby": "Back to lobby",
+      "or": "OR"
+    },
+    "common": {
+      "back": "Back"
+    },
+    "round": {
+      "truth": "Truth",
+      "dare": "Dare",
+      "withIntensity": "{mode} - {intensity}",
+      "truthWithIntensity": "{mode} ({truth}) - {intensity}",
+      "dareWithIntensity": "{mode} ({dare}) - {intensity}"
+    },
+    "errors": {
+      "minPlayers": "Add at least {count} players",
+      "emptyPlayerName": "Player name cannot be empty",
+      "noPlayers": "No players available",
+      "noQuestions": "No question available for this mode",
+      "dbInit": "Failed to initialize the database"
+    }
+  },
+  "fr": {
+    "app": {
+      "title": "OpenDrink"
+    },
+    "lobby": {
+      "subtitle": "Ajoute des joueurs pour commencer",
+      "language": "Langue",
+      "playerPlaceholder": "Nom du joueur",
+      "startGame": "Lancer la partie",
+      "playerCountOne": "{count} joueur",
+      "playerCountOther": "{count} joueurs",
+      "removePlayer": "Retirer {name}"
+    },
+    "mode": {
+      "title": "Choisis un mode",
+      "neverHaveIEver": "Je n'ai jamais",
+      "truthOrDare": "Action ou Vérité",
+      "wouldYouRather": "Tu préfères",
+      "whoCould": "Qui pourrait"
+    },
+    "intensity": {
+      "title": "Intensité",
+      "soft": "Soft",
+      "hot": "Hot",
+      "mixed": "Mixte"
+    },
+    "game": {
+      "next": "Suivant",
+      "backToLobby": "Retour au lobby",
+      "or": "OU"
+    },
+    "common": {
+      "back": "Retour"
+    },
+    "round": {
+      "truth": "Vérité",
+      "dare": "Action",
+      "withIntensity": "{mode} - {intensity}",
+      "truthWithIntensity": "{mode} ({truth}) - {intensity}",
+      "dareWithIntensity": "{mode} ({dare}) - {intensity}"
+    },
+    "errors": {
+      "minPlayers": "Ajoute au moins {count} joueurs",
+      "emptyPlayerName": "Le nom du joueur ne peut pas être vide",
+      "noPlayers": "Aucun joueur disponible",
+      "noQuestions": "Aucune question disponible pour ce mode",
+      "dbInit": "Échec de l'initialisation de la base"
+    }
+  }
+}

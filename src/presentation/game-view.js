@@ -32,6 +32,46 @@ export class GameView {
     return this.renderSentence(sentence);
   }
 
+  renderImpostorAccusationList(players) {
+    const container = this.getElement('impostor-candidates');
+    container.innerHTML = players.map((player) => this.renderImpostorCandidateButton(player)).join('');
+  }
+
+  renderImpostorPassStep({ playerName, hint }) {
+    this.getElement('impostor-step-title').textContent = this.i18n.t('impostor.passPhoneTo', { name: playerName });
+    this.getElement('impostor-step-hint').textContent = hint;
+    this.getElement('impostor-word').textContent = '';
+    this.getElement('impostor-word').classList.add(HIDDEN_CLASS);
+    this.getElement('impostor-result').textContent = '';
+    this.getElement('impostor-accusation').classList.add(HIDDEN_CLASS);
+    this.getElement('btn-impostor-reveal').classList.remove(HIDDEN_CLASS);
+    this.getElement('btn-impostor-next').classList.add(HIDDEN_CLASS);
+    this.getElement('btn-impostor-finish').classList.add(HIDDEN_CLASS);
+  }
+
+  renderImpostorRevealedWord({ word, hasNextPlayer }) {
+    this.getElement('impostor-step-hint').textContent = this.i18n.t('impostor.wordLabel');
+    this.getElement('impostor-word').textContent = word;
+    this.getElement('impostor-word').classList.remove(HIDDEN_CLASS);
+    this.getElement('btn-impostor-reveal').classList.add(HIDDEN_CLASS);
+    this.getElement('btn-impostor-next').classList.toggle(HIDDEN_CLASS, !hasNextPlayer);
+    this.getElement('btn-impostor-finish').classList.toggle(HIDDEN_CLASS, hasNextPlayer);
+  }
+
+  renderImpostorDiscussionState() {
+    this.getElement('impostor-step-title').textContent = this.i18n.t('impostor.discussionTitle');
+    this.getElement('impostor-step-hint').textContent = this.i18n.t('impostor.discussionHint');
+    this.getElement('impostor-word').classList.add(HIDDEN_CLASS);
+    this.getElement('impostor-accusation').classList.remove(HIDDEN_CLASS);
+    this.getElement('btn-impostor-reveal').classList.add(HIDDEN_CLASS);
+    this.getElement('btn-impostor-next').classList.add(HIDDEN_CLASS);
+    this.getElement('btn-impostor-finish').classList.add(HIDDEN_CLASS);
+  }
+
+  renderImpostorAccusationResult(message) {
+    this.getElement('impostor-result').textContent = message;
+  }
+
   renderSentence(sentence) {
     this.getElement('question-text').textContent = sentence;
     this.getElement('question-text').classList.remove(HIDDEN_CLASS);
@@ -96,6 +136,14 @@ export class GameView {
         <span>${player.name}</span>
         <button class="btn-remove-player" data-action="remove-player" data-player-id="${player.id}" aria-label="${removeLabel}">×</button>
       </li>
+    `;
+  }
+
+  renderImpostorCandidateButton(player) {
+    return `
+      <button class="btn btn-large btn-mode" data-action="impostor-accuse" data-player-id="${player.id}">
+        ${player.name}
+      </button>
     `;
   }
 

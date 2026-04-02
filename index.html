@@ -63,8 +63,31 @@
               <span class="btn-mode-icon">🕵️</span>
               <span data-i18n="mode.whoCould">Who Could</span>
             </button>
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="impostor">
+              <span class="btn-mode-icon">🎯</span>
+              <span data-i18n="mode.impostor">Impostor</span>
+            </button>
           </div>
           <button id="btn-back-lobby" class="btn btn-secondary btn-small" data-action="back-lobby" data-i18n="common.back">Back</button>
+        </div>
+      </section>
+
+      <!-- SCREEN: IMPOSTOR REVEAL -->
+      <section id="screen-impostor_reveal" class="screen hidden">
+        <div class="screen-inner game-screen-inner">
+          <div class="game-card">
+            <p id="impostor-step-title" class="game-player"></p>
+            <p id="impostor-step-hint" class="game-type"></p>
+            <p id="impostor-word" class="game-text hidden"></p>
+            <div id="impostor-accusation" class="hidden">
+              <div id="impostor-candidates" class="mode-buttons"></div>
+              <p id="impostor-result" class="subtitle"></p>
+            </div>
+          </div>
+          <button id="btn-impostor-reveal" class="btn btn-large btn-primary" data-action="impostor-reveal" data-i18n="impostor.revealWord">Reveal word</button>
+          <button id="btn-impostor-next" class="btn btn-large btn-accent hidden" data-action="impostor-next" data-i18n="impostor.nextPlayer">Next player</button>
+          <button id="btn-impostor-finish" class="btn btn-large btn-accent hidden" data-action="impostor-finish" data-i18n="impostor.startAccusation">Start accusation</button>
+          <button class="btn btn-secondary btn-small" data-action="back-lobby" data-i18n="game.backToLobby">Back to lobby</button>
         </div>
       </section>
 

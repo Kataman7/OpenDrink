@@ -3,6 +3,7 @@ const MODE_KEY_BY_VALUE = {
   action_truth: 'mode.truthOrDare',
   would_you_rather: 'mode.wouldYouRather',
   who_could: 'mode.whoCould',
+  impostor: 'mode.impostor',
 };
 
 const INTENSITY_KEY_BY_VALUE = {
@@ -18,7 +19,9 @@ export class RoundLabelBuilder {
 
   build({ gameMode, intensity, promptKind }) {
     const modeLabel = this.i18n.t(MODE_KEY_BY_VALUE[gameMode]);
-    if (promptKind === 'would_you_rather' || promptKind === 'who_could') return modeLabel;
+    if (promptKind === 'would_you_rather' || promptKind === 'who_could' || promptKind === 'impostor') {
+      return modeLabel;
+    }
 
     const intensityLabel = this.i18n.t(INTENSITY_KEY_BY_VALUE[intensity]);
     if (promptKind === 'truth') return this.buildTruthLabel(modeLabel, intensityLabel);

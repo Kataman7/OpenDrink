@@ -2,6 +2,8 @@ import { InitializeDatabaseUseCase } from '../application/usecases/initialize-da
 import { AddPlayerUseCase } from '../application/usecases/add-player.js';
 import { DrawQuestionUseCase } from '../application/usecases/draw-question.js';
 import { RemovePlayerUseCase } from '../application/usecases/remove-player.js';
+import { GetImpostorWordUseCase } from '../application/usecases/get-impostor-word.js';
+import { GameMode } from '../domain/value-objects.js';
 import {
   SqlJsDatabaseAdapter,
   SqlJsQuestionRepositoryAdapter,
@@ -23,6 +25,7 @@ const SCREENS = {
   mode: 'mode',
   intensity: 'intensity',
   game: 'game',
+  impostorReveal: 'impostor_reveal',
 };
 
 const MIN_PLAYERS_COUNT = 2;
@@ -36,6 +39,10 @@ const CLICK_ACTIONS = {
   'select-intensity': 'onIntensitySelected',
   'next-round': 'onNextRoundRequested',
   'back-lobby': 'onBackToLobbyRequested',
+  'impostor-reveal': 'onImpostorRevealRequested',
+  'impostor-next': 'onImpostorNextPlayerRequested',
+  'impostor-finish': 'onImpostorFinishRequested',
+  'impostor-accuse': 'onImpostorAccuseRequested',
 };
 
 export class GamePresenter {
@@ -62,6 +69,7 @@ export class GamePresenter {
     this.addPlayerUseCase = new AddPlayerUseCase({ playerRepositoryPort });
     this.removePlayerUseCase = new RemovePlayerUseCase({ playerRepositoryPort });
     this.drawQuestionUseCase = new DrawQuestionUseCase({ playerRepositoryPort, questionRepositoryPort });
+    this.getImpostorWordUseCase = new GetImpostorWordUseCase({ questionRepositoryPort });
   }
 
   bindEvents() {
@@ -176,7 +184,33 @@ export class GamePresenter {
 
   async onModeSelected(target) {
     this.state.selectMode(target.getAttribute('data-mode'));
+    if (this.state.selectedGameMode === GameMode.IMPOSTOR) {
+      await this.startImpostorRound();
+      return;
+    }
     this.switchScreen(SCREENS.intensity);
+  }
+
+  async startImpostorRound() {
+    const starterId = this.state.pickRandomStarterId();
+    if (!starterId) return;
+
+    await this.runSafely(async () => {
+      const { normalWord, impostorWord } = await this.getImpostorWordUseCase.execute({
+        lang: this.state.selectedLang,
+      });
+
+      this.state.initializeImpostorRound({
+        starterId,
+        orderedPlayerIds: this.state.buildImpostorOrder(starterId),
+        impostorPlayerId: this.state.pickRandomImpostorId(),
+        normalWord,
+        impostorWord,
+      });
+
+      this.switchScreen(SCREENS.impostorReveal);
+      this.renderImpostorPassStep();
+    });
   }
 
   async onIntensitySelected(target) {
@@ -196,6 +230,49 @@ export class GamePresenter {
   async onBackToLobbyRequested() {
     this.state.resetRoundSelection();
     this.switchScreen(SCREENS.lobby);
+  }
+
+  async onImpostorRevealRequested() {
+    this.state.setImpostorWordRevealed(true);
+    this.view.renderImpostorRevealedWord({
+      word: this.state.getCurrentImpostorWord(),
+      hasNextPlayer: this.state.hasMoreImpostorPlayers(),
+    });
+  }
+
+  async onImpostorNextPlayerRequested() {
+    this.state.moveToNextImpostorPlayer();
+    this.renderImpostorPassStep();
+  }
+
+  async onImpostorFinishRequested() {
+    this.state.finishImpostorRound();
+    this.view.renderImpostorDiscussionState();
+    this.view.renderImpostorAccusationList(this.state.getAccusationPlayers());
+  }
+
+  async onImpostorAccuseRequested(target) {
+    const playerId = Number(target.getAttribute('data-player-id'));
+    if (!playerId) return;
+
+    if (this.state.isImpostorPlayer(playerId)) {
+      this.view.renderImpostorAccusationResult(this.i18n.t('impostor.impostorFound'));
+      this.state.finishImpostorRound();
+      return;
+    }
+
+    this.state.removeAccusationPlayer(playerId);
+    this.view.renderImpostorAccusationList(this.state.getAccusationPlayers());
+    this.view.renderImpostorAccusationResult(this.i18n.t('impostor.notImpostor'));
+  }
+
+  renderImpostorPassStep() {
+    const currentPlayer = this.state.getCurrentImpostorPlayer();
+    if (!currentPlayer) return;
+    this.view.renderImpostorPassStep({
+      playerName: currentPlayer.name,
+      hint: this.i18n.t('impostor.revealWord'),
+    });
   }
 
   renderRound({ player, question }) {

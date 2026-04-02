@@ -1,6 +1,11 @@
 import initSqlJs from 'sql.js/dist/sql-asm.js';
 import { Question } from '../domain/entities.js';
-import { GameMode, buildQuestionQuery, buildWouldYouRatherQuery } from '../domain/value-objects.js';
+import {
+  GameMode,
+  buildQuestionQuery,
+  buildWouldYouRatherQuery,
+  buildImpostorWordQuery,
+} from '../domain/value-objects.js';
 import {
   QuestionRepositoryPort,
   PlayerRepositoryPort,
@@ -20,6 +25,10 @@ export class QuestionsDatabaseAdapter {
   }
 
   getRandomQuestion({ gameMode, intensity, lang }) {
+    if (gameMode === GameMode.IMPOSTOR) {
+      return this.getRandomImpostorWord({ lang });
+    }
+
     if (gameMode === GameMode.WOULD_YOU_RATHER) {
       return this.getRandomWouldYouRatherQuestion({ intensity, lang });
     }
@@ -30,6 +39,15 @@ export class QuestionsDatabaseAdapter {
     if (!result.length || !result[0].values.length) return null;
     const promptKind = this.getPromptKind(gameKey);
     return new Question({ sentence: result[0].values[0][0], promptKind });
+  }
+
+  getRandomImpostorWord({ lang }) {
+    const query = buildImpostorWordQuery();
+    const result = this.db.exec(query.sql, query.params(lang));
+    if (!result.length || !result[0].values.length) return null;
+
+    const [word, impostorHintWord] = result[0].values[0];
+    return new Question({ sentence: word, impostorHintWord, promptKind: 'impostor' });
   }
 
   getRandomWouldYouRatherQuestion({ intensity, lang }) {

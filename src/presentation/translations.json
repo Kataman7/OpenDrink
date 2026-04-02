@@ -17,7 +17,8 @@
       "neverHaveIEver": "Never Have I Ever",
       "truthOrDare": "Truth or Dare",
       "wouldYouRather": "Would You Rather",
-      "whoCould": "Who Could"
+      "whoCould": "Who Could",
+      "impostor": "Impostor"
     },
     "intensity": {
       "title": "Intensity",
@@ -29,6 +30,17 @@
       "next": "Next",
       "backToLobby": "Back to lobby",
       "or": "OR"
+    },
+    "impostor": {
+      "passPhoneTo": "{name}",
+      "revealWord": "Reveal word",
+      "wordLabel": "Your secret word",
+      "nextPlayer": "Next player",
+      "startAccusation": "Start accusation",
+      "discussionTitle": "Everyone has a word",
+      "discussionHint": "Play at least one round before voting for the impostor.",
+      "notImpostor": "Not the impostor. Keep searching.",
+      "impostorFound": "Impostor found! Game over."
     },
     "common": {
       "back": "Back"
@@ -66,7 +78,8 @@
       "neverHaveIEver": "Je n'ai jamais",
       "truthOrDare": "Action ou Vérité",
       "wouldYouRather": "Tu préfères",
-      "whoCould": "Qui pourrait"
+      "whoCould": "Qui pourrait",
+      "impostor": "Imposteur"
     },
     "intensity": {
       "title": "Intensité",
@@ -78,6 +91,17 @@
       "next": "Suivant",
       "backToLobby": "Retour au lobby",
       "or": "OU"
+    },
+    "impostor": {
+      "passPhoneTo": "{name}",
+      "revealWord": "Révéler le mot",
+      "wordLabel": "Ton mot secret",
+      "nextPlayer": "Joueur suivant",
+      "startAccusation": "Lancer l'accusation",
+      "discussionTitle": "Tout le monde a son mot",
+      "discussionHint": "Jouez au moins 1 tour avant de voter pour l'imposteur.",
+      "notImpostor": "Ce n'est pas l'imposteur. Continuez.",
+      "impostorFound": "Imposteur trouvé ! Partie terminée."
     },
     "common": {
       "back": "Retour"

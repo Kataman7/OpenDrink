@@ -5,12 +5,17 @@ export class GameMode {
   static ACTION_TRUTH = 'action_truth';
   static WOULD_YOU_RATHER = 'would_you_rather';
   static WHO_COULD = 'who_could';
+  static IMPOSTOR = 'impostor';
 
   static getCandidateGameKeys(gameMode) {
     if (gameMode === GameMode.NEVER_HAVE_I_EVER) return ['jnj'];
     if (gameMode === GameMode.ACTION_TRUTH) return ['tod', 'dare_chooser'];
     if (gameMode === GameMode.WHO_COULD) return ['qpr'];
     throw new UnsupportedGameModeError(gameMode);
+  }
+
+  static needsIntensity(gameMode) {
+    return gameMode !== GameMode.IMPOSTOR;
   }
 }
 
@@ -60,6 +65,13 @@ export function buildWouldYouRatherQuery(intensity) {
 
   return {
     sql: 'SELECT choice1, choice2 FROM tpf_questions WHERE category_id IN (0, 1) AND lang = ? ORDER BY RANDOM() LIMIT 1',
+    params: (lang) => [lang],
+  };
+}
+
+export function buildImpostorWordQuery() {
+  return {
+    sql: 'SELECT word, imposter_hint_word FROM imposter_words WHERE lang = ? ORDER BY RANDOM() LIMIT 1',
     params: (lang) => [lang],
   };
 }

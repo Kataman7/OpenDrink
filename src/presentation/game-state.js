@@ -1,5 +1,8 @@
 const DEFAULT_LANG = 'en';
 
+// Game modes where the player's name should be hidden during the round
+const MODES_WITH_HIDDEN_ROUND_PLAYER = new Set(['would_you_rather', 'who_could', "never_have_i_ever"]);
+
 function createDefaultImpostorState() {
   return {
     starterId: null,
@@ -188,5 +191,9 @@ export class GameState {
       intensity: this.selectedIntensity,
       promptKind,
     };
+  }
+
+  shouldDisplayRoundPlayerName() {
+    return !MODES_WITH_HIDDEN_ROUND_PLAYER.has(this.selectedGameMode);
   }
 }

@@ -278,11 +278,13 @@ export class GamePresenter {
   renderRound({ player, question }) {
     const personalizer = new QuestionTextPersonalizer(this.state.players);
     const label = this.roundLabelBuilder.build(this.state.buildRoundLabelInput(question.promptKind));
+    const showPlayerName = this.state.shouldDisplayRoundPlayerName();
 
     if (question.promptKind === 'would_you_rather') {
       this.view.renderRound({
         player,
         label,
+        showPlayerName,
         choiceA: personalizer.personalize(question.choiceA, player.name),
         choiceB: personalizer.personalize(question.choiceB, player.name),
       });
@@ -292,6 +294,7 @@ export class GamePresenter {
     this.view.renderRound({
       player,
       label,
+      showPlayerName,
       sentence: personalizer.personalize(question.sentence, player.name),
     });
   }

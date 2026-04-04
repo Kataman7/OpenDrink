@@ -41,6 +41,7 @@ export class GamePresenter {
       initializeDatabaseUseCase: deps.initializeDatabaseUseCase,
       addPlayerUseCase: deps.addPlayerUseCase,
       removePlayerUseCase: deps.removePlayerUseCase,
+      textToSpeech: deps.textToSpeech,
     });
   }
 

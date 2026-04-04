@@ -12,6 +12,7 @@ import {
 } from '../infrastructure/sqlite-adapter.js';
 import { PreferencesStore } from './preferences-store.js';
 import { PlayerManager } from './player-manager.js';
+import { TextToSpeech } from '../shared/text-to-speech.js';
 
 export function createDependencies() {
   const questionsDb = new QuestionsDatabaseAdapter();
@@ -29,6 +30,8 @@ export function createDependencies() {
     removePlayerUseCase,
   });
 
+  const textToSpeech = new TextToSpeech();
+
   return {
     databasePort,
     questionRepositoryPort,
@@ -40,5 +43,6 @@ export function createDependencies() {
     drawQuestionUseCase: new DrawQuestionUseCase({ playerRepositoryPort, questionRepositoryPort }),
     getImpostorWordUseCase: new GetImpostorWordUseCase({ questionRepositoryPort }),
     playerManager,
+    textToSpeech,
   };
 }

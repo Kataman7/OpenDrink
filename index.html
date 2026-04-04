@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -10,7 +10,6 @@
   </head>
   <body>
     <div id="app" class="app-shell">
-
       <!-- SCREEN: LOBBY -->
       <section id="screen-lobby" class="screen">
         <div class="screen-inner">
@@ -38,7 +37,14 @@
           <p id="player-count" class="player-count">0 players</p>
           <ul id="player-list" class="player-list"></ul>
 
-          <button id="btn-start-game" class="btn btn-large btn-accent" data-action="start-game" data-i18n="lobby.startGame">Start game</button>
+          <button
+            id="btn-start-game"
+            class="btn btn-large btn-accent"
+            data-action="start-game"
+            data-i18n="lobby.startGame"
+          >
+            Start game
+          </button>
         </div>
       </section>
 
@@ -47,15 +53,27 @@
         <div class="screen-inner">
           <h2 class="title" data-i18n="mode.title">Choose mode</h2>
           <div class="mode-buttons">
-            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="never_have_i_ever">
+            <button
+              class="btn btn-large btn-mode"
+              data-action="select-mode"
+              data-mode="never_have_i_ever"
+            >
               <span class="btn-mode-icon">🍻</span>
               <span data-i18n="mode.neverHaveIEver">Never Have I Ever</span>
             </button>
-            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="action_truth">
+            <button
+              class="btn btn-large btn-mode"
+              data-action="select-mode"
+              data-mode="action_truth"
+            >
               <span class="btn-mode-icon">🎭</span>
               <span data-i18n="mode.truthOrDare">Truth or Dare</span>
             </button>
-            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="would_you_rather">
+            <button
+              class="btn btn-large btn-mode"
+              data-action="select-mode"
+              data-mode="would_you_rather"
+            >
               <span class="btn-mode-icon">⚡</span>
               <span data-i18n="mode.wouldYouRather">Would You Rather</span>
             </button>
@@ -68,7 +86,14 @@
               <span data-i18n="mode.impostor">Impostor</span>
             </button>
           </div>
-          <button id="btn-back-lobby" class="btn btn-secondary btn-small" data-action="back-lobby" data-i18n="common.back">Back</button>
+          <button
+            id="btn-back-lobby"
+            class="btn btn-secondary btn-small"
+            data-action="back-lobby"
+            data-i18n="common.back"
+          >
+            Back
+          </button>
         </div>
       </section>
 
@@ -84,10 +109,38 @@
               <p id="impostor-result" class="subtitle"></p>
             </div>
           </div>
-          <button id="btn-impostor-reveal" class="btn btn-large btn-primary" data-action="impostor-reveal" data-i18n="impostor.revealWord">Reveal word</button>
-          <button id="btn-impostor-next" class="btn btn-large btn-accent hidden" data-action="impostor-next" data-i18n="impostor.nextPlayer">Next player</button>
-          <button id="btn-impostor-finish" class="btn btn-large btn-accent hidden" data-action="impostor-finish" data-i18n="impostor.startAccusation">Start accusation</button>
-          <button class="btn btn-secondary btn-small" data-action="back-lobby" data-i18n="game.backToLobby">Back to lobby</button>
+          <button
+            id="btn-impostor-reveal"
+            class="btn btn-large btn-primary"
+            data-action="impostor-reveal"
+            data-i18n="impostor.revealWord"
+          >
+            Reveal word
+          </button>
+          <button
+            id="btn-impostor-next"
+            class="btn btn-large btn-accent hidden"
+            data-action="impostor-next"
+            data-i18n="impostor.nextPlayer"
+          >
+            Next player
+          </button>
+          <button
+            id="btn-impostor-finish"
+            class="btn btn-large btn-accent hidden"
+            data-action="impostor-finish"
+            data-i18n="impostor.startAccusation"
+          >
+            Start accusation
+          </button>
+          <button
+            id="btn-back-lobby"
+            class="btn btn-secondary btn-small"
+            data-action="back-lobby"
+            data-i18n="game.backToLobby"
+          >
+            Back to lobby
+          </button>
         </div>
       </section>
 
@@ -96,20 +149,39 @@
         <div class="screen-inner">
           <h2 class="title" data-i18n="intensity.title">Intensity</h2>
           <div class="mode-buttons">
-            <button class="btn btn-large btn-intensity" data-action="select-intensity" data-intensity="soft">
+            <button
+              class="btn btn-large btn-intensity"
+              data-action="select-intensity"
+              data-intensity="soft"
+            >
               <span class="btn-mode-icon">😊</span>
               <span data-i18n="intensity.soft">Soft</span>
             </button>
-            <button class="btn btn-large btn-intensity" data-action="select-intensity" data-intensity="hot">
+            <button
+              class="btn btn-large btn-intensity"
+              data-action="select-intensity"
+              data-intensity="hot"
+            >
               <span class="btn-mode-icon">🔥</span>
               <span data-i18n="intensity.hot">Hot</span>
             </button>
-            <button class="btn btn-large btn-intensity" data-action="select-intensity" data-intensity="mixed">
+            <button
+              class="btn btn-large btn-intensity"
+              data-action="select-intensity"
+              data-intensity="mixed"
+            >
               <span class="btn-mode-icon">🎲</span>
               <span data-i18n="intensity.mixed">Mixed</span>
             </button>
           </div>
-          <button id="btn-back-lobby" class="btn btn-secondary btn-small" data-action="back-lobby" data-i18n="common.back">Back</button>
+          <button
+            id="btn-back-lobby"
+            class="btn btn-secondary btn-small"
+            data-action="back-lobby"
+            data-i18n="common.back"
+          >
+            Back
+          </button>
         </div>
       </section>
 
@@ -126,8 +198,25 @@
               <p id="wyr-choice-b" class="wyr-choice"></p>
             </div>
           </div>
-          <button id="btn-next" class="btn btn-large btn-primary" data-action="next-round" data-i18n="game.next">Next</button>
-          <button id="btn-back-lobby" class="btn btn-secondary btn-small" data-action="back-lobby" data-i18n="game.backToLobby">Back to lobby</button>
+          <button
+            id="btn-next"
+            class="btn btn-large btn-primary"
+            data-action="next-round"
+            data-i18n="game.next"
+          >
+            Next
+          </button>
+          <button id="btn-auto-read" class="btn btn-secondary" data-action="toggle-auto-read">
+            Lecture OFF
+          </button>
+          <button
+            id="btn-back-lobby"
+            class="btn btn-secondary btn-small"
+            data-action="back-lobby"
+            data-i18n="game.backToLobby"
+          >
+            Back to lobby
+          </button>
         </div>
       </section>
 
@@ -135,15 +224,10 @@
       <div id="error-toast" class="error-toast hidden"></div>
 
       <footer class="site-footer">
-        <a
-          href="https://github.com/Kataman7/OpenDrink"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href="https://github.com/Kataman7/OpenDrink" target="_blank" rel="noreferrer">
           github.com/Kataman7/OpenDrink
         </a>
       </footer>
-
     </div>
 
     <script type="module" src="/src/main.js"></script>

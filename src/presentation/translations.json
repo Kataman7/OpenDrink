@@ -29,7 +29,9 @@
     "game": {
       "next": "Next",
       "backToLobby": "Back to lobby",
-      "or": "OR"
+      "or": "OR",
+      "lectureOn": "Lecture ON",
+      "lectureOff": "Lecture OFF"
     },
     "impostor": {
       "passPhoneTo": "{name}",
@@ -50,7 +52,12 @@
       "dare": "Dare",
       "withIntensity": "{mode} - {intensity}",
       "truthWithIntensity": "{mode} ({truth}) - {intensity}",
-      "dareWithIntensity": "{mode} ({dare}) - {intensity}"
+      "dareWithIntensity": "{mode} ({dare}) - {intensity}",
+      "ttsPrefixWouldYouRather": "Would you rather ",
+      "ttsPrefixNeverHaveIEver": "I have never ",
+      "ttsPrefixWhoCould": "Who could ",
+      "ttsReplaceAnd": " and ",
+      "ttsReplaceOr": " or "
     },
     "errors": {
       "minPlayers": "Add at least {count} players",
@@ -90,7 +97,9 @@
     "game": {
       "next": "Suivant",
       "backToLobby": "Retour au lobby",
-      "or": "OU"
+      "or": "OU",
+      "lectureOn": "Lecture ON",
+      "lectureOff": "Lecture OFF"
     },
     "impostor": {
       "passPhoneTo": "{name}",
@@ -111,7 +120,12 @@
       "dare": "Action",
       "withIntensity": "{mode} - {intensity}",
       "truthWithIntensity": "{mode} ({truth}) - {intensity}",
-      "dareWithIntensity": "{mode} ({dare}) - {intensity}"
+      "dareWithIntensity": "{mode} ({dare}) - {intensity}",
+      "ttsPrefixWouldYouRather": "Tu préfères ",
+      "ttsPrefixNeverHaveIEver": "Je n'ai jamais ",
+      "ttsPrefixWhoCould": "Qui pourrait ",
+      "ttsReplaceAnd": " et ",
+      "ttsReplaceOr": " ou "
     },
     "errors": {
       "minPlayers": "Ajoute au moins {count} joueurs",

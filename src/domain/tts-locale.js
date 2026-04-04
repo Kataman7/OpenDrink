@@ -1,0 +1,36 @@
+export const TTS_LOCALE_MAP = {
+  bg: 'bg-BG',
+  cs: 'cs-CZ',
+  da: 'da-DK',
+  de: 'de-DE',
+  el: 'el-GR',
+  en: 'en-US',
+  es: 'es-ES',
+  fi: 'fi-FI',
+  fil: 'fil-PH',
+  fr: 'fr-FR',
+  hi: 'hi-IN',
+  hr: 'hr-HR',
+  hu: 'hu-HU',
+  id: 'id-ID',
+  it: 'it-IT',
+  ja: 'ja-JP',
+  ko: 'ko-KR',
+  nb: 'nb-NO',
+  nl: 'nl-NL',
+  pl: 'pl-PL',
+  pt: 'pt-BR',
+  ro: 'ro-RO',
+  ru: 'ru-RU',
+  sv: 'sv-SE',
+  th: 'th-TH',
+  tr: 'tr-TR',
+  uk: 'uk-UA',
+  vi: 'vi-VN',
+  'zh-Hans': 'zh-CN',
+  'zh-Hant': 'zh-TW',
+};
+
+export function toTtsLocale(langCode) {
+  return TTS_LOCALE_MAP[langCode] || 'en-US';
+}

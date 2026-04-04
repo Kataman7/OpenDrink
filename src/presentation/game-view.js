@@ -182,4 +182,30 @@ export class GameView {
       element.setAttribute('placeholder', this.i18n.t(key));
     });
   }
+
+  getQuestionText() {
+    const sentenceEl = this.getElement('question-text');
+    if (sentenceEl && sentenceEl.textContent && !sentenceEl.classList.contains(HIDDEN_CLASS)) {
+      return sentenceEl.textContent;
+    }
+
+    const choiceA = this.getElement('wyr-choice-a');
+    const choiceB = this.getElement('wyr-choice-b');
+    if (choiceA && choiceB && choiceA.textContent && choiceB.textContent) {
+      return `${choiceA.textContent}... ou ${choiceB.textContent}?`;
+    }
+
+    return null;
+  }
+
+  updateAutoReadButton(enabled) {
+    const btn = this.getElement('btn-auto-read');
+    if (enabled) {
+      btn.classList.add('btn-accent');
+      btn.textContent = this.i18n.t('game.lectureOn');
+    } else {
+      btn.classList.remove('btn-accent');
+      btn.textContent = this.i18n.t('game.lectureOff');
+    }
+  }
 }

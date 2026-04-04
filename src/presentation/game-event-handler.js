@@ -13,6 +13,7 @@ const CLICK_ACTIONS = {
   'impostor-next': 'handleImpostorNext',
   'impostor-finish': 'handleImpostorFinish',
   'impostor-accuse': 'handleImpostorAccuse',
+  'toggle-auto-read': 'handleToggleAutoRead',
 };
 
 export class GameEventHandler {
@@ -29,6 +30,7 @@ export class GameEventHandler {
     this.initializeDatabaseUseCase = dependencies.initializeDatabaseUseCase;
     this.addPlayerUseCase = dependencies.addPlayerUseCase;
     this.removePlayerUseCase = dependencies.removePlayerUseCase;
+    this.textToSpeech = dependencies.textToSpeech;
   }
 
   bind() {
@@ -237,15 +239,34 @@ export class GameEventHandler {
         choiceA: personalizer.personalize(question.choiceA, player.name),
         choiceB: personalizer.personalize(question.choiceB, player.name),
       });
-      return;
+    } else {
+      this.view.renderRound({
+        player,
+        label,
+        showPlayerName,
+        sentence: personalizer.personalize(question.sentence, player.name),
+      });
     }
 
-    this.view.renderRound({
-      player,
-      label,
-      showPlayerName,
-      sentence: personalizer.personalize(question.sentence, player.name),
-    });
+    if (this.textToSpeech.isAutoReadEnabled()) {
+      this.handleReadQuestion();
+    }
+  }
+
+  handleReadQuestion() {
+    const text = this.view.getQuestionText();
+    if (!text) return;
+    const gameMode = this.state.selectedGameMode;
+    const lang = this.state.selectedLang;
+    this.textToSpeech.speak(text, gameMode, lang, this.i18n);
+  }
+
+  handleToggleAutoRead() {
+    const enabled = this.textToSpeech.toggleAutoRead();
+    this.view.updateAutoReadButton(enabled);
+    if (enabled) {
+      this.handleReadQuestion();
+    }
   }
 
   persistPreferences() {

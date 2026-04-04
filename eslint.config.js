@@ -17,6 +17,8 @@ export default [
         localStorage: true,
         HTMLSelectElement: true,
         HTMLElement: true,
+        speechSynthesis: true,
+        SpeechSynthesisUtterance: true,
       },
     },
     rules: {

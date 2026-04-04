@@ -95,4 +95,9 @@ export class ImpostorManager {
   finishRound() {
     this.reset();
   }
+
+  startDiscussion() {
+    this.orderedPlayerIds = [];
+    this.currentIndex = 0;
+  }
 }

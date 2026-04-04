@@ -181,6 +181,10 @@ export class GameEventHandler {
 
   handleImpostorNext() {
     this.impostorManager.moveToNextPlayer();
+    if (!this.impostorManager.hasMorePlayers()) {
+      this.handleImpostorFinish();
+      return;
+    }
     this.renderImpostorPassStep();
   }
 
@@ -194,18 +198,18 @@ export class GameEventHandler {
   }
 
   handleImpostorFinish() {
-    this.impostorManager.finishRound();
+    const accusationPlayers = this.impostorManager.getAccusationPlayers(this.state.players);
     this.view.renderImpostorDiscussionState();
-    this.view.renderImpostorAccusationList(
-      this.impostorManager.getAccusationPlayers(this.state.players)
-    );
+    this.view.renderImpostorAccusationList(accusationPlayers);
   }
 
   async handleImpostorAccuse(target) {
     const playerId = Number(target.getAttribute('data-player-id'));
     if (!playerId) return;
 
-    if (this.impostorManager.isImpostorPlayer(playerId)) {
+    const isImpostor = this.impostorManager.isImpostorPlayer(playerId);
+
+    if (isImpostor) {
       this.view.renderImpostorAccusationResult(this.i18n.t('impostor.impostorFound'));
       this.impostorManager.finishRound();
       return;

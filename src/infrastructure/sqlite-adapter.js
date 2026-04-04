@@ -85,6 +85,9 @@ export class PlayersDatabaseAdapter {
   }
 
   savePlayer(name) {
+    if (!this.db) {
+      throw new Error('Database not initialized! Call initialize() first.');
+    }
     this.db.run('INSERT INTO players (name) VALUES (?)', [name]);
     const insertResult = this.db.exec('SELECT last_insert_rowid()');
     if (!insertResult.length || !insertResult[0].values.length) return null;

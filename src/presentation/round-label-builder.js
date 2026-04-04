@@ -19,7 +19,11 @@ export class RoundLabelBuilder {
 
   build({ gameMode, intensity, promptKind }) {
     const modeLabel = this.i18n.t(MODE_KEY_BY_VALUE[gameMode]);
-    if (promptKind === 'would_you_rather' || promptKind === 'who_could' || promptKind === 'impostor') {
+    if (
+      promptKind === 'would_you_rather' ||
+      promptKind === 'who_could' ||
+      promptKind === 'impostor'
+    ) {
       return modeLabel;
     }
 

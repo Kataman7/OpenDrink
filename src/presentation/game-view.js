@@ -9,14 +9,14 @@ export class GameView {
   renderLanguageSelector({ languages, selectedLang }) {
     const select = this.getElement('lang-select');
     select.innerHTML = languages
-      .map((language) => this.renderLanguageOption(language, selectedLang))
+      .map(language => this.renderLanguageOption(language, selectedLang))
       .join('');
   }
 
   renderPlayerList(players) {
     const list = this.getElement('player-list');
     const count = this.getElement('player-count');
-    list.innerHTML = players.map((player) => this.renderPlayerTag(player)).join('');
+    list.innerHTML = players.map(player => this.renderPlayerTag(player)).join('');
     count.textContent = this.buildPlayerCountLabel(players.length);
   }
 
@@ -34,11 +34,15 @@ export class GameView {
 
   renderImpostorAccusationList(players) {
     const container = this.getElement('impostor-candidates');
-    container.innerHTML = players.map((player) => this.renderImpostorCandidateButton(player)).join('');
+    container.innerHTML = players
+      .map(player => this.renderImpostorCandidateButton(player))
+      .join('');
   }
 
   renderImpostorPassStep({ playerName, hint }) {
-    this.getElement('impostor-step-title').textContent = this.i18n.t('impostor.passPhoneTo', { name: playerName });
+    this.getElement('impostor-step-title').textContent = this.i18n.t('impostor.passPhoneTo', {
+      name: playerName,
+    });
     this.getElement('impostor-step-hint').textContent = hint;
     this.getElement('impostor-word').textContent = '';
     this.getElement('impostor-word').classList.add(HIDDEN_CLASS);
@@ -153,7 +157,7 @@ export class GameView {
   }
 
   hideAllScreens() {
-    document.querySelectorAll('.screen').forEach((screen) => {
+    document.querySelectorAll('.screen').forEach(screen => {
       screen.classList.add(HIDDEN_CLASS);
     });
   }
@@ -163,7 +167,7 @@ export class GameView {
   }
 
   translateNodesWithText() {
-    document.querySelectorAll('[data-i18n]').forEach((element) => {
+    document.querySelectorAll('[data-i18n]').forEach(element => {
       const key = element.getAttribute('data-i18n');
       if (!key) return;
       element.textContent = this.i18n.t(key);
@@ -171,7 +175,7 @@ export class GameView {
   }
 
   translatePlaceholderNodes() {
-    document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => {
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
       const key = element.getAttribute('data-i18n-placeholder');
       if (!key) return;
       element.setAttribute('placeholder', this.i18n.t(key));

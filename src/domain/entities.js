@@ -11,7 +11,13 @@ export class Player {
 }
 
 export class Question {
-  constructor({ sentence = '', promptKind = null, choiceA = null, choiceB = null, impostorHintWord = null }) {
+  constructor({
+    sentence = '',
+    promptKind = null,
+    choiceA = null,
+    choiceB = null,
+    impostorHintWord = null,
+  }) {
     const hasSentence = Boolean(sentence && sentence.trim().length > 0);
     const hasChoices = Boolean(choiceA && choiceB);
     if (!hasSentence && !hasChoices) {

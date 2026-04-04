@@ -1,64 +1,119 @@
 # OpenDrink 🍻
 
+[![CI](https://github.com/anomalyco/opendrink/actions/workflows/ci.yml/badge.svg)](https://github.com/anomalyco/opendrink/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Online drinking game — Vanilla HTML/JS/CSS + SQLite (via sql.js).
 
-## Stack
+## Features
 
-- **Frontend**: HTML5 / CSS3 / Vanilla JavaScript (no framework)
-- **Database**: SQLite in the browser via [sql.js](https://github.com/sql-js/sql.js)
-  - `public/questions.sqlite` — read-only database with ~103,000 questions
-  - In-memory database for players in the current game
-- **Server**: Nginx (Docker)
-- **Build**: Vite
+- 🎮 Multiple game modes: Never Have I Ever, Truth or Dare, Would You Rather, Who Could
+- 🌐 30 languages supported
+- 📱 Responsive design
+- 🔒 No server required (runs entirely in browser)
+- 🐳 Easy Docker deployment
 
-## Architecture
+## Quick Start
 
-Strict Clean Architecture (see `agent.md`):
-
-```
-src/
-  domain/              # Entities, business errors, value objects (GameMode, languages)
-  application/
-    ports/             # Interfaces (QuestionRepositoryPort, PlayerRepositoryPort)
-    usecases/          # add-player, draw-question, initialize-database
-  infrastructure/      # sql.js adapter (2 DBs: questions read-only + players in-memory)
-  presentation/        # GamePresenter + UI stores/helpers
-  main.js              # Entry point
-public/
-  questions.sqlite     # ~103K questions, 30 languages, 6 game keys
-```
-
-## Game Modes
-
-| UI Mode | game_key source | category_id |
-|--------|------------------|-------------|
-| Never Have I Ever | `jnj` | soft=0 / hot=1 / mixed=0+1 |
-| Truth or Dare | random `tod` or `dare_chooser` | soft=0 / hot=1 / mixed=0+1 |
-
-## Supported Languages (30)
-
-bg, cs, da, de, el, en, es, fi, fil, fr, hi, hr, hu, id, it, ja, ko, nb, nl, pl, pt, ro, ru, sv, th, tr, uk, vi, zh-Hans, zh-Hant
-
-## Usage with Docker
-
-### Production mode (build + Nginx)
+### With Docker
 
 ```bash
 docker compose up app --build
 ```
 
-### Deployment to GitHub Pages
+Open http://localhost:8080
+
+### Local Development
 
 ```bash
-git checkout prod
-# and run the script it takes care of everything
+npm install
+npm run dev
 ```
 
-The app is accessible at **http://localhost:8080**
+Open http://localhost:5173
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | HTML5 / CSS3 / Vanilla JavaScript |
+| Database | SQLite in browser via [sql.js](https://github.com/sql-js/sql.js) |
+| Build | Vite |
+| Server | Nginx (Docker) |
+
+### Database
+
+- `public/questions.sqlite` — read-only database with ~103,000 questions
+- In-memory database for players in current game
+
+## Architecture
+
+Clean Architecture following domain → application → infrastructure → presentation:
+
+```
+src/
+├── domain/              # Entities, business errors, value objects
+├── application/
+│   ├── ports/           # Interfaces (Repository ports)
+│   └── usecases/        # Application use cases
+├── infrastructure/      # sql.js adapters
+├── presentation/        # UI controllers, views
+├── shared/              # Generic helpers
+└── main.js             # Entry point
+```
+
+See [`agent.md`](agent.md) for detailed architecture guidelines.
+
+## Game Modes
+
+| Mode | Game Key | Category |
+|------|----------|----------|
+| Never Have I Ever | `jnj` | soft=0 / hot=1 / mixed |
+| Truth or Dare | `tod`, `dare_chooser` | soft=0 / hot=1 / mixed |
+| Would You Rather | `tpf` | soft=0 / hot=1 / mixed |
+| Who Could | `qpr` | soft=0 / hot=1 / mixed |
+| Impostor | special | no intensity |
+
+## Supported Languages
+
+bg, cs, da, de, el, en, es, fi, fil, fr, hi, hr, hu, id, it, ja, ko, nb, nl, pl, pt, ro, ru, sv, th, tr, uk, vi, zh-Hans, zh-Hant
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+
+# Run tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Lint code
+npm run lint
+
+# Format code
+npm run format
+
+# Build for production
+npm run build
+```
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+MIT License - see [LICENSE](LICENSE)
 
 ## Game Flow
 
 1. **Lobby**: Choose language, add players
-2. **Mode**: Choose between "Never Have I Ever" or "Truth or Dare"
-3. **Intensity**: Choose "Soft", "Hot" or "Mixed"
-4. **Game**: SQL query `ORDER BY RANDOM()` → display player + question → "Next" button
+2. **Mode**: Choose game mode
+3. **Intensity**: Choose difficulty (Soft, Hot, Mixed)
+4. **Game**: Questions displayed randomly → Next button

@@ -11,7 +11,12 @@ export class QuestionTextPersonalizer {
     return sentence.replace(/\$\{([^}]+)\}/g, (_, token) => {
       if (replacedTokens.has(token)) return replacedTokens.get(token);
       const tokenSlot = this.extractTokenSlot(token, mappedSlots.size + 1);
-      const selectedName = this.selectPlayerName(tokenSlot, mappedSlots, selectableNames, currentPlayerName);
+      const selectedName = this.selectPlayerName(
+        tokenSlot,
+        mappedSlots,
+        selectableNames,
+        currentPlayerName
+      );
       mappedSlots.set(tokenSlot, selectedName);
       replacedTokens.set(token, selectedName);
       return selectedName;
@@ -20,8 +25,8 @@ export class QuestionTextPersonalizer {
 
   buildSelectableNames(currentPlayerName) {
     return this.players
-      .map((player) => player.name)
-      .filter((playerName) => playerName !== currentPlayerName);
+      .map(player => player.name)
+      .filter(playerName => playerName !== currentPlayerName);
   }
 
   extractTokenSlot(token, fallbackSlot) {
@@ -41,7 +46,7 @@ export class QuestionTextPersonalizer {
 
   findUnassignedNames(mappedSlots, selectableNames) {
     const usedNames = new Set(mappedSlots.values());
-    return selectableNames.filter((name) => !usedNames.has(name));
+    return selectableNames.filter(name => !usedNames.has(name));
   }
 
   pickRandomItem(items) {

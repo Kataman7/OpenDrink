@@ -21,7 +21,7 @@ export class InvalidQuestionTypeError extends Error {
 
 export class DatabaseInitError extends Error {
   constructor(cause) {
-    super('Échec de l\'initialisation de la base de données');
+    super("Échec de l'initialisation de la base de données");
     this.name = 'DatabaseInitError';
     this.cause = cause;
   }

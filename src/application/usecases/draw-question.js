@@ -29,7 +29,7 @@ export class DrawQuestionUseCase {
   pickPlayer(players, previousPlayerId) {
     if (players.length === 1) return players[0];
 
-    const candidates = players.filter((player) => player.id !== previousPlayerId);
+    const candidates = players.filter(player => player.id !== previousPlayerId);
     const randomIndex = Math.floor(Math.random() * candidates.length);
     return candidates[randomIndex];
   }

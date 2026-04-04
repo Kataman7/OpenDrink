@@ -1,17 +1,37 @@
 {
   "name": "opendrink",
   "version": "1.0.0",
+  "description": "Online drinking game with Clean Architecture",
   "private": true,
   "type": "module",
+  "author": "OpenDrink Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anomalyco/opendrink"
+  },
+  "homepage": "https://github.com/anomalyco/opendrink#readme",
+  "bugs": {
+    "url": "https://github.com/anomalyco/opendrink/issues"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write src/"
   },
   "dependencies": {
     "sql.js": "^1.10.0"
   },
   "devDependencies": {
-    "vite": "^5.0.0"
+    "vite": "^5.0.0",
+    "eslint": "^9.0.0",
+    "@eslint/js": "^9.0.0",
+    "prettier": "^3.2.0",
+    "vitest": "^1.3.0"
   }
 }

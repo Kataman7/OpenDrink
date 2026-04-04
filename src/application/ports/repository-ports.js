@@ -1,11 +1,11 @@
 export class QuestionRepositoryPort {
-  async getRandomQuestion({ gameMode, intensity, lang }) {
+  async getRandomQuestion({ gameMode: _gameMode, intensity: _intensity, lang: _lang }) {
     throw new Error('QuestionRepositoryPort.getRandomQuestion must be implemented');
   }
 }
 
 export class PlayerRepositoryPort {
-  async savePlayer(name) {
+  async savePlayer(_name) {
     throw new Error('PlayerRepositoryPort.savePlayer must be implemented');
   }
 
@@ -13,7 +13,7 @@ export class PlayerRepositoryPort {
     throw new Error('PlayerRepositoryPort.getAllPlayers must be implemented');
   }
 
-  async removePlayerById(playerId) {
+  async removePlayerById(_playerId) {
     throw new Error('PlayerRepositoryPort.removePlayerById must be implemented');
   }
 }

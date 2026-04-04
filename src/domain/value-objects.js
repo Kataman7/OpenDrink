@@ -38,19 +38,19 @@ export function buildQuestionQuery(gameKey, intensity) {
   if (gameKey === 'dare_chooser' && categoryId === null) {
     return {
       sql: 'SELECT sentence FROM questions WHERE game_key = ? AND category_id IN (0, 1) AND lang = ? ORDER BY RANDOM() LIMIT 1',
-      params: (lang) => [gameKey, lang],
+      params: lang => [gameKey, lang],
     };
   }
 
   if (categoryId !== null) {
     return {
       sql: 'SELECT sentence FROM questions WHERE game_key = ? AND category_id = ? AND lang = ? ORDER BY RANDOM() LIMIT 1',
-      params: (lang) => [gameKey, categoryId, lang],
+      params: lang => [gameKey, categoryId, lang],
     };
   }
   return {
     sql: 'SELECT sentence FROM questions WHERE game_key = ? AND lang = ? ORDER BY RANDOM() LIMIT 1',
-    params: (lang) => [gameKey, lang],
+    params: lang => [gameKey, lang],
   };
 }
 
@@ -59,20 +59,20 @@ export function buildWouldYouRatherQuery(intensity) {
   if (categoryId !== null) {
     return {
       sql: 'SELECT choice1, choice2 FROM tpf_questions WHERE category_id = ? AND lang = ? ORDER BY RANDOM() LIMIT 1',
-      params: (lang) => [categoryId, lang],
+      params: lang => [categoryId, lang],
     };
   }
 
   return {
     sql: 'SELECT choice1, choice2 FROM tpf_questions WHERE category_id IN (0, 1) AND lang = ? ORDER BY RANDOM() LIMIT 1',
-    params: (lang) => [lang],
+    params: lang => [lang],
   };
 }
 
 export function buildImpostorWordQuery() {
   return {
     sql: 'SELECT word, imposter_hint_word FROM imposter_words WHERE lang = ? ORDER BY RANDOM() LIMIT 1',
-    params: (lang) => [lang],
+    params: lang => [lang],
   };
 }
 

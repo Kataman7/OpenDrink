@@ -1,5 +1,11 @@
 const DEFAULT_LANG = 'en';
 
+const MODES_WITH_HIDDEN_ROUND_PLAYER = new Set([
+  'would_you_rather',
+  'who_could',
+  'never_have_i_ever',
+]);
+
 export class GameState {
   constructor({ screens }) {
     this.screens = screens;
@@ -97,5 +103,9 @@ export class GameState {
     if (ids.length === 0) return null;
     const index = Math.floor(Math.random() * ids.length);
     return ids[index];
+  }
+
+  shouldDisplayRoundPlayerName() {
+    return !MODES_WITH_HIDDEN_ROUND_PLAYER.has(this.selectedGameMode);
   }
 }

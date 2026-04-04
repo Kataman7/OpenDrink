@@ -25,8 +25,9 @@ export class GameView {
     this.showScreen(screenName);
   }
 
-  renderRound({ player, label, sentence, choiceA, choiceB }) {
+  renderRound({ player, label, sentence, choiceA, choiceB, showPlayerName = true }) {
     this.getElement('player-name').textContent = player.name;
+    this.getElement('player-name').classList.toggle(HIDDEN_CLASS, !showPlayerName);
     this.getElement('question-type').textContent = label;
     if (choiceA && choiceB) return this.renderWouldYouRather(choiceA, choiceB);
     return this.renderSentence(sentence);

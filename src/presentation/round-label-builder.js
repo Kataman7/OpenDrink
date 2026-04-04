@@ -4,7 +4,8 @@ const MODE_KEY_BY_VALUE = {
   would_you_rather: 'mode.wouldYouRather',
   who_could: 'mode.whoCould',
   impostor: 'mode.impostor',
-};
+}; // We should use typescript enums for this.
+
 
 const INTENSITY_KEY_BY_VALUE = {
   soft: 'intensity.soft',

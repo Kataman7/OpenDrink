@@ -6,7 +6,6 @@ const MODE_KEY_BY_VALUE = {
   impostor: 'mode.impostor',
 }; // We should use typescript enums for this.
 
-
 const INTENSITY_KEY_BY_VALUE = {
   soft: 'intensity.soft',
   hot: 'intensity.hot',

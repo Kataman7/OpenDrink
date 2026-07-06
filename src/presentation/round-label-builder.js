@@ -4,7 +4,14 @@ const MODE_KEY_BY_VALUE = {
   would_you_rather: 'mode.wouldYouRather',
   who_could: 'mode.whoCould',
   impostor: 'mode.impostor',
-}; // We should use typescript enums for this.
+  seven_seconds: 'mode.sevenSeconds',
+  its_a_10: 'mode.itsA10',
+  quiz: 'mode.quiz',
+  team_battle: 'mode.teamBattle',
+  dormelles: 'mode.dormelles',
+  picolo: 'mode.picolo',
+  truth_dare: 'mode.truthDare',
+};
 
 const INTENSITY_KEY_BY_VALUE = {
   soft: 'intensity.soft',
@@ -18,11 +25,16 @@ export class RoundLabelBuilder {
   }
 
   build({ gameMode, intensity, promptKind }) {
-    const modeLabel = this.i18n.t(MODE_KEY_BY_VALUE[gameMode]);
+    const modeLabel = this.i18n.t(MODE_KEY_BY_VALUE[gameMode] || '');
     if (
       promptKind === 'would_you_rather' ||
       promptKind === 'who_could' ||
-      promptKind === 'impostor'
+      promptKind === 'impostor' ||
+      promptKind === 'quiz' ||
+      promptKind === 'dormelles' ||
+      (promptKind && promptKind.startsWith('team_battle_')) ||
+      (promptKind && promptKind.startsWith('picolo_')) ||
+      (promptKind && promptKind.startsWith('truth_dare_'))
     ) {
       return modeLabel;
     }

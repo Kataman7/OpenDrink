@@ -57,6 +57,27 @@ Colonnes : `choice1`, `choice2`, `category_id`, `lang` — pour "Tu préfères" 
 ### Table `imposter_words`
 Colonnes : `word`, `imposter_hint_word`, `lang` — pour le mode Imposteur
 
+### Table `antoine_dares`
+Colonnes : `dare_id`, `lang`, `sentence`, `is_action`, `difficulty`, `timer`, `party_type` — pour le mode Truth or Dare (Classic)
+
+## Compatibilité cross-modes — Antoine Dares
+
+Les questions Antoine (table `antoine_dares`) contiennent des questions compatible thématiquement
+avec d'autres modes, mais utilisent une syntaxe de tokens différente (`%P`, `%OX`, blocs genrés
+`{P#...}`, conditionnels `{2Players#...}`) qui n'est pas supportée par les personalizers des modes
+existants.
+
+| Mode compatible | Nb questions | Problème |
+|---|---|---|
+| `jnj` (Never Have I Ever) | ~103 "Have you ever..." | Formulation en 2e personne ("have you ever...") vs 1ère personne ("I have never...") |
+| `tpf` (Would You Rather) | ~21 "Would you rather..." | Choix imbriqués dans une seule phrase, pas extraits en 2 colonnes |
+| `qpr` (Who Could) | ~7 "Who would..." | Tokens Antoine non supportés par `QuestionTextPersonalizer` |
+
+Pour mapper, il faudrait :
+1. Reformuler les phrases (ex: "%P, have you ever..." → "I have never...")
+2. Remplacer les tokens Antoine (`%P`, `%OX`, etc.) par les tokens `${}` du système existant
+3. Ou ajouter le support des tokens Antoine aux personalizers des modes existants
+
 ### Intensité
 - `soft` → `category_id = 0`
 - `hot` → `category_id = 1`
@@ -81,6 +102,22 @@ _(aucun gotcha enregistré)_
 ### presentation
 - ❌ Créer un fichier utils sans vérifier si un module domain ou application existant est le bon endroit.
   - ✅ Chercher d'abord le module responsable du concept.
+- ❌ Traiter les blocs conditionnels (`{2Players#...}`) avant les blocs pronoms (`{O#...}`) dans AntoinePersonalizer.
+  - ✅ Toujours traiter les blocs pronoms AVANT les blocs conditionnels, car les conditionnels peuvent contenir des pronoms imbriqués (ex: `{2Players#{O#Il*Elle} devra*...}`). Sinon le regex `[^}]*` casse sur l'accolade fermante interne.
+- ❌ Se limiter à `[POX]+` dans le regex des blocs pronoms (`antoine-personalizer.js`).
+  - ✅ Utiliser une regex générique `[A-Za-z0-9]+` avec négative lookahead pour exclure les scopes conditionnels, afin de couvrir `{O2#...}`, `{OX2#...}`, `{OH#...}`, `{OF#...}`, `{RuD#...}`.
+- ❌ Lister explicitement `%OX`, `%O`, `%OF`, `%OH` individuellement pour les remplacer.
+  - ✅ Utiliser une passe unique `%([A-Za-z0-9]+)` avec callback pour `%P` (currentPlayer) vs tout le reste (pickOther), ce qui couvre `%O2`, `%OX2`, `%OXs`, etc. automatiquement.
+- ❌ Oublier que `{Cash#...}` existe (capital C) en plus de `{cash#...}`.
+  - ✅ Utiliser `scope.toLowerCase()` dans le handler conditionnel pour gérer les deux.
+- ❌ Oublier un safety-net `/\{[^}]*\}/g` à la fin du personalizer Antoine pour nettoyer les blocs résiduels.
+  - ✅ Toujours ajouter une passe finale qui supprime tout `{...}` non traité.
+- ❌ Utiliser `overflow: hidden` sur `html, body` quand la page peut contenir plus de contenu que la hauteur d'écran (ex: liste de joueurs qui s'allonge).
+  - ✅ Utiliser `overflow-y: auto` pour permettre le scroll vertical quand le contenu dépasse le viewport.
+- ❌ `PicoloPersonalizer` : chaque appel à `randomPlayer()` est indépendant → plusieurs `%s` dans la même phrase peuvent donner le même nom.
+  - ✅ Tenir un `Set` des noms déjà utilisés et ne pas les repiocher tant que tous les candidats n'ont pas été épuisés.
+- ❌ `handleQuizAnswer` : les boutons quiz ne font que se colorer, sans action utile.
+  - ✅ Ajouter `setTimeout` de 1.2s puis `handleNextRound()` pour passer automatiquement au tour suivant.
 
 ### general
 - ❌ Lever `Error` ou `Exception` générique.

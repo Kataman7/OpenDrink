@@ -85,9 +85,69 @@
               <span class="btn-mode-icon">🎯</span>
               <span data-i18n="mode.impostor">Impostor</span>
             </button>
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="seven_seconds">
+              <span class="btn-mode-icon">⏱️</span>
+              <span data-i18n="mode.sevenSeconds">7 Seconds</span>
+            </button>
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="its_a_10">
+              <span class="btn-mode-icon">💯</span>
+              <span data-i18n="mode.itsA10">It's a 10</span>
+            </button>
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="quiz">
+              <span class="btn-mode-icon">🧠</span>
+              <span data-i18n="mode.quiz">Quiz</span>
+            </button>
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="team_battle">
+              <span class="btn-mode-icon">⚔️</span>
+              <span data-i18n="mode.teamBattle">Team Battle</span>
+            </button>
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="dormelles">
+              <span class="btn-mode-icon">🃏</span>
+              <span data-i18n="mode.dormelles">Dormelles</span>
+            </button>
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="picolo">
+              <span class="btn-mode-icon">🍻</span>
+              <span data-i18n="mode.picolo">Picolo</span>
+            </button>
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="truth_dare">
+              <span class="btn-mode-icon">🎴</span>
+              <span data-i18n="mode.truthDare">Truth or Dare (Classic)</span>
+            </button>
+            <button
+              class="btn btn-large btn-mode"
+              data-action="select-mode"
+              data-mode="random"
+            >
+              <span class="btn-mode-icon">🔀</span>
+              <span data-i18n="mode.random">Random</span>
+            </button>
           </div>
           <button
             id="btn-back-lobby"
+            class="btn btn-secondary btn-small"
+            data-action="back-lobby"
+            data-i18n="common.back"
+          >
+            Back
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN: MODE RANDOM -->
+      <section id="screen-mode_random" class="screen hidden">
+        <div class="screen-inner">
+          <h2 class="title" data-i18n="modeRandom.title">Select modes</h2>
+          <p class="subtitle" data-i18n="modeRandom.subtitle">Pick the modes you want to mix</p>
+          <div id="mode-random-list" class="mode-random-list"></div>
+          <button
+            id="btn-random-confirm"
+            class="btn btn-large btn-accent"
+            data-action="random-confirm"
+            data-i18n="modeRandom.confirm"
+          >
+            Next
+          </button>
+          <button
             class="btn btn-secondary btn-small"
             data-action="back-lobby"
             data-i18n="common.back"
@@ -192,11 +252,13 @@
             <p id="player-name" class="game-player"></p>
             <p id="question-type" class="game-type"></p>
             <p id="question-text" class="game-text"></p>
+            <p id="seven-timer" class="seven-timer hidden"></p>
             <div id="wyr-choices" class="wyr-choices hidden">
               <p id="wyr-choice-a" class="wyr-choice"></p>
               <p id="wyr-separator" class="wyr-separator" data-i18n="game.or">OR</p>
               <p id="wyr-choice-b" class="wyr-choice"></p>
             </div>
+            <div id="quiz-options" class="mode-buttons hidden"></div>
           </div>
           <button
             id="btn-next"

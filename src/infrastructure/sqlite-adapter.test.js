@@ -75,6 +75,9 @@ async function createTestQuestionsDb() {
   db.run(
     "INSERT INTO questions (game_key, category_id, lang, sentence) VALUES ('dare_chooser', 1, 'en', 'Kiss someone in the room')"
   );
+  db.run(
+    "INSERT INTO questions (game_key, category_id, lang, sentence) VALUES ('dare_chooser', 2, 'en', 'Scream loudly in public')"
+  );
 
   // Insert test data for Who Could (qpr)
   db.run(
@@ -98,6 +101,76 @@ async function createTestQuestionsDb() {
   );
   db.run(
     "INSERT INTO imposter_words (lang, word, imposter_hint_word) VALUES ('en', 'Banana', 'Yellow')"
+  );
+
+  // Insert test data for 7 Seconds (7seconds)
+  db.run(
+    "INSERT INTO questions (game_key, category_id, lang, sentence) VALUES ('7seconds', 0, 'en', 'Name 3 animals')"
+  );
+  db.run(
+    "INSERT INTO questions (game_key, category_id, lang, sentence) VALUES ('7seconds', 1, 'en', 'Name 3 turn-ons')"
+  );
+
+  // Insert test data for It's a 10 (a_10)
+  db.run(
+    "INSERT INTO questions (game_key, category_id, lang, sentence) VALUES ('a_10', 0, 'en', \"It's a 10 but they snore\")"
+  );
+  db.run(
+    "INSERT INTO questions (game_key, category_id, lang, sentence) VALUES ('a_10', 1, 'en', \"It's a 10 but they cheat\")"
+  );
+
+  // Create quiz_questions table
+  db.run(`
+    CREATE TABLE quiz_questions (
+      id INTEGER PRIMARY KEY,
+      category_id INTEGER,
+      lang TEXT NOT NULL,
+      sentence TEXT NOT NULL,
+      options_json TEXT NOT NULL
+    )
+  `);
+
+  db.run(
+    'INSERT INTO quiz_questions (category_id, lang, sentence, options_json) VALUES (0, \'en\', \'What is the capital of France?\', \'["London","Paris","Berlin","Madrid"]\')'
+  );
+  db.run(
+    'INSERT INTO quiz_questions (category_id, lang, sentence, options_json) VALUES (1, \'en\', \'Which actor won an Oscar?\', \'["DiCaprio","Hardy","Pitt","Downey"]\')'
+  );
+
+  // Create team_battle_questions table
+  db.run(`
+    CREATE TABLE team_battle_questions (
+      id INTEGER PRIMARY KEY,
+      mode TEXT NOT NULL,
+      category_id INTEGER,
+      lang TEXT NOT NULL,
+      sentence TEXT NOT NULL
+    )
+  `);
+
+  db.run(
+    "INSERT INTO team_battle_questions (mode, category_id, lang, sentence) VALUES ('challenge', 0, 'en', '${je1} versus ${jo1}: first to touch their phone')"
+  );
+  db.run(
+    "INSERT INTO team_battle_questions (mode, category_id, lang, sentence) VALUES ('dual_fact', 1, 'en', '${je1} versus ${jo1}: last to have kissed someone')"
+  );
+
+  // Create dormelles_questions table
+  db.run(`
+    CREATE TABLE dormelles_questions (
+      id INTEGER PRIMARY KEY,
+      card_id INTEGER,
+      category_id INTEGER,
+      lang TEXT NOT NULL,
+      sentence TEXT NOT NULL
+    )
+  `);
+
+  db.run(
+    "INSERT INTO dormelles_questions (card_id, category_id, lang, sentence) VALUES (2, 0, 'en', 'Take 2 toz')"
+  );
+  db.run(
+    "INSERT INTO dormelles_questions (card_id, category_id, lang, sentence) VALUES (2, 1, 'en', 'Kiss ${j1} or take ${toz} toz')"
   );
 
   return db;
@@ -206,6 +279,68 @@ describe('QuestionsDatabaseAdapter', () => {
       expect(question.promptKind).toBe('impostor');
     });
 
+    it('should return a question for SEVEN_SECONDS mode', () => {
+      const question = adapter.getRandomQuestion({
+        gameMode: GameMode.SEVEN_SECONDS,
+        intensity: QuestionIntensity.SOFT,
+        lang: 'en',
+      });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.sentence).toBeTruthy();
+      expect(question.sentence).toContain('Name 3');
+    });
+
+    it('should return a question for ITS_A_10 mode', () => {
+      const question = adapter.getRandomQuestion({
+        gameMode: GameMode.ITS_A_10,
+        intensity: QuestionIntensity.SOFT,
+        lang: 'en',
+      });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.sentence).toBeTruthy();
+      expect(question.sentence).toContain("It's a 10");
+    });
+
+    it('should return a quiz question with options', () => {
+      const question = adapter.getRandomQuestion({
+        gameMode: GameMode.QUIZ,
+        intensity: QuestionIntensity.SOFT,
+        lang: 'en',
+      });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.sentence).toBeTruthy();
+      expect(question.options).toBeInstanceOf(Array);
+      expect(question.options.length).toBe(4);
+      expect(question.promptKind).toBe('quiz');
+    });
+
+    it('should return a team battle question', () => {
+      const question = adapter.getRandomQuestion({
+        gameMode: GameMode.TEAM_BATTLE,
+        intensity: QuestionIntensity.SOFT,
+        lang: 'en',
+      });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.sentence).toBeTruthy();
+      expect(question.promptKind).toMatch(/^team_battle_/);
+    });
+
+    it('should return a dormelles question', () => {
+      const question = adapter.getRandomQuestion({
+        gameMode: GameMode.DORMELLES,
+        intensity: QuestionIntensity.SOFT,
+        lang: 'en',
+      });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.sentence).toBeTruthy();
+      expect(question.promptKind).toBe('dormelles');
+    });
+
     it('should return null when no questions found', () => {
       const question = adapter.getRandomQuestion({
         gameMode: GameMode.NEVER_HAVE_I_EVER,
@@ -264,6 +399,25 @@ describe('QuestionsDatabaseAdapter', () => {
 
       expect(question).toBeInstanceOf(Question);
       expect(question.sentence).toBeTruthy();
+
+      adapter.pickGameKey = originalPick;
+    });
+
+    it('should include category_id=2 for dare_chooser MIXED intensity', () => {
+      const originalPick = adapter.pickGameKey;
+      adapter.pickGameKey = () => 'dare_chooser';
+
+      const question = adapter.getRandomQuestion({
+        gameMode: GameMode.ACTION_TRUTH,
+        intensity: QuestionIntensity.MIXED,
+        lang: 'en',
+      });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.promptKind).toBe('dare');
+      expect(['Do 10 pushups', 'Kiss someone in the room', 'Scream loudly in public']).toContain(
+        question.sentence
+      );
 
       adapter.pickGameKey = originalPick;
     });

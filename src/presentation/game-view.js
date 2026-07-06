@@ -1,6 +1,19 @@
 const SCREEN_PREFIX = 'screen-';
 const HIDDEN_CLASS = 'hidden';
 
+const RANDOM_MODES = [
+  { id: 'never_have_i_ever', icon: '🍻', labelKey: 'mode.neverHaveIEver' },
+  { id: 'action_truth', icon: '🎭', labelKey: 'mode.truthOrDare' },
+  { id: 'would_you_rather', icon: '⚡', labelKey: 'mode.wouldYouRather' },
+  { id: 'who_could', icon: '🕵️', labelKey: 'mode.whoCould' },
+  { id: 'seven_seconds', icon: '⏱️', labelKey: 'mode.sevenSeconds' },
+  { id: 'its_a_10', icon: '💯', labelKey: 'mode.itsA10' },
+  { id: 'quiz', icon: '🧠', labelKey: 'mode.quiz' },
+  { id: 'dormelles', icon: '🃏', labelKey: 'mode.dormelles' },
+  { id: 'picolo', icon: '🍻', labelKey: 'mode.picolo' },
+  { id: 'truth_dare', icon: '🎴', labelKey: 'mode.truthDare' },
+];
+
 export class GameView {
   constructor({ i18n }) {
     this.i18n = i18n;
@@ -20,15 +33,37 @@ export class GameView {
     count.textContent = this.buildPlayerCountLabel(players.length);
   }
 
+  renderModeRandomList() {
+    const container = this.getElement('mode-random-list');
+    container.innerHTML = RANDOM_MODES.map(
+      mode => `
+      <label class="mode-checkbox-label">
+        <input type="checkbox" class="mode-checkbox" data-mode="${mode.id}" checked />
+        <span class="btn-mode-icon">${mode.icon}</span>
+        <span>${this.i18n.t(mode.labelKey)}</span>
+      </label>
+    `
+    ).join('');
+  }
+
+  readSelectedRandomModes() {
+    return Array.from(document.querySelectorAll('.mode-checkbox:checked')).map(cb =>
+      cb.getAttribute('data-mode')
+    );
+  }
+
   renderScreen(screenName) {
     this.hideAllScreens();
     this.showScreen(screenName);
   }
 
-  renderRound({ player, label, sentence, choiceA, choiceB, showPlayerName = true }) {
+  renderRound({ player, label, sentence, choiceA, choiceB, options, showPlayerName = true }) {
+    this.clearSevenTimer();
+    this.getElement('seven-timer').classList.add(HIDDEN_CLASS);
     this.getElement('player-name').textContent = player.name;
     this.getElement('player-name').classList.toggle(HIDDEN_CLASS, !showPlayerName);
     this.getElement('question-type').textContent = label;
+    if (options && options.length > 0) return this.renderQuizOptions(sentence, options);
     if (choiceA && choiceB) return this.renderWouldYouRather(choiceA, choiceB);
     return this.renderSentence(sentence);
   }
@@ -83,11 +118,61 @@ export class GameView {
     this.getElement('wyr-choices').classList.add(HIDDEN_CLASS);
   }
 
+  renderSevenSeconds({ player, label, sentence }) {
+    this.clearSevenTimer();
+    this.getElement('player-name').textContent = player.name;
+    this.getElement('player-name').classList.remove(HIDDEN_CLASS);
+    this.getElement('question-type').textContent = label;
+    this.renderSentence(sentence);
+    const timerEl = this.getElement('seven-timer');
+    timerEl.classList.remove(HIDDEN_CLASS);
+    let remaining = 7;
+    timerEl.textContent = remaining;
+
+    clearInterval(this._sevenTimer);
+    this._sevenTimer = setInterval(() => {
+      remaining--;
+      if (remaining <= 0) {
+        clearInterval(this._sevenTimer);
+        this._sevenTimer = null;
+        this.getElement('question-text').classList.add(HIDDEN_CLASS);
+        this.getElement('seven-timer').textContent = this.i18n.t('game.finished');
+        return;
+      }
+      timerEl.textContent = remaining;
+    }, 1000);
+  }
+
+  clearSevenTimer() {
+    if (this._sevenTimer) {
+      clearInterval(this._sevenTimer);
+      this._sevenTimer = null;
+    }
+  }
+
   renderWouldYouRather(choiceA, choiceB) {
     this.getElement('wyr-choice-a').textContent = choiceA;
     this.getElement('wyr-choice-b').textContent = choiceB;
     this.getElement('question-text').classList.add(HIDDEN_CLASS);
     this.getElement('wyr-choices').classList.remove(HIDDEN_CLASS);
+    this.getElement('quiz-options').classList.add(HIDDEN_CLASS);
+  }
+
+  renderQuizOptions(sentence, options) {
+    this.getElement('question-text').textContent = sentence;
+    this.getElement('question-text').classList.remove(HIDDEN_CLASS);
+    this.getElement('wyr-choices').classList.add(HIDDEN_CLASS);
+    const container = this.getElement('quiz-options');
+    const correctAnswer = options[0];
+    const shuffled = [...options].sort(() => Math.random() - 0.5);
+    container.innerHTML = shuffled
+      .map((option, index) => {
+        const letter = String.fromCharCode(65 + index);
+        const isCorrect = option === correctAnswer;
+        return `<button class="btn btn-large btn-mode quiz-option" data-action="quiz-answer" data-correct="${isCorrect}">${letter}. ${option}</button>`;
+      })
+      .join('');
+    container.classList.remove(HIDDEN_CLASS);
   }
 
   showError(message) {
@@ -186,6 +271,13 @@ export class GameView {
   getQuestionText() {
     const sentenceEl = this.getElement('question-text');
     if (sentenceEl && sentenceEl.textContent && !sentenceEl.classList.contains(HIDDEN_CLASS)) {
+      const quizOptions = this.getElement('quiz-options');
+      if (quizOptions && !quizOptions.classList.contains(HIDDEN_CLASS)) {
+        const optionTexts = Array.from(quizOptions.querySelectorAll('.quiz-option'))
+          .map(btn => btn.textContent)
+          .join(', ');
+        return `${sentenceEl.textContent} Options: ${optionTexts}`;
+      }
       return sentenceEl.textContent;
     }
 

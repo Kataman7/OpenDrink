@@ -23,7 +23,7 @@
 
 html, body {
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 body {
@@ -228,6 +228,43 @@ body {
   background: rgba(255, 118, 117, 0.12);
 }
 
+/* MODE RANDOM LIST */
+.mode-random-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.mode-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-surface);
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.mode-checkbox-label:hover {
+  border-color: var(--color-primary);
+}
+
+.mode-checkbox-label:has(:checked) {
+  border-color: var(--color-secondary);
+}
+
+.mode-checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-secondary);
+  cursor: pointer;
+}
+
 /* MODE BUTTONS */
 .mode-buttons {
   display: flex;
@@ -300,6 +337,14 @@ body {
   letter-spacing: -0.3px;
 }
 
+.seven-timer {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--color-accent);
+  margin: 20px 0;
+  transition: color 0.3s;
+}
+
 .wyr-choices {
   display: flex;
   flex-direction: column;
@@ -341,6 +386,31 @@ body {
 
 .wyr-separator::after {
   right: 0;
+}
+
+#quiz-options {
+  margin-top: 8px;
+}
+
+.quiz-option {
+  text-align: left;
+  font-size: 1rem;
+  padding: 14px 18px;
+}
+
+.quiz-option:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.quiz-option.btn-correct {
+  border-color: #00b894 !important;
+  background: rgba(0, 184, 148, 0.15);
+}
+
+.quiz-option.btn-wrong {
+  border-color: #e74c3c !important;
+  background: rgba(231, 76, 60, 0.15);
 }
 
 #impostor-accusation {

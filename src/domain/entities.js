@@ -17,10 +17,12 @@ export class Question {
     choiceA = null,
     choiceB = null,
     impostorHintWord = null,
+    options = null,
   }) {
     const hasSentence = Boolean(sentence && sentence.trim().length > 0);
     const hasChoices = Boolean(choiceA && choiceB);
-    if (!hasSentence && !hasChoices) {
+    const hasOptions = Boolean(options && Array.isArray(options) && options.length > 0);
+    if (!hasSentence && !hasChoices && !hasOptions) {
       throw new QuestionTextEmptyError();
     }
     this.sentence = hasSentence ? sentence.trim() : '';
@@ -28,5 +30,6 @@ export class Question {
     this.choiceA = choiceA;
     this.choiceB = choiceB;
     this.impostorHintWord = impostorHintWord;
+    this.options = hasOptions ? options : null;
   }
 }

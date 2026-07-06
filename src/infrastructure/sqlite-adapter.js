@@ -5,6 +5,11 @@ import {
   buildQuestionQuery,
   buildWouldYouRatherQuery,
   buildImpostorWordQuery,
+  buildQuizQuery,
+  buildTeamBattleQuery,
+  buildDormellesQuery,
+  buildPicoloQuery,
+  buildTruthDareQuery,
 } from '../domain/value-objects.js';
 import {
   QuestionRepositoryPort,
@@ -33,6 +38,26 @@ export class QuestionsDatabaseAdapter {
       return this.getRandomWouldYouRatherQuestion({ intensity, lang });
     }
 
+    if (gameMode === GameMode.QUIZ) {
+      return this.getRandomQuizQuestion({ intensity, lang });
+    }
+
+    if (gameMode === GameMode.TEAM_BATTLE) {
+      return this.getRandomTeamBattleQuestion({ intensity, lang });
+    }
+
+    if (gameMode === GameMode.DORMELLES) {
+      return this.getRandomDormellesQuestion({ intensity, lang });
+    }
+
+    if (gameMode === GameMode.PICOLO) {
+      return this.getRandomPicoloQuestion({ lang });
+    }
+
+    if (gameMode === GameMode.TRUTH_DARE) {
+      return this.getRandomTruthDareQuestion({ lang });
+    }
+
     const gameKey = this.pickGameKey(gameMode);
     const query = buildQuestionQuery(gameKey, intensity);
     const result = this.db.exec(query.sql, query.params(lang));
@@ -57,6 +82,57 @@ export class QuestionsDatabaseAdapter {
 
     const [choiceA, choiceB] = result[0].values[0];
     return new Question({ choiceA, choiceB, promptKind: 'would_you_rather' });
+  }
+
+  getRandomQuizQuestion({ intensity, lang }) {
+    const query = buildQuizQuery(intensity);
+    const result = this.db.exec(query.sql, query.params(lang));
+    if (!result.length || !result[0].values.length) return null;
+
+    const [sentence, optionsJson] = result[0].values[0];
+    let options = null;
+    try {
+      options = JSON.parse(optionsJson);
+    } catch {
+      options = null;
+    }
+    return new Question({ sentence, options, promptKind: 'quiz' });
+  }
+
+  getRandomTeamBattleQuestion({ intensity, lang }) {
+    const query = buildTeamBattleQuery(intensity);
+    const result = this.db.exec(query.sql, query.params(lang));
+    if (!result.length || !result[0].values.length) return null;
+
+    const [mode, sentence] = result[0].values[0];
+    return new Question({ sentence, promptKind: `team_battle_${mode}` });
+  }
+
+  getRandomDormellesQuestion({ intensity, lang }) {
+    const query = buildDormellesQuery(intensity);
+    const result = this.db.exec(query.sql, query.params(lang));
+    if (!result.length || !result[0].values.length) return null;
+
+    const row = result[0].values[0];
+    return new Question({ sentence: row[1], promptKind: 'dormelles' });
+  }
+
+  getRandomPicoloQuestion({ lang }) {
+    const query = buildPicoloQuery();
+    const result = this.db.exec(query.sql, query.params(lang));
+    if (!result.length || !result[0].values.length) return null;
+
+    const [type, sentence] = result[0].values[0];
+    return new Question({ sentence, promptKind: `picolo_${type}` });
+  }
+
+  getRandomTruthDareQuestion({ lang }) {
+    const query = buildTruthDareQuery();
+    const result = this.db.exec(query.sql, query.params(lang));
+    if (!result.length || !result[0].values.length) return null;
+
+    const [sentence, isAction] = result[0].values[0];
+    return new Question({ sentence, promptKind: `truth_dare_${isAction}` });
   }
 
   pickGameKey(gameMode) {

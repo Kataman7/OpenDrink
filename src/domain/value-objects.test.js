@@ -18,6 +18,16 @@ describe('GameMode', () => {
     expect(keys).toEqual(['qpr']);
   });
 
+  it('should have correct game keys for SEVEN_SECONDS', () => {
+    const keys = GameMode.getCandidateGameKeys(GameMode.SEVEN_SECONDS);
+    expect(keys).toEqual(['7seconds']);
+  });
+
+  it('should have correct game keys for ITS_A_10', () => {
+    const keys = GameMode.getCandidateGameKeys(GameMode.ITS_A_10);
+    expect(keys).toEqual(['a_10']);
+  });
+
   it('should throw for unknown game mode', () => {
     expect(() => GameMode.getCandidateGameKeys('unknown')).toThrow(UnsupportedGameModeError);
   });

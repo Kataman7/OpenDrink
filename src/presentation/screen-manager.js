@@ -32,6 +32,10 @@ export class ScreenManager {
     this.switchScreen(SCREENS.mode);
   }
 
+  navigateToModeRandom() {
+    this.switchScreen(SCREENS.modeRandom);
+  }
+
   navigateToIntensitySelection() {
     this.switchScreen(SCREENS.intensity);
   }

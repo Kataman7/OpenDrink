@@ -1,5 +1,9 @@
 import { GameMode } from '../domain/value-objects.js';
 import { QuestionTextPersonalizer } from './question-text-personalizer.js';
+import { DormellesPersonalizer } from './dormelles-personalizer.js';
+import { TeamBattlePersonalizer } from './team-battle-personalizer.js';
+import { PicoloPersonalizer } from './picolo-personalizer.js';
+import { AntoinePersonalizer } from './antoine-personalizer.js';
 
 const CLICK_ACTIONS = {
   'add-player': 'handleAddPlayer',
@@ -14,6 +18,8 @@ const CLICK_ACTIONS = {
   'impostor-finish': 'handleImpostorFinish',
   'impostor-accuse': 'handleImpostorAccuse',
   'toggle-auto-read': 'handleToggleAutoRead',
+  'quiz-answer': 'handleQuizAnswer',
+  'random-confirm': 'handleRandomConfirm',
 };
 
 export class GameEventHandler {
@@ -126,11 +132,37 @@ export class GameEventHandler {
     const mode = target.getAttribute('data-mode');
     this.state.selectMode(mode);
 
+    if (mode === GameMode.RANDOM) {
+      this.screenManager.navigateToModeRandom();
+      this.view.renderModeRandomList();
+      return;
+    }
+
     if (mode === GameMode.IMPOSTOR) {
       await this.startImpostorRound();
       return;
     }
 
+    if (mode === GameMode.PICOLO || mode === GameMode.TRUTH_DARE) {
+      this.screenManager.navigateToGameScreen();
+      await this.requestNextRound();
+      return;
+    }
+
+    if (mode === GameMode.TEAM_BATTLE) {
+      this.state.buildTeams();
+    }
+
+    this.screenManager.navigateToIntensitySelection();
+  }
+
+  handleRandomConfirm() {
+    const modeIds = this.view.readSelectedRandomModes();
+    if (modeIds.length === 0) {
+      this.showError(this.i18n.t('modeRandom.noSelection'));
+      return;
+    }
+    this.state.setRandomModes(modeIds);
     this.screenManager.navigateToIntensitySelection();
   }
 
@@ -159,6 +191,9 @@ export class GameEventHandler {
 
   async requestNextRound() {
     try {
+      if (this.state.selectedGameMode === GameMode.RANDOM) {
+        this.state.setCurrentRoundMode(this.state.pickRandomRoundMode());
+      }
       const round = await this.drawQuestionUseCase.execute(this.state.buildRoundRequest());
       this.renderRound(round);
       this.state.setPreviousPlayer(round.player.id);
@@ -168,6 +203,7 @@ export class GameEventHandler {
   }
 
   handleBackToLobby() {
+    this.view.clearSevenTimer();
     this.state.resetRoundSelection();
     this.impostorManager.finishRound();
     this.screenManager.navigateToLobby();
@@ -239,13 +275,76 @@ export class GameEventHandler {
         choiceA: personalizer.personalize(question.choiceA, player.name),
         choiceB: personalizer.personalize(question.choiceB, player.name),
       });
-    } else {
+    } else if (question.promptKind === 'quiz') {
+      this.view.renderRound({
+        player,
+        label,
+        showPlayerName: false,
+        sentence: question.sentence,
+        options: question.options,
+      });
+    } else if (question.promptKind === 'dormelles') {
+      const dormellesPersonalizer = new DormellesPersonalizer();
+      const personalized = dormellesPersonalizer.personalize(
+        question.sentence,
+        player.name,
+        this.state.players
+      );
       this.view.renderRound({
         player,
         label,
         showPlayerName,
-        sentence: personalizer.personalize(question.sentence, player.name),
+        sentence: personalized,
       });
+    } else if (question.promptKind && question.promptKind.startsWith('picolo_')) {
+      const picoloPersonalizer = new PicoloPersonalizer();
+      const personalized = picoloPersonalizer.personalize(
+        question.sentence,
+        player,
+        this.state.players
+      );
+      this.view.renderRound({
+        player,
+        label,
+        showPlayerName,
+        sentence: personalized,
+      });
+    } else if (question.promptKind && question.promptKind.startsWith('truth_dare_')) {
+      const antoinePersonalizer = new AntoinePersonalizer();
+      const personalized = antoinePersonalizer.personalize(
+        question.sentence,
+        player,
+        this.state.players
+      );
+      this.view.renderRound({
+        player,
+        label,
+        showPlayerName,
+        sentence: personalized,
+      });
+    } else if (question.promptKind && question.promptKind.startsWith('team_battle_')) {
+      const battlePersonalizer = new TeamBattlePersonalizer();
+      const personalized = battlePersonalizer.personalize(
+        question.sentence,
+        player,
+        this.state.players,
+        this.state.teamOnePlayerIds,
+        this.state.teamTwoPlayerIds
+      );
+      this.view.renderRound({
+        player,
+        label,
+        showPlayerName,
+        sentence: personalized,
+      });
+    } else {
+      const sentence = personalizer.personalize(question.sentence, player.name);
+      const mode = this.state.currentRoundMode || this.state.selectedGameMode;
+      if (mode === 'seven_seconds') {
+        this.view.renderSevenSeconds({ player, label, sentence });
+      } else {
+        this.view.renderRound({ player, label, showPlayerName, sentence });
+      }
     }
 
     if (this.textToSpeech.isAutoReadEnabled()) {
@@ -269,12 +368,26 @@ export class GameEventHandler {
     }
   }
 
+  handleQuizAnswer(target) {
+    document.querySelectorAll('.quiz-option').forEach(opt => {
+      opt.disabled = true;
+      opt.classList.remove('btn-accent');
+      if (opt.getAttribute('data-correct') === 'true') {
+        opt.classList.add('btn-correct');
+      }
+    });
+    if (target.getAttribute('data-correct') !== 'true') {
+      target.classList.add('btn-wrong');
+    }
+  }
+
   persistPreferences() {
     this.preferencesManager.persist(this.state);
   }
 
   showError(message) {
     this.view.showError(message);
-    setTimeout(() => this.view.hideError(), 3000);
+    clearTimeout(this._errorTimeout);
+    this._errorTimeout = setTimeout(() => this.view.hideError(), 3000);
   }
 }

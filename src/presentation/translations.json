@@ -18,7 +18,21 @@
       "truthOrDare": "Truth or Dare",
       "wouldYouRather": "Would You Rather",
       "whoCould": "Who Could",
-      "impostor": "Impostor"
+      "impostor": "Impostor",
+      "sevenSeconds": "7 Seconds",
+      "itsA10": "It's a 10",
+      "quiz": "Quiz",
+      "teamBattle": "Team Battle",
+      "dormelles": "Dormelles",
+      "picolo": "Picolo",
+      "truthDare": "Truth or Dare (Classic)",
+      "random": "Random"
+    },
+    "modeRandom": {
+      "title": "Select modes",
+      "subtitle": "Pick the modes you want to mix",
+      "confirm": "Next",
+      "noSelection": "Select at least one mode"
     },
     "intensity": {
       "title": "Intensity",
@@ -31,7 +45,8 @@
       "backToLobby": "Back to lobby",
       "or": "OR",
       "lectureOn": "Lecture ON",
-      "lectureOff": "Lecture OFF"
+      "lectureOff": "Lecture OFF",
+      "finished": "Time's up!"
     },
     "impostor": {
       "passPhoneTo": "{name}",
@@ -56,6 +71,13 @@
       "ttsPrefixWouldYouRather": "Would you rather ",
       "ttsPrefixNeverHaveIEver": "I have never ",
       "ttsPrefixWhoCould": "Who could ",
+      "ttsPrefixSevenSeconds": "Name 3 ",
+      "ttsPrefixItsA10": "It's a 10 but ",
+      "ttsPrefixQuiz": "Quiz: ",
+      "ttsPrefixTeamBattle": "Team battle: ",
+      "ttsPrefixDormelles": "Dormelles: ",
+      "ttsPrefixPicolo": "Picolo: ",
+      "ttsPrefixTruthDare": "Truth or Dare: ",
       "ttsReplaceAnd": " and ",
       "ttsReplaceOr": " or "
     },
@@ -86,7 +108,21 @@
       "truthOrDare": "Action ou Vérité",
       "wouldYouRather": "Tu préfères",
       "whoCould": "Qui pourrait",
-      "impostor": "Imposteur"
+      "impostor": "Imposteur",
+      "sevenSeconds": "7 Secondes",
+      "itsA10": "C'est un 10",
+      "quiz": "Quiz",
+      "teamBattle": "Battle d'équipe",
+      "dormelles": "Dormelles",
+      "picolo": "Picolo",
+      "truthDare": "Action ou Vérité (Classique)",
+      "random": "Aléatoire"
+    },
+    "modeRandom": {
+      "title": "Choisis les modes",
+      "subtitle": "Sélectionne les modes à mélanger",
+      "confirm": "Suivant",
+      "noSelection": "Sélectionne au moins un mode"
     },
     "intensity": {
       "title": "Intensité",
@@ -99,7 +135,8 @@
       "backToLobby": "Retour au lobby",
       "or": "OU",
       "lectureOn": "Lecture ON",
-      "lectureOff": "Lecture OFF"
+      "lectureOff": "Lecture OFF",
+      "finished": "Fini !"
     },
     "impostor": {
       "passPhoneTo": "{name}",
@@ -124,6 +161,13 @@
       "ttsPrefixWouldYouRather": "Tu préfères ",
       "ttsPrefixNeverHaveIEver": "Je n'ai jamais ",
       "ttsPrefixWhoCould": "Qui pourrait ",
+      "ttsPrefixSevenSeconds": "Cite 3 ",
+      "ttsPrefixItsA10": "C'est un 10 mais ",
+      "ttsPrefixQuiz": "Quiz: ",
+      "ttsPrefixTeamBattle": "Battle d'équipe: ",
+      "ttsPrefixDormelles": "Dormelles: ",
+      "ttsPrefixPicolo": "Picolo: ",
+      "ttsPrefixTruthDare": "Action ou Vérité: ",
       "ttsReplaceAnd": " et ",
       "ttsReplaceOr": " ou "
     },

@@ -18,6 +18,7 @@ export class I18n {
   }
 
   getNestedValue(object, path) {
+    if (!path || typeof path !== 'string') return null;
     return path
       .split('.')
       .reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : null), object);

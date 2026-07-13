@@ -46,7 +46,7 @@ export class GamePresenter {
   }
 
   async initialize() {
-    this.eventHandler.bind();
     await this.eventHandler.initialize();
+    this.eventHandler.bind();
   }
 }

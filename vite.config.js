@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   root: '.',
+  base: '/OpenDrink/',
   build: {
     outDir: 'dist',
     emptyOutDir: true,

@@ -43,7 +43,8 @@
     "game": {
       "next": "Next",
       "backToLobby": "Back to lobby",
-      "or": "OR",
+      "or": "or",
+      "options": "Options:",
       "lectureOn": "Lecture ON",
       "lectureOff": "Lecture OFF",
       "finished": "Time's up!"
@@ -80,6 +81,13 @@
       "ttsPrefixTruthDare": "Truth or Dare: ",
       "ttsReplaceAnd": " and ",
       "ttsReplaceOr": " or "
+    },
+    "teamBattle": {
+      "yourTeamWins": "your team wins",
+      "wins": "wins",
+      "loses": "loses",
+      "theOtherTeamLoses": "the other team loses",
+      "youLose": "you lose"
     },
     "errors": {
       "minPlayers": "Add at least {count} players",
@@ -133,7 +141,8 @@
     "game": {
       "next": "Suivant",
       "backToLobby": "Retour au lobby",
-      "or": "OU",
+      "or": "ou",
+      "options": "Options :",
       "lectureOn": "Lecture ON",
       "lectureOff": "Lecture OFF",
       "finished": "Fini !"
@@ -170,6 +179,13 @@
       "ttsPrefixTruthDare": "Action ou Vérité: ",
       "ttsReplaceAnd": " et ",
       "ttsReplaceOr": " ou "
+    },
+    "teamBattle": {
+      "yourTeamWins": "votre équipe gagne",
+      "wins": "gagne",
+      "loses": "perd",
+      "theOtherTeamLoses": "l'autre équipe perd",
+      "youLose": "vous perdez"
     },
     "errors": {
       "minPlayers": "Ajoute au moins {count} joueurs",

@@ -1,7 +1,7 @@
 import { LocalStorage } from '../shared/local-storage.js';
+import { DEFAULT_LANG } from '../config.js';
 
 const STORAGE_KEY = 'opendrink_prefs_v1';
-const DEFAULT_LANG = 'en';
 
 export class PreferencesStore extends LocalStorage {
   constructor() {
@@ -10,11 +10,12 @@ export class PreferencesStore extends LocalStorage {
 
   load() {
     const data = super.load();
-    if (!data) return { lang: DEFAULT_LANG, players: [] };
+    if (!data) return { lang: DEFAULT_LANG, players: [], autoRead: false };
 
     const lang = data.lang || DEFAULT_LANG;
     const players = Array.isArray(data.players) ? data.players : [];
+    const autoRead = Boolean(data.autoRead);
 
-    return { lang, players };
+    return { lang, players, autoRead };
   }
 }

@@ -31,7 +31,6 @@ export class GamePresenter {
     this.eventHandler = new GameEventHandler({
       view: this.view,
       state: this.state,
-      playerManager: deps.playerManager,
       screenManager: this.screenManager,
       impostorManager: this.impostorManager,
       drawQuestionUseCase: deps.drawQuestionUseCase,
@@ -42,16 +41,12 @@ export class GamePresenter {
       addPlayerUseCase: deps.addPlayerUseCase,
       removePlayerUseCase: deps.removePlayerUseCase,
       textToSpeech: deps.textToSpeech,
+      supportedLanguages: SUPPORTED_LANGUAGES,
     });
   }
 
   async initialize() {
     this.eventHandler.bind();
-    this.view.renderLanguageSelector({
-      languages: SUPPORTED_LANGUAGES,
-      selectedLang: this.state.selectedLang,
-    });
-    this.view.applyStaticTranslations(this.state.selectedLang);
     await this.eventHandler.initialize();
   }
 }

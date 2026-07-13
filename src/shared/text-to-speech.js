@@ -1,5 +1,6 @@
 import { toTtsLocale } from '../domain/tts-locale.js';
 import { preprocessForTts } from '../domain/text-preprocessor.js';
+import { DEFAULT_SPEECH_RATE } from '../config.js';
 
 export class TextToSpeech {
   constructor() {
@@ -10,12 +11,12 @@ export class TextToSpeech {
   speak(text, gameMode, lang, i18n) {
     if (!this.isSupported || !text) return;
     speechSynthesis.cancel();
-    const processedText = preprocessForTts(text, gameMode, lang, i18n);
+    const processedText = preprocessForTts(text, gameMode, i18n);
     if (!processedText) return;
 
     const utterance = new SpeechSynthesisUtterance(processedText);
     utterance.lang = toTtsLocale(lang);
-    utterance.rate = 0.8;
+    utterance.rate = DEFAULT_SPEECH_RATE;
     speechSynthesis.speak(utterance);
   }
 

@@ -11,19 +11,7 @@ export class PreferencesManager {
     this.i18n.setLanguage(this.state.selectedLang);
   }
 
-  async restorePlayers(addPlayerByNameFn) {
-    for (const playerName of this.state.consumeRestoredPlayerNames()) {
-      await addPlayerByNameFn(playerName);
-    }
-  }
-
-  persist(state) {
-    this.preferencesStore.save(state.toPreferencesPayload());
-  }
-
-  handleLanguageChange(selectedLang, i18n, view, renderPlayersFn) {
-    i18n.setLanguage(selectedLang);
-    view.applyStaticTranslations(selectedLang);
-    renderPlayersFn();
+  persist() {
+    this.preferencesStore.save(this.state.toPreferencesPayload());
   }
 }

@@ -1,3 +1,5 @@
+import { pickRandomFromArray, randomInt, randomBoolean } from '../shared/random.js';
+
 function pickRandomName(playerIds, allPlayers, excludeId = null) {
   const candidates = playerIds.filter(id => id !== excludeId);
   if (candidates.length === 0) {
@@ -16,31 +18,26 @@ function pickRandomPlayerName(allPlayers, excludeId = null) {
   if (candidates.length === 0) {
     return allPlayers[0] ? allPlayers[0].name : '';
   }
-  return candidates[Math.floor(Math.random() * candidates.length)].name;
+  return pickRandomFromArray(candidates).name;
 }
 
 export class TeamBattlePersonalizer {
-  personalize(sentence, currentPlayer, allPlayers, teamOneIds, teamTwoIds) {
+  personalize(sentence, { currentPlayer, allPlayers, teamOneIds, teamTwoIds, i18n }) {
     const excludeId = currentPlayer ? currentPlayer.id : null;
+    const t = key => (i18n ? i18n.t(key) : key);
 
     return sentence.replace(/\$\{([^}]+)\}/g, (_, token) => {
-      if (token === 'make_team_win') return 'your team wins';
-      if (token === 'make_team_win_or_loose') return Math.random() > 0.5 ? 'wins' : 'loses';
-      if (token === 'ot_or_you_loose')
-        return Math.random() > 0.5 ? 'the other team loses' : 'you lose';
-      if (token === 'win_or_loose') return Math.random() > 0.5 ? 'wins' : 'loses';
+      if (token === 'make_team_win') return t('teamBattle.yourTeamWins');
+      if (token === 'make_team_win_or_lose')
+        return randomBoolean() ? t('teamBattle.wins') : t('teamBattle.loses');
+      if (token === 'ot_or_you_lose')
+        return randomBoolean() ? t('teamBattle.theOtherTeamLoses') : t('teamBattle.youLose');
+      if (token === 'win_or_lose')
+        return randomBoolean() ? t('teamBattle.wins') : t('teamBattle.loses');
 
-      const match = token.match(/je(\d+)/);
-      if (match) return pickRandomName(teamOneIds, allPlayers, excludeId);
-
-      const matchO = token.match(/jo(\d+)/);
-      if (matchO) return pickRandomName(teamTwoIds, allPlayers, excludeId);
-
-      const matchA = token.match(/ja(\d+)/);
-      if (matchA) return pickRandomPlayerName(allPlayers, excludeId);
-
-      const numMatch = token.match(/(\d+)/);
-      if (numMatch) return pickRandomPlayerName(allPlayers, excludeId);
+      if (/^je\d+/.test(token)) return pickRandomName(teamOneIds, allPlayers, excludeId);
+      if (/^jo\d+/.test(token)) return pickRandomName(teamTwoIds, allPlayers, excludeId);
+      if (/^ja\d+/.test(token)) return pickRandomPlayerName(allPlayers, excludeId);
 
       return pickRandomPlayerName(allPlayers, excludeId);
     });

@@ -2,22 +2,25 @@ export class AntoinePersonalizer {
   personalize(sentence, currentPlayer, allPlayers) {
     const excludeId = currentPlayer ? currentPlayer.id : null;
     const otherPlayers = allPlayers.filter(p => p.id !== excludeId);
+    const totalPlayers = allPlayers.length;
+
     const pickOther = () => {
       if (otherPlayers.length === 0) return currentPlayer ? currentPlayer.name : '';
       return otherPlayers[Math.floor(Math.random() * otherPlayers.length)].name;
     };
-    const totalPlayers = allPlayers.length;
 
+    // {scope#primary*fallback} — if scope matches, use primary; else fallback
     const replaceConditional = (_, scope, block) => {
-      const [ifTwo, ifMulti] = block.split('*');
-      const sc = scope.toLowerCase();
-      if (sc === '2players') return totalPlayers <= 2 ? ifTwo : ifMulti || ifTwo;
-      if (sc === 'multi') return totalPlayers > 2 ? ifTwo : ifMulti || ifTwo;
-      if (sc === 'couple') return ifTwo;
-      if (sc === 'timer' || sc === 'cash') return '';
+      const [primary, fallback] = block.split('*');
+      const normalizedScope = scope.toLowerCase();
+      if (normalizedScope === '2players') return totalPlayers <= 2 ? primary : fallback || primary;
+      if (normalizedScope === 'multi') return totalPlayers > 2 ? primary : fallback || primary;
+      if (normalizedScope === 'couple') return primary;
+      if (normalizedScope === 'timer' || normalizedScope === 'cash') return '';
       return '';
     };
 
+    // {scope#option1*option2} — always picks the first option (pronoun)
     const replacePronoun = (_, _scope, alternatives) => {
       const parts = alternatives.split('*');
       return parts[0] || '';
@@ -36,6 +39,7 @@ export class AntoinePersonalizer {
     );
     result = result.replace(/\{Timer\}/gi, '');
     result = result.replace(/\{[^}]*\}/g, '');
+    result = result.replace(/\s{2,}/g, ' ').trim();
 
     return result;
   }

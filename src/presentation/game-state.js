@@ -1,4 +1,13 @@
-const DEFAULT_LANG = 'en';
+import { DEFAULT_LANG } from '../config.js';
+import { PlayerStore } from './player-store.js';
+import { TeamManager } from './team-manager.js';
+import { RoundState } from './round-state.js';
+
+const MODES_WITH_HIDDEN_ROUND_PLAYER = new Set([
+  'would_you_rather',
+  'who_could',
+  'never_have_i_ever',
+]);
 
 export const RANDOM_COMPATIBLE_MODES = [
   { id: 'never_have_i_ever', icon: '🍻', labelKey: 'mode.neverHaveIEver' },
@@ -13,37 +22,57 @@ export const RANDOM_COMPATIBLE_MODES = [
   { id: 'truth_dare', icon: '🎴', labelKey: 'mode.truthDare' },
 ];
 
-const MODES_WITH_HIDDEN_ROUND_PLAYER = new Set([
-  'would_you_rather',
-  'who_could',
-  'never_have_i_ever',
-]);
-
 export class GameState {
   constructor({ screens }) {
     this.screens = screens;
     this.screen = screens.lobby;
-    this.selectedGameMode = null;
-    this.selectedIntensity = null;
     this.selectedLang = DEFAULT_LANG;
-    this.players = [];
-    this.previousPlayerId = null;
-    this.restoredPlayerNames = [];
-    this.teamOnePlayerIds = [];
-    this.teamTwoPlayerIds = [];
-    this.randomModeIds = [];
-    this.currentRoundMode = null;
+    this.autoRead = false;
+    this.playerStore = new PlayerStore();
+    this.teamManager = new TeamManager();
+    this.roundState = new RoundState();
+  }
+
+  get players() {
+    return this.playerStore.players;
+  }
+
+  get previousPlayerId() {
+    return this.playerStore.previousPlayerId;
+  }
+
+  get teamOnePlayerIds() {
+    return this.teamManager.teamOnePlayerIds;
+  }
+
+  get teamTwoPlayerIds() {
+    return this.teamManager.teamTwoPlayerIds;
+  }
+
+  get selectedGameMode() {
+    return this.roundState.selectedGameMode;
+  }
+
+  get selectedIntensity() {
+    return this.roundState.selectedIntensity;
+  }
+
+  get currentRoundMode() {
+    return this.roundState.currentRoundMode;
+  }
+
+  get randomModeIds() {
+    return this.roundState.randomModeIds;
   }
 
   applyPreferences(preferences) {
     this.selectedLang = preferences.lang || DEFAULT_LANG;
-    this.restoredPlayerNames = Array.isArray(preferences.players) ? preferences.players : [];
+    this.autoRead = Boolean(preferences.autoRead);
+    this.playerStore.applyRestoredNames(preferences);
   }
 
   consumeRestoredPlayerNames() {
-    const names = [...this.restoredPlayerNames];
-    this.restoredPlayerNames = [];
-    return names;
+    return this.playerStore.consumeRestoredPlayerNames();
   }
 
   updateLanguage(lang) {
@@ -51,30 +80,27 @@ export class GameState {
   }
 
   addPlayer(player) {
-    this.players.push(player);
+    this.playerStore.addPlayer(player);
   }
 
   removePlayerById(playerId) {
-    this.players = this.players.filter(player => player.id !== playerId);
-    if (this.previousPlayerId === playerId) {
-      this.previousPlayerId = null;
-    }
+    this.playerStore.removePlayerById(playerId);
   }
 
   hasEnoughPlayers(minPlayers) {
-    return this.players.length >= minPlayers;
+    return this.playerStore.hasEnoughPlayers(minPlayers);
   }
 
   selectMode(mode) {
-    this.selectedGameMode = mode;
+    this.roundState.selectMode(mode);
   }
 
   selectIntensity(intensity) {
-    this.selectedIntensity = intensity;
+    this.roundState.selectIntensity(intensity);
   }
 
   setPreviousPlayer(playerId) {
-    this.previousPlayerId = playerId;
+    this.playerStore.setPreviousPlayer(playerId);
   }
 
   isLobbyScreen() {
@@ -82,65 +108,54 @@ export class GameState {
   }
 
   buildTeams() {
-    const shuffled = [...this.players].sort(() => Math.random() - 0.5);
-    const mid = Math.ceil(shuffled.length / 2);
-    this.teamOnePlayerIds = shuffled.slice(0, mid).map(p => p.id);
-    this.teamTwoPlayerIds = shuffled.slice(mid).map(p => p.id);
+    this.teamManager.buildTeams(this.players);
   }
 
   getTeamOnePlayers() {
-    return this.players.filter(p => this.teamOnePlayerIds.includes(p.id));
+    return this.teamManager.getPlayersForTeam(this.teamOnePlayerIds, this.players);
   }
 
   getTeamTwoPlayers() {
-    return this.players.filter(p => this.teamTwoPlayerIds.includes(p.id));
+    return this.teamManager.getPlayersForTeam(this.teamTwoPlayerIds, this.players);
   }
 
   pickRandomTeamOnePlayer(excludeId = null) {
-    const candidates = this.teamOnePlayerIds.filter(id => id !== excludeId);
-    if (candidates.length === 0) return this.teamOnePlayerIds[0] || null;
-    return candidates[Math.floor(Math.random() * candidates.length)];
+    return this.teamManager.pickRandomFromTeam(this.teamOnePlayerIds, this.players, excludeId);
   }
 
   pickRandomTeamTwoPlayer(excludeId = null) {
-    const candidates = this.teamTwoPlayerIds.filter(id => id !== excludeId);
-    if (candidates.length === 0) return this.teamTwoPlayerIds[0] || null;
-    return candidates[Math.floor(Math.random() * candidates.length)];
+    return this.teamManager.pickRandomFromTeam(this.teamTwoPlayerIds, this.players, excludeId);
   }
 
   setRandomModes(modeIds) {
-    this.randomModeIds = modeIds;
+    this.roundState.setRandomModes(modeIds);
   }
 
   pickRandomRoundMode() {
-    if (this.randomModeIds.length === 0) return this.selectedGameMode;
-    return this.randomModeIds[Math.floor(Math.random() * this.randomModeIds.length)];
+    return this.roundState.pickRandomRoundMode();
   }
 
   setCurrentRoundMode(mode) {
-    this.currentRoundMode = mode;
+    this.roundState.setCurrentRoundMode(mode);
   }
 
   resetRoundSelection() {
-    this.selectedGameMode = null;
-    this.selectedIntensity = null;
-    this.previousPlayerId = null;
-    this.teamOnePlayerIds = [];
-    this.teamTwoPlayerIds = [];
-    this.randomModeIds = [];
-    this.currentRoundMode = null;
+    this.roundState.reset();
+    this.teamManager.reset();
+    this.playerStore.previousPlayerId = null;
   }
 
   toPreferencesPayload() {
     return {
       lang: this.selectedLang,
       players: this.players.map(player => player.name),
+      autoRead: this.autoRead || false,
     };
   }
 
   buildRoundRequest() {
     return {
-      gameMode: this.currentRoundMode || this.selectedGameMode,
+      gameMode: this.roundState.getActiveGameMode(),
       intensity: this.selectedIntensity,
       lang: this.selectedLang,
       previousPlayerId: this.previousPlayerId,
@@ -149,25 +164,24 @@ export class GameState {
 
   buildRoundLabelInput(promptKind) {
     return {
-      gameMode: this.currentRoundMode || this.selectedGameMode,
+      gameMode: this.roundState.getActiveGameMode(),
       intensity: this.selectedIntensity,
       promptKind,
     };
   }
 
   getPlayerIds() {
-    return this.players.map(player => player.id);
+    return this.playerStore.getPlayerIds();
   }
 
   pickRandomPlayerId() {
     const ids = this.getPlayerIds();
     if (ids.length === 0) return null;
-    const index = Math.floor(Math.random() * ids.length);
-    return ids[index];
+    return ids[Math.floor(Math.random() * ids.length)];
   }
 
   shouldDisplayRoundPlayerName() {
-    const mode = this.currentRoundMode || this.selectedGameMode;
+    const mode = this.roundState.getActiveGameMode();
     return !MODES_WITH_HIDDEN_ROUND_PLAYER.has(mode);
   }
 }

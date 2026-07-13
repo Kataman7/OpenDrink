@@ -27,7 +27,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "realm": "^20.2.0",
     "sql.js": "^1.10.0"
   },
   "devDependencies": {

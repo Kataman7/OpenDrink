@@ -1,7 +1,8 @@
 import initSqlJs from 'sql.js/dist/sql-asm.js';
 import { Question } from '../domain/entities.js';
+import { GameMode } from '../domain/game-mode.js';
+import { PROMPT_KIND_MAP } from '../domain/prompt-kind.js';
 import {
-  GameMode,
   buildQuestionQuery,
   buildWouldYouRatherQuery,
   buildImpostorWordQuery,
@@ -10,12 +11,17 @@ import {
   buildDormellesQuery,
   buildPicoloQuery,
   buildTruthDareQuery,
-} from '../domain/value-objects.js';
+} from '../domain/query-builders.js';
 import {
   QuestionRepositoryPort,
   PlayerRepositoryPort,
   DatabasePort,
 } from '../application/ports/repository-ports.js';
+
+const QUESTIONS_DB_PATH = '/questions.sqlite';
+
+const CREATE_PLAYERS_TABLE_SQL =
+  'CREATE TABLE players (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)';
 
 export class QuestionsDatabaseAdapter {
   constructor() {
@@ -24,128 +30,102 @@ export class QuestionsDatabaseAdapter {
 
   async load() {
     const SQL = await initSqlJs();
-    const response = await fetch('/questions.sqlite');
+    const response = await fetch(QUESTIONS_DB_PATH);
     const buffer = await response.arrayBuffer();
     this.db = new SQL.Database(new Uint8Array(buffer));
   }
 
   getRandomQuestion({ gameMode, intensity, lang }) {
-    if (gameMode === GameMode.IMPOSTOR) {
-      return this.getRandomImpostorWord({ lang });
-    }
+    const dispatcher = this.dispatchers[gameMode];
+    if (dispatcher) return dispatcher.call(this, { intensity, lang });
+    return this.getGenericQuestion({ gameMode, intensity, lang });
+  }
 
-    if (gameMode === GameMode.WOULD_YOU_RATHER) {
-      return this.getRandomWouldYouRatherQuestion({ intensity, lang });
-    }
-
-    if (gameMode === GameMode.QUIZ) {
-      return this.getRandomQuizQuestion({ intensity, lang });
-    }
-
-    if (gameMode === GameMode.TEAM_BATTLE) {
-      return this.getRandomTeamBattleQuestion({ intensity, lang });
-    }
-
-    if (gameMode === GameMode.DORMELLES) {
-      return this.getRandomDormellesQuestion({ intensity, lang });
-    }
-
-    if (gameMode === GameMode.PICOLO) {
-      return this.getRandomPicoloQuestion({ lang });
-    }
-
-    if (gameMode === GameMode.TRUTH_DARE) {
-      return this.getRandomTruthDareQuestion({ lang });
-    }
-
-    const gameKey = this.pickGameKey(gameMode);
+  getGenericQuestion({ gameMode, intensity, lang }) {
+    const gameKey = this.selectRandomGameKey(gameMode);
     const query = buildQuestionQuery(gameKey, intensity);
-    const result = this.db.exec(query.sql, query.params(lang));
-    if (!result.length || !result[0].values.length) return null;
-    const promptKind = this.getPromptKind(gameKey);
-    return new Question({ sentence: result[0].values[0][0], promptKind });
+    const row = this.executeSingleQuery(query, lang);
+    if (!row) return null;
+    const promptKind = PROMPT_KIND_MAP[gameKey] || null;
+    return new Question({ sentence: row[0], promptKind });
   }
 
-  getRandomImpostorWord({ lang }) {
+  getImpostorQuestion({ lang }) {
     const query = buildImpostorWordQuery();
-    const result = this.db.exec(query.sql, query.params(lang));
-    if (!result.length || !result[0].values.length) return null;
-
-    const [word, impostorHintWord] = result[0].values[0];
-    return new Question({ sentence: word, impostorHintWord, promptKind: 'impostor' });
+    const row = this.executeSingleQuery(query, lang);
+    if (!row) return null;
+    return new Question({ sentence: row[0], impostorHintWord: row[1], promptKind: 'impostor' });
   }
 
-  getRandomWouldYouRatherQuestion({ intensity, lang }) {
+  getWouldYouRatherQuestion({ intensity, lang }) {
     const query = buildWouldYouRatherQuery(intensity);
-    const result = this.db.exec(query.sql, query.params(lang));
-    if (!result.length || !result[0].values.length) return null;
-
-    const [choiceA, choiceB] = result[0].values[0];
-    return new Question({ choiceA, choiceB, promptKind: 'would_you_rather' });
+    const row = this.executeSingleQuery(query, lang);
+    if (!row) return null;
+    return new Question({ choiceA: row[0], choiceB: row[1], promptKind: 'would_you_rather' });
   }
 
-  getRandomQuizQuestion({ intensity, lang }) {
+  getQuizQuestion({ intensity, lang }) {
     const query = buildQuizQuery(intensity);
-    const result = this.db.exec(query.sql, query.params(lang));
-    if (!result.length || !result[0].values.length) return null;
-
-    const [sentence, optionsJson] = result[0].values[0];
+    const row = this.executeSingleQuery(query, lang);
+    if (!row) return null;
     let options = null;
     try {
-      options = JSON.parse(optionsJson);
+      options = JSON.parse(row[1]);
     } catch {
       options = null;
     }
-    return new Question({ sentence, options, promptKind: 'quiz' });
+    return new Question({ sentence: row[0], options, promptKind: 'quiz' });
   }
 
-  getRandomTeamBattleQuestion({ intensity, lang }) {
+  getTeamBattleQuestion({ intensity, lang }) {
     const query = buildTeamBattleQuery(intensity);
-    const result = this.db.exec(query.sql, query.params(lang));
-    if (!result.length || !result[0].values.length) return null;
-
-    const [mode, sentence] = result[0].values[0];
-    return new Question({ sentence, promptKind: `team_battle_${mode}` });
+    const row = this.executeSingleQuery(query, lang);
+    if (!row) return null;
+    return new Question({ sentence: row[1], promptKind: `team_battle_${row[0]}` });
   }
 
-  getRandomDormellesQuestion({ intensity, lang }) {
+  getDormellesQuestion({ intensity, lang }) {
     const query = buildDormellesQuery(intensity);
-    const result = this.db.exec(query.sql, query.params(lang));
-    if (!result.length || !result[0].values.length) return null;
-
-    const row = result[0].values[0];
+    const row = this.executeSingleQuery(query, lang);
+    if (!row) return null;
     return new Question({ sentence: row[1], promptKind: 'dormelles' });
   }
 
-  getRandomPicoloQuestion({ lang }) {
+  getPicoloQuestion({ lang }) {
     const query = buildPicoloQuery();
-    const result = this.db.exec(query.sql, query.params(lang));
-    if (!result.length || !result[0].values.length) return null;
-
-    const [type, sentence] = result[0].values[0];
-    return new Question({ sentence, promptKind: `picolo_${type}` });
+    const row = this.executeSingleQuery(query, lang);
+    if (!row) return null;
+    return new Question({ sentence: row[1], promptKind: `picolo_${row[0]}` });
   }
 
-  getRandomTruthDareQuestion({ lang }) {
+  getTruthDareQuestion({ lang }) {
     const query = buildTruthDareQuery();
+    const row = this.executeSingleQuery(query, lang);
+    if (!row) return null;
+    return new Question({ sentence: row[0], promptKind: `truth_dare_${row[1]}` });
+  }
+
+  executeSingleQuery(query, lang) {
     const result = this.db.exec(query.sql, query.params(lang));
     if (!result.length || !result[0].values.length) return null;
-
-    const [sentence, isAction] = result[0].values[0];
-    return new Question({ sentence, promptKind: `truth_dare_${isAction}` });
+    return result[0].values[0];
   }
 
-  pickGameKey(gameMode) {
+  selectRandomGameKey(gameMode) {
     const candidates = GameMode.getCandidateGameKeys(gameMode);
-    const randomIndex = Math.floor(Math.random() * candidates.length);
-    return candidates[randomIndex];
+    return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
-  getPromptKind(gameKey) {
-    if (gameKey === 'tod') return 'truth';
-    if (gameKey === 'dare_chooser') return 'dare';
-    if (gameKey === 'qpr') return 'who_could';
-    return null;
+  get dispatchers() {
+    return {
+      [GameMode.IMPOSTOR]: this.getImpostorQuestion,
+      [GameMode.WOULD_YOU_RATHER]: this.getWouldYouRatherQuestion,
+      [GameMode.QUIZ]: this.getQuizQuestion,
+      [GameMode.TEAM_BATTLE]: this.getTeamBattleQuestion,
+      [GameMode.DORMELLES]: this.getDormellesQuestion,
+      [GameMode.PICOLO]: this.getPicoloQuestion,
+      [GameMode.TRUTH_DARE]: this.getTruthDareQuestion,
+    };
   }
 }
 
@@ -157,7 +137,7 @@ export class PlayersDatabaseAdapter {
   async initialize() {
     const SQL = await initSqlJs();
     this.db = new SQL.Database();
-    this.db.run('CREATE TABLE players (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)');
+    this.db.run(CREATE_PLAYERS_TABLE_SQL);
   }
 
   savePlayer(name) {

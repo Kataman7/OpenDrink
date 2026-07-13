@@ -4,9 +4,9 @@ export class LocalStorage {
   }
 
   load() {
-    const rawValue = localStorage.getItem(this.storageKey);
-    if (!rawValue) return null;
     try {
+      const rawValue = localStorage.getItem(this.storageKey);
+      if (!rawValue) return null;
       return JSON.parse(rawValue);
     } catch {
       return null;
@@ -14,11 +14,19 @@ export class LocalStorage {
   }
 
   save(data) {
-    const payload = JSON.stringify(data);
-    localStorage.setItem(this.storageKey, payload);
+    try {
+      const payload = JSON.stringify(data);
+      localStorage.setItem(this.storageKey, payload);
+    } catch {
+      // Storage full or unavailable (e.g. private browsing)
+    }
   }
 
   clear() {
-    localStorage.removeItem(this.storageKey);
+    try {
+      localStorage.removeItem(this.storageKey);
+    } catch {
+      // Storage unavailable
+    }
   }
 }

@@ -1,27 +1,20 @@
 export class PlayerNameEmptyError extends Error {
   constructor() {
-    super('Le nom du joueur ne peut pas être vide');
+    super('Player name cannot be empty');
     this.name = 'PlayerNameEmptyError';
   }
 }
 
 export class QuestionTextEmptyError extends Error {
   constructor() {
-    super('Le texte de la question ne peut pas être vide');
+    super('Question text cannot be empty');
     this.name = 'QuestionTextEmptyError';
-  }
-}
-
-export class InvalidQuestionTypeError extends Error {
-  constructor(type) {
-    super(`Type de question invalide : ${type}`);
-    this.name = 'InvalidQuestionTypeError';
   }
 }
 
 export class DatabaseInitError extends Error {
   constructor(cause) {
-    super("Échec de l'initialisation de la base de données");
+    super('Failed to initialize the database');
     this.name = 'DatabaseInitError';
     this.cause = cause;
   }
@@ -29,14 +22,14 @@ export class DatabaseInitError extends Error {
 
 export class NoPlayersError extends Error {
   constructor() {
-    super('Aucun joueur ajouté pour cette partie');
+    super('No players added for this game');
     this.name = 'NoPlayersError';
   }
 }
 
 export class NoQuestionsAvailableError extends Error {
   constructor(mode) {
-    super(`Aucune question disponible pour le mode : ${mode}`);
+    super(`No question available for mode: ${mode}`);
     this.name = 'NoQuestionsAvailableError';
   }
 }

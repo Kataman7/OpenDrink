@@ -1,8 +1,10 @@
+import { DEFAULT_LANG } from '../config.js';
+
 export class I18n {
-  constructor({ translations = {}, defaultLang = 'en' } = {}) {
+  constructor({ translations = {} } = {}) {
     this.translations = translations;
-    this.defaultLang = defaultLang;
-    this.currentLang = defaultLang;
+    this.defaultLang = DEFAULT_LANG;
+    this.currentLang = DEFAULT_LANG;
   }
 
   setLanguage(lang) {

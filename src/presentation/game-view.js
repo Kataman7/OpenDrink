@@ -1,18 +1,7 @@
+import { RANDOM_COMPATIBLE_MODES } from './game-state.js';
+
 const SCREEN_PREFIX = 'screen-';
 const HIDDEN_CLASS = 'hidden';
-
-const RANDOM_MODES = [
-  { id: 'never_have_i_ever', icon: '🍻', labelKey: 'mode.neverHaveIEver' },
-  { id: 'action_truth', icon: '🎭', labelKey: 'mode.truthOrDare' },
-  { id: 'would_you_rather', icon: '⚡', labelKey: 'mode.wouldYouRather' },
-  { id: 'who_could', icon: '🕵️', labelKey: 'mode.whoCould' },
-  { id: 'seven_seconds', icon: '⏱️', labelKey: 'mode.sevenSeconds' },
-  { id: 'its_a_10', icon: '💯', labelKey: 'mode.itsA10' },
-  { id: 'quiz', icon: '🧠', labelKey: 'mode.quiz' },
-  { id: 'dormelles', icon: '🃏', labelKey: 'mode.dormelles' },
-  { id: 'picolo', icon: '🍻', labelKey: 'mode.picolo' },
-  { id: 'truth_dare', icon: '🎴', labelKey: 'mode.truthDare' },
-];
 
 export class GameView {
   constructor({ i18n }) {
@@ -35,7 +24,7 @@ export class GameView {
 
   renderModeRandomList() {
     const container = this.getElement('mode-random-list');
-    container.innerHTML = RANDOM_MODES.map(
+    container.innerHTML = RANDOM_COMPATIBLE_MODES.map(
       mode => `
       <label class="mode-checkbox-label">
         <input type="checkbox" class="mode-checkbox" data-mode="${mode.id}" checked />
@@ -164,7 +153,11 @@ export class GameView {
     this.getElement('wyr-choices').classList.add(HIDDEN_CLASS);
     const container = this.getElement('quiz-options');
     const correctAnswer = options[0];
-    const shuffled = [...options].sort(() => Math.random() - 0.5);
+    const shuffled = [...options];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
     container.innerHTML = shuffled
       .map((option, index) => {
         const letter = String.fromCharCode(65 + index);
@@ -276,7 +269,8 @@ export class GameView {
         const optionTexts = Array.from(quizOptions.querySelectorAll('.quiz-option'))
           .map(btn => btn.textContent)
           .join(', ');
-        return `${sentenceEl.textContent} Options: ${optionTexts}`;
+        const optionsLabel = this.i18n.t('game.options');
+        return `${sentenceEl.textContent} ${optionsLabel} ${optionTexts}`;
       }
       return sentenceEl.textContent;
     }
@@ -284,7 +278,8 @@ export class GameView {
     const choiceA = this.getElement('wyr-choice-a');
     const choiceB = this.getElement('wyr-choice-b');
     if (choiceA && choiceB && choiceA.textContent && choiceB.textContent) {
-      return `${choiceA.textContent}... ou ${choiceB.textContent}?`;
+      const separator = this.i18n.t('game.or');
+      return `${choiceA.textContent}... ${separator} ${choiceB.textContent}?`;
     }
 
     return null;

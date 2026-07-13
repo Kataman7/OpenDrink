@@ -1,42 +1,26 @@
-import { GameMode } from '../domain/value-objects.js';
-import { QuestionTextPersonalizer } from './question-text-personalizer.js';
-import { DormellesPersonalizer } from './dormelles-personalizer.js';
-import { TeamBattlePersonalizer } from './team-battle-personalizer.js';
-import { PicoloPersonalizer } from './picolo-personalizer.js';
-import { AntoinePersonalizer } from './antoine-personalizer.js';
-
-const CLICK_ACTIONS = {
-  'add-player': 'handleAddPlayer',
-  'start-game': 'handleStartGame',
-  'remove-player': 'handleRemovePlayer',
-  'select-mode': 'handleModeSelected',
-  'select-intensity': 'handleIntensitySelected',
-  'next-round': 'handleNextRound',
-  'back-lobby': 'handleBackToLobby',
-  'impostor-reveal': 'handleImpostorReveal',
-  'impostor-next': 'handleImpostorNext',
-  'impostor-finish': 'handleImpostorFinish',
-  'impostor-accuse': 'handleImpostorAccuse',
-  'toggle-auto-read': 'handleToggleAutoRead',
-  'quiz-answer': 'handleQuizAnswer',
-  'random-confirm': 'handleRandomConfirm',
-};
+import { GameMode } from '../domain/game-mode.js';
+import { RoundRenderer } from './round-renderer.js';
+import { ERROR_DISPLAY_DURATION_MS } from '../config.js';
 
 export class GameEventHandler {
   constructor(dependencies) {
     this.view = dependencies.view;
     this.state = dependencies.state;
-    this.playerManager = dependencies.playerManager;
     this.screenManager = dependencies.screenManager;
     this.impostorManager = dependencies.impostorManager;
     this.drawQuestionUseCase = dependencies.drawQuestionUseCase;
     this.i18n = dependencies.i18n;
     this.preferencesManager = dependencies.preferencesManager;
-    this.roundLabelBuilder = dependencies.roundLabelBuilder;
     this.initializeDatabaseUseCase = dependencies.initializeDatabaseUseCase;
     this.addPlayerUseCase = dependencies.addPlayerUseCase;
     this.removePlayerUseCase = dependencies.removePlayerUseCase;
     this.textToSpeech = dependencies.textToSpeech;
+    this.roundRenderer = new RoundRenderer({
+      view: dependencies.view,
+      state: dependencies.state,
+      roundLabelBuilder: dependencies.roundLabelBuilder,
+      textToSpeech: dependencies.textToSpeech,
+    });
   }
 
   bind() {
@@ -47,6 +31,15 @@ export class GameEventHandler {
 
   async initialize() {
     this.preferencesManager.restore();
+    if (this.state.autoRead) {
+      this.textToSpeech.toggleAutoRead();
+      this.view.updateAutoReadButton(true);
+    }
+    this.view.renderLanguageSelector({
+      languages: this._supportedLanguages,
+      selectedLang: this.state.selectedLang,
+    });
+    this.view.applyStaticTranslations(this.state.selectedLang);
     await this.initializeDatabaseUseCase.execute();
     await this.restorePlayers();
     this.screenManager.renderCurrentScreen();
@@ -195,7 +188,7 @@ export class GameEventHandler {
         this.state.setCurrentRoundMode(this.state.pickRandomRoundMode());
       }
       const round = await this.drawQuestionUseCase.execute(this.state.buildRoundRequest());
-      this.renderRound(round);
+      this.roundRenderer.renderRound(round);
       this.state.setPreviousPlayer(round.player.id);
     } catch (error) {
       this.showError(error.message);
@@ -204,7 +197,6 @@ export class GameEventHandler {
 
   handleBackToLobby() {
     this.view.clearSevenTimer();
-    this.state.resetRoundSelection();
     this.impostorManager.finishRound();
     this.screenManager.navigateToLobby();
   }
@@ -260,111 +252,13 @@ export class GameEventHandler {
     this.view.renderImpostorAccusationResult(this.i18n.t('impostor.notImpostor'));
   }
 
-  renderRound({ player, question }) {
-    const personalizer = new QuestionTextPersonalizer(this.state.players);
-    const label = this.roundLabelBuilder.build(
-      this.state.buildRoundLabelInput(question.promptKind)
-    );
-    const showPlayerName = this.state.shouldDisplayRoundPlayerName();
-
-    if (question.promptKind === 'would_you_rather') {
-      this.view.renderRound({
-        player,
-        label,
-        showPlayerName,
-        choiceA: personalizer.personalize(question.choiceA, player.name),
-        choiceB: personalizer.personalize(question.choiceB, player.name),
-      });
-    } else if (question.promptKind === 'quiz') {
-      this.view.renderRound({
-        player,
-        label,
-        showPlayerName: false,
-        sentence: question.sentence,
-        options: question.options,
-      });
-    } else if (question.promptKind === 'dormelles') {
-      const dormellesPersonalizer = new DormellesPersonalizer();
-      const personalized = dormellesPersonalizer.personalize(
-        question.sentence,
-        player.name,
-        this.state.players
-      );
-      this.view.renderRound({
-        player,
-        label,
-        showPlayerName,
-        sentence: personalized,
-      });
-    } else if (question.promptKind && question.promptKind.startsWith('picolo_')) {
-      const picoloPersonalizer = new PicoloPersonalizer();
-      const personalized = picoloPersonalizer.personalize(
-        question.sentence,
-        player,
-        this.state.players
-      );
-      this.view.renderRound({
-        player,
-        label,
-        showPlayerName,
-        sentence: personalized,
-      });
-    } else if (question.promptKind && question.promptKind.startsWith('truth_dare_')) {
-      const antoinePersonalizer = new AntoinePersonalizer();
-      const personalized = antoinePersonalizer.personalize(
-        question.sentence,
-        player,
-        this.state.players
-      );
-      this.view.renderRound({
-        player,
-        label,
-        showPlayerName,
-        sentence: personalized,
-      });
-    } else if (question.promptKind && question.promptKind.startsWith('team_battle_')) {
-      const battlePersonalizer = new TeamBattlePersonalizer();
-      const personalized = battlePersonalizer.personalize(
-        question.sentence,
-        player,
-        this.state.players,
-        this.state.teamOnePlayerIds,
-        this.state.teamTwoPlayerIds
-      );
-      this.view.renderRound({
-        player,
-        label,
-        showPlayerName,
-        sentence: personalized,
-      });
-    } else {
-      const sentence = personalizer.personalize(question.sentence, player.name);
-      const mode = this.state.currentRoundMode || this.state.selectedGameMode;
-      if (mode === 'seven_seconds') {
-        this.view.renderSevenSeconds({ player, label, sentence });
-      } else {
-        this.view.renderRound({ player, label, showPlayerName, sentence });
-      }
-    }
-
-    if (this.textToSpeech.isAutoReadEnabled()) {
-      this.handleReadQuestion();
-    }
-  }
-
-  handleReadQuestion() {
-    const text = this.view.getQuestionText();
-    if (!text) return;
-    const gameMode = this.state.selectedGameMode;
-    const lang = this.state.selectedLang;
-    this.textToSpeech.speak(text, gameMode, lang, this.i18n);
-  }
-
   handleToggleAutoRead() {
     const enabled = this.textToSpeech.toggleAutoRead();
+    this.state.autoRead = enabled;
     this.view.updateAutoReadButton(enabled);
+    this.persistPreferences();
     if (enabled) {
-      this.handleReadQuestion();
+      this.roundRenderer.readCurrentQuestion();
     }
   }
 
@@ -382,12 +276,29 @@ export class GameEventHandler {
   }
 
   persistPreferences() {
-    this.preferencesManager.persist(this.state);
+    this.preferencesManager.persist();
   }
 
   showError(message) {
     this.view.showError(message);
     clearTimeout(this._errorTimeout);
-    this._errorTimeout = setTimeout(() => this.view.hideError(), 3000);
+    this._errorTimeout = setTimeout(() => this.view.hideError(), ERROR_DISPLAY_DURATION_MS);
   }
 }
+
+const CLICK_ACTIONS = {
+  'add-player': 'handleAddPlayer',
+  'start-game': 'handleStartGame',
+  'remove-player': 'handleRemovePlayer',
+  'select-mode': 'handleModeSelected',
+  'select-intensity': 'handleIntensitySelected',
+  'next-round': 'handleNextRound',
+  'back-lobby': 'handleBackToLobby',
+  'impostor-reveal': 'handleImpostorReveal',
+  'impostor-next': 'handleImpostorNext',
+  'impostor-finish': 'handleImpostorFinish',
+  'impostor-accuse': 'handleImpostorAccuse',
+  'toggle-auto-read': 'handleToggleAutoRead',
+  'quiz-answer': 'handleQuizAnswer',
+  'random-confirm': 'handleRandomConfirm',
+};

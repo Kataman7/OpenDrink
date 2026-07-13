@@ -11,7 +11,6 @@ import {
   PlayersDatabaseAdapter,
 } from '../infrastructure/sqlite-adapter.js';
 import { PreferencesStore } from './preferences-store.js';
-import { PlayerManager } from './player-manager.js';
 import { TextToSpeech } from '../shared/text-to-speech.js';
 
 export function createDependencies() {
@@ -24,12 +23,6 @@ export function createDependencies() {
 
   const addPlayerUseCase = new AddPlayerUseCase({ playerRepositoryPort });
   const removePlayerUseCase = new RemovePlayerUseCase({ playerRepositoryPort });
-
-  const playerManager = new PlayerManager({
-    addPlayerUseCase,
-    removePlayerUseCase,
-  });
-
   const textToSpeech = new TextToSpeech();
 
   return {
@@ -42,7 +35,6 @@ export function createDependencies() {
     removePlayerUseCase,
     drawQuestionUseCase: new DrawQuestionUseCase({ playerRepositoryPort, questionRepositoryPort }),
     getImpostorWordUseCase: new GetImpostorWordUseCase({ questionRepositoryPort }),
-    playerManager,
     textToSpeech,
   };
 }

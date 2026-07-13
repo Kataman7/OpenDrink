@@ -33,8 +33,10 @@ export class RoundRenderer {
     if (promptKind === PromptKind.QUIZ) return opts => this.renderQuiz(opts);
     if (promptKind === PromptKind.DORMELLES) return opts => this.renderDormelles(opts);
     if (promptKind && promptKind.startsWith('picolo_')) return opts => this.renderPicolo(opts);
-    if (promptKind && promptKind.startsWith('truth_dare_')) return opts => this.renderTruthDare(opts);
-    if (promptKind && promptKind.startsWith('team_battle_')) return opts => this.renderTeamBattle(opts);
+    if (promptKind && promptKind.startsWith('truth_dare_'))
+      return opts => this.renderTruthDare(opts);
+    if (promptKind && promptKind.startsWith('team_battle_'))
+      return opts => this.renderTeamBattle(opts);
     return opts => this.renderDefault(opts);
   }
 

@@ -2,8 +2,6 @@ const TTS_PREFIX_KEYS = {
   would_you_rather: 'round.ttsPrefixWouldYouRather',
   never_have_i_ever: 'round.ttsPrefixNeverHaveIEver',
   who_could: 'round.ttsPrefixWhoCould',
-  seven_seconds: 'round.ttsPrefixSevenSeconds',
-  its_a_10: 'round.ttsPrefixItsA10',
   quiz: 'round.ttsPrefixQuiz',
   team_battle: 'round.ttsPrefixTeamBattle',
   dormelles: 'round.ttsPrefixDormelles',

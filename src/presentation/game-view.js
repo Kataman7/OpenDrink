@@ -52,6 +52,9 @@ export class GameView {
     this.getElement('player-name').textContent = player.name;
     this.getElement('player-name').classList.toggle(HIDDEN_CLASS, !showPlayerName);
     this.getElement('question-type').textContent = label;
+    this.getElement('wyr-choices').classList.add(HIDDEN_CLASS);
+    this.getElement('quiz-options').classList.add(HIDDEN_CLASS);
+    this.getElement('question-text').classList.remove(HIDDEN_CLASS);
     if (options && options.length > 0) return this.renderQuizOptions(sentence, options);
     if (choiceA && choiceB) return this.renderWouldYouRather(choiceA, choiceB);
     return this.renderSentence(sentence);
@@ -105,6 +108,7 @@ export class GameView {
     this.getElement('question-text').textContent = sentence;
     this.getElement('question-text').classList.remove(HIDDEN_CLASS);
     this.getElement('wyr-choices').classList.add(HIDDEN_CLASS);
+    this.getElement('quiz-options').classList.add(HIDDEN_CLASS);
   }
 
   renderSevenSeconds({ player, label, sentence }) {
@@ -268,7 +272,7 @@ export class GameView {
       if (quizOptions && !quizOptions.classList.contains(HIDDEN_CLASS)) {
         const optionTexts = Array.from(quizOptions.querySelectorAll('.quiz-option'))
           .map(btn => btn.textContent)
-          .join(', ');
+          .join('. ');
         const optionsLabel = this.i18n.t('game.options');
         return `${sentenceEl.textContent} ${optionsLabel} ${optionTexts}`;
       }

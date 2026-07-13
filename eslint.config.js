@@ -23,6 +23,9 @@ export default [
         speechSynthesis: true,
         SpeechSynthesisUtterance: true,
         process: true,
+        window: true,
+        navigator: true,
+        history: true,
       },
     },
     rules: {

@@ -4,6 +4,7 @@ export class ScreenManager {
   constructor({ state, view }) {
     this.state = state;
     this.view = view;
+    this._setupBackButton();
   }
 
   switchScreen(screen) {
@@ -29,22 +30,39 @@ export class ScreenManager {
   }
 
   navigateToModeSelection() {
+    this._pushHistory();
     this.switchScreen(SCREENS.mode);
   }
 
   navigateToModeRandom() {
+    this._pushHistory();
     this.switchScreen(SCREENS.modeRandom);
   }
 
   navigateToIntensitySelection() {
+    this._pushHistory();
     this.switchScreen(SCREENS.intensity);
   }
 
   navigateToGameScreen() {
+    this._pushHistory();
     this.switchScreen(SCREENS.game);
   }
 
   navigateToImpostorReveal() {
+    this._pushHistory();
     this.switchScreen(SCREENS.impostorReveal);
+  }
+
+  _pushHistory() {
+    history.pushState({ screen: this.state.screen }, '');
+  }
+
+  _setupBackButton() {
+    window.addEventListener('popstate', () => {
+      if (this.state.screen !== SCREENS.lobby) {
+        this.navigateToLobby();
+      }
+    });
   }
 }

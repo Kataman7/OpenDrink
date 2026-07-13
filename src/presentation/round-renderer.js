@@ -64,17 +64,13 @@ export class RoundRenderer {
   renderDormelles({ player, question, label, showPlayerName, players }) {
     const personalizer = new DormellesPersonalizer();
     const personalized = personalizer.personalize(question.sentence, player.name, players);
-    const cardLabel = question.cardId != null ? `[Carte ${question.cardId}] ` : '';
-    this.view.renderRound({ player, label, showPlayerName, sentence: cardLabel + personalized });
+    this.view.renderRound({ player, label, showPlayerName, sentence: personalized });
   }
 
   renderPicolo({ player, question, label, showPlayerName, players }) {
     const personalizer = new PicoloPersonalizer();
     const personalized = personalizer.personalize(question.sentence, player, players);
-    const packLabel = question.packName
-      ? `[${this.roundLabelBuilder.i18n.t(`picoloPacks.${question.packName}`) || question.packName}] `
-      : '';
-    this.view.renderRound({ player, label, showPlayerName, sentence: packLabel + personalized });
+    this.view.renderRound({ player, label, showPlayerName, sentence: personalized });
   }
 
   renderTruthDare({ player, question, label, showPlayerName, players }) {

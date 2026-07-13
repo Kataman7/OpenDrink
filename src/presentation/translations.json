@@ -3,6 +3,9 @@
     "app": {
       "title": "OpenDrink"
     },
+    "loading": {
+      "message": "Loading..."
+    },
     "lobby": {
       "subtitle": "Add players to start",
       "language": "Language",
@@ -124,6 +127,9 @@
   "fr": {
     "app": {
       "title": "OpenDrink"
+    },
+    "loading": {
+      "message": "Chargement..."
     },
     "lobby": {
       "subtitle": "Ajoute des joueurs pour commencer",

@@ -31,6 +31,7 @@ export class GameEventHandler {
   }
 
   async initialize() {
+    this.view.renderScreen('loading');
     this.preferencesManager.restore();
     if (this.state.autoRead) {
       this.textToSpeech.toggleAutoRead();
@@ -43,8 +44,7 @@ export class GameEventHandler {
     this.view.applyStaticTranslations(this.state.selectedLang);
     await this.initializeDatabaseUseCase.execute();
     await this.restorePlayers();
-    this.screenManager.renderCurrentScreen();
-    this.screenManager.renderPlayers();
+    this.screenManager.navigateToLobby();
   }
 
   async restorePlayers() {

@@ -1,4 +1,5 @@
 export const SCREENS = {
+  loading: 'loading',
   lobby: 'lobby',
   mode: 'mode',
   modeRandom: 'mode_random',

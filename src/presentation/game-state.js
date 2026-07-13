@@ -28,7 +28,7 @@ export const RANDOM_COMPATIBLE_MODES = [
 export class GameState {
   constructor({ screens }) {
     this.screens = screens;
-    this.screen = screens.lobby;
+    this.screen = screens.loading;
     this.selectedLang = DEFAULT_LANG;
     this.autoRead = false;
     this.playerStore = new PlayerStore();

@@ -10,6 +10,14 @@
   </head>
   <body>
     <div id="app" class="app-shell">
+      <!-- SCREEN: LOADING -->
+      <section id="screen-loading" class="screen">
+        <div class="screen-inner loading-screen">
+          <div class="loading-spinner"></div>
+          <p id="loading-text" data-i18n="loading.message">Loading...</p>
+        </div>
+      </section>
+
       <!-- SCREEN: LOBBY -->
       <section id="screen-lobby" class="screen">
         <div class="screen-inner">
@@ -85,7 +93,11 @@
               <span class="btn-mode-icon">🎯</span>
               <span data-i18n="mode.impostor">Impostor</span>
             </button>
-            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="seven_seconds">
+            <button
+              class="btn btn-large btn-mode"
+              data-action="select-mode"
+              data-mode="seven_seconds"
+            >
               <span class="btn-mode-icon">⏱️</span>
               <span data-i18n="mode.sevenSeconds">7 Seconds</span>
             </button>
@@ -97,7 +109,11 @@
               <span class="btn-mode-icon">🧠</span>
               <span data-i18n="mode.quiz">Quiz</span>
             </button>
-            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="team_battle">
+            <button
+              class="btn btn-large btn-mode"
+              data-action="select-mode"
+              data-mode="team_battle"
+            >
               <span class="btn-mode-icon">⚔️</span>
               <span data-i18n="mode.teamBattle">Team Battle</span>
             </button>
@@ -113,11 +129,7 @@
               <span class="btn-mode-icon">🎴</span>
               <span data-i18n="mode.truthDare">Truth or Dare (Classic)</span>
             </button>
-            <button
-              class="btn btn-large btn-mode"
-              data-action="select-mode"
-              data-mode="random"
-            >
+            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="random">
               <span class="btn-mode-icon">🔀</span>
               <span data-i18n="mode.random">Random</span>
             </button>

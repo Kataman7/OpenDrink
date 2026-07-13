@@ -162,6 +162,7 @@ export class GameState {
       intensity: this.selectedIntensity,
       lang: this.selectedLang,
       previousPlayerId: this.previousPlayerId,
+      playerCount: this.players.length,
     };
   }
 

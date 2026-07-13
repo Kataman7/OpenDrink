@@ -1,5 +1,10 @@
 export class QuestionRepositoryPort {
-  async getRandomQuestion({ gameMode: _gameMode, intensity: _intensity, lang: _lang }) {
+  async getRandomQuestion({
+    gameMode: _gameMode,
+    intensity: _intensity,
+    lang: _lang,
+    playerCount: _playerCount,
+  }) {
     throw new Error('QuestionRepositoryPort.getRandomQuestion must be implemented');
   }
 }

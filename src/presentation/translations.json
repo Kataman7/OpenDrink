@@ -85,6 +85,34 @@
       "theOtherTeamLoses": "the other team loses",
       "youLose": "you lose"
     },
+    "teamBattleModes": {
+      "challenge": "Challenge",
+      "dual_action": "Duel: Action",
+      "dual_fact": "Duel: Fact",
+      "if_one_of_you": "If any of you",
+      "one_at_time": "One at a time",
+      "opposite_player_question": "Opponent question",
+      "random_all_together": "All together",
+      "random_mini_games": "Mini-game",
+      "same_word": "Same word",
+      "themes": "Theme",
+      "traitors_action": "Traitor: Action",
+      "traitors_fact": "Traitor: Fact",
+      "what_opposite_prefer": "What would they prefer?",
+      "what_team": "Which team?"
+    },
+    "truthDareModes": {
+      "All": "All",
+      "Group Only": "Group",
+      "Couple Only": "Couple"
+    },
+    "picoloPacks": {
+      "default": "Default",
+      "hot": "Hot",
+      "bar": "Bar",
+      "silly": "Silly",
+      "war": "War"
+    },
     "errors": {
       "minPlayers": "Add at least {count} players",
       "emptyPlayerName": "Player name cannot be empty",
@@ -178,6 +206,34 @@
       "loses": "perd",
       "theOtherTeamLoses": "l'autre équipe perd",
       "youLose": "vous perdez"
+    },
+    "teamBattleModes": {
+      "challenge": "Défi",
+      "dual_action": "Duel : Action",
+      "dual_fact": "Duel : Vérité",
+      "if_one_of_you": "Si l'un de vous",
+      "one_at_time": "Un par un",
+      "opposite_player_question": "Question à l'adversaire",
+      "random_all_together": "Tous ensemble",
+      "random_mini_games": "Mini-jeu",
+      "same_word": "Même mot",
+      "themes": "Thème",
+      "traitors_action": "Traître : Action",
+      "traitors_fact": "Traître : Vérité",
+      "what_opposite_prefer": "Que préféreraient-ils ?",
+      "what_team": "Quelle équipe ?"
+    },
+    "truthDareModes": {
+      "All": "Tout le monde",
+      "Group Only": "Groupe",
+      "Couple Only": "Couple"
+    },
+    "picoloPacks": {
+      "default": "Normal",
+      "hot": "Hot",
+      "bar": "Bar",
+      "silly": "Délire",
+      "war": "Guerre"
     },
     "errors": {
       "minPlayers": "Ajoute au moins {count} joueurs",

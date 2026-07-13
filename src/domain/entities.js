@@ -18,6 +18,10 @@ export class Question {
     choiceB = null,
     impostorHintWord = null,
     options = null,
+    cardId = null,
+    packName = null,
+    partyType = null,
+    difficulty = null,
   }) {
     const hasSentence = Boolean(sentence && sentence.trim().length > 0);
     const hasChoices = Boolean(choiceA && choiceB);
@@ -31,5 +35,9 @@ export class Question {
     this.choiceB = choiceB;
     this.impostorHintWord = impostorHintWord;
     this.options = hasOptions ? options : null;
+    this.cardId = cardId;
+    this.packName = packName;
+    this.partyType = partyType;
+    this.difficulty = difficulty;
   }
 }

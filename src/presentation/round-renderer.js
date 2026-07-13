@@ -64,23 +64,39 @@ export class RoundRenderer {
   renderDormelles({ player, question, label, showPlayerName, players }) {
     const personalizer = new DormellesPersonalizer();
     const personalized = personalizer.personalize(question.sentence, player.name, players);
-    this.view.renderRound({ player, label, showPlayerName, sentence: personalized });
+    const cardLabel = question.cardId != null ? `[Carte ${question.cardId}] ` : '';
+    this.view.renderRound({ player, label, showPlayerName, sentence: cardLabel + personalized });
   }
 
   renderPicolo({ player, question, label, showPlayerName, players }) {
     const personalizer = new PicoloPersonalizer();
     const personalized = personalizer.personalize(question.sentence, player, players);
-    this.view.renderRound({ player, label, showPlayerName, sentence: personalized });
+    const packLabel = question.packName
+      ? `[${this.roundLabelBuilder.i18n.t(`picoloPacks.${question.packName}`) || question.packName}] `
+      : '';
+    this.view.renderRound({ player, label, showPlayerName, sentence: packLabel + personalized });
   }
 
   renderTruthDare({ player, question, label, showPlayerName, players }) {
     const personalizer = new AntoinePersonalizer();
     const personalized = personalizer.personalize(question.sentence, player, players);
-    this.view.renderRound({ player, label, showPlayerName, sentence: personalized });
+    const i18n = this.roundLabelBuilder.i18n;
+    const partyLabel = question.partyType
+      ? `[${i18n.t(`truthDareModes.${question.partyType}`) || question.partyType}] `
+      : '';
+    const diffLabel = question.difficulty != null ? `[Diff. ${question.difficulty}/10] ` : '';
+    this.view.renderRound({
+      player,
+      label,
+      showPlayerName,
+      sentence: partyLabel + diffLabel + personalized,
+    });
   }
 
   renderTeamBattle({ player, question, label, showPlayerName, players }) {
     const personalizer = new TeamBattlePersonalizer();
+    const mode = question.promptKind ? question.promptKind.replace('team_battle_', '') : '';
+    const modeLabel = mode ? this.roundLabelBuilder.i18n.t(`teamBattleModes.${mode}`) || mode : '';
     const personalized = personalizer.personalize(question.sentence, {
       currentPlayer: player,
       allPlayers: players,
@@ -88,7 +104,8 @@ export class RoundRenderer {
       teamTwoIds: this.state.teamTwoPlayerIds,
       i18n: this.roundLabelBuilder.i18n,
     });
-    this.view.renderRound({ player, label, showPlayerName, sentence: personalized });
+    const displaySentence = modeLabel ? `[${modeLabel}] ${personalized}` : personalized;
+    this.view.renderRound({ player, label, showPlayerName, sentence: displaySentence });
   }
 
   renderDefault({ player, question, label, showPlayerName, players }) {

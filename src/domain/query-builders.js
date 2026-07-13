@@ -81,9 +81,15 @@ const ANTOINE_LANG_MAP = {
   el: 'el',
 };
 
-export function buildTruthDareQuery() {
+export function buildTruthDareQuery(playerCount) {
+  let partyFilter = '';
+  if (playerCount <= 2) {
+    partyFilter = "AND (party_type = 'Couple Only' OR party_type = 'All')";
+  } else {
+    partyFilter = "AND (party_type = 'Group Only' OR party_type = 'All')";
+  }
   return {
-    sql: 'SELECT sentence, is_action FROM antoine_dares WHERE lang = ? ORDER BY RANDOM() LIMIT 1',
+    sql: `SELECT sentence, is_action, party_type, difficulty FROM antoine_dares WHERE lang = ? ${partyFilter} ORDER BY RANDOM() LIMIT 1`,
     params: lang => [ANTOINE_LANG_MAP[lang] || 'en'],
   };
 }

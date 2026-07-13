@@ -35,9 +35,9 @@ export class QuestionsDatabaseAdapter {
     this.db = new SQL.Database(new Uint8Array(buffer));
   }
 
-  getRandomQuestion({ gameMode, intensity, lang }) {
+  getRandomQuestion({ gameMode, intensity, lang, playerCount }) {
     const dispatcher = this.dispatchers[gameMode];
-    if (dispatcher) return dispatcher.call(this, { intensity, lang });
+    if (dispatcher) return dispatcher.call(this, { intensity, lang, playerCount });
     return this.getGenericQuestion({ gameMode, intensity, lang });
   }
 
@@ -88,21 +88,26 @@ export class QuestionsDatabaseAdapter {
     const query = buildDormellesQuery(intensity);
     const row = this.executeSingleQuery(query, lang);
     if (!row) return null;
-    return new Question({ sentence: row[1], promptKind: 'dormelles' });
+    return new Question({ sentence: row[1], promptKind: 'dormelles', cardId: row[0] });
   }
 
   getPicoloQuestion({ lang }) {
     const query = buildPicoloQuery();
     const row = this.executeSingleQuery(query, lang);
     if (!row) return null;
-    return new Question({ sentence: row[1], promptKind: `picolo_${row[0]}` });
+    return new Question({ sentence: row[1], promptKind: `picolo_${row[0]}`, packName: row[2] });
   }
 
-  getTruthDareQuestion({ lang }) {
-    const query = buildTruthDareQuery();
+  getTruthDareQuestion({ lang, playerCount }) {
+    const query = buildTruthDareQuery(playerCount);
     const row = this.executeSingleQuery(query, lang);
     if (!row) return null;
-    return new Question({ sentence: row[0], promptKind: `truth_dare_${row[1]}` });
+    return new Question({
+      sentence: row[0],
+      promptKind: `truth_dare_${row[1]}`,
+      partyType: row[2],
+      difficulty: row[3],
+    });
   }
 
   executeSingleQuery(query, lang) {
@@ -167,8 +172,8 @@ export class SqlJsQuestionRepositoryAdapter extends QuestionRepositoryPort {
     this.questionsDb = questionsDb;
   }
 
-  async getRandomQuestion({ gameMode, intensity, lang }) {
-    return this.questionsDb.getRandomQuestion({ gameMode, intensity, lang });
+  async getRandomQuestion({ gameMode, intensity, lang, playerCount }) {
+    return this.questionsDb.getRandomQuestion({ gameMode, intensity, lang, playerCount });
   }
 }
 

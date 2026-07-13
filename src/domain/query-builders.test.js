@@ -73,12 +73,25 @@ describe('buildPicoloQuery', () => {
 });
 
 describe('buildTruthDareQuery', () => {
-  it('should query antoine_dares and map language', () => {
-    const query = buildTruthDareQuery();
-    expect(query.sql).toContain('SELECT sentence, is_action FROM antoine_dares');
+  it('should query antoine_dares with party_type and difficulty', () => {
+    const query = buildTruthDareQuery(5);
+    expect(query.sql).toContain(
+      'SELECT sentence, is_action, party_type, difficulty FROM antoine_dares'
+    );
+    expect(query.sql).toContain("party_type = 'Group Only' OR party_type = 'All'");
     expect(query.params('fr')).toEqual(['fr']);
     expect(query.params('en')).toEqual(['en']);
     expect(query.params('de')).toEqual(['de']);
     expect(query.params('unknown')).toEqual(['en']);
+  });
+
+  it('should filter Couple Only for 2 or fewer players', () => {
+    const query = buildTruthDareQuery(2);
+    expect(query.sql).toContain("party_type = 'Couple Only' OR party_type = 'All'");
+  });
+
+  it('should filter Group Only for 3+ players', () => {
+    const query = buildTruthDareQuery(3);
+    expect(query.sql).toContain("party_type = 'Group Only' OR party_type = 'All'");
   });
 });

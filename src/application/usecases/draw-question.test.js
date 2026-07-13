@@ -70,6 +70,7 @@ describe('DrawQuestionUseCase', () => {
           gameMode: 'jnj',
           intensity: 'soft',
           lang: 'en',
+          playerCount: 2,
         });
       });
 
@@ -85,6 +86,7 @@ describe('DrawQuestionUseCase', () => {
           gameMode: 'tod',
           intensity: 'hot',
           lang: 'fr',
+          playerCount: 2,
         });
       });
 
@@ -100,6 +102,7 @@ describe('DrawQuestionUseCase', () => {
           gameMode: 'tpf',
           intensity: 'mixed',
           lang: 'es',
+          playerCount: 2,
         });
       });
 
@@ -115,6 +118,7 @@ describe('DrawQuestionUseCase', () => {
           gameMode: 'qpr',
           intensity: 'soft',
           lang: 'de',
+          playerCount: 2,
         });
       });
     });
@@ -135,6 +139,7 @@ describe('DrawQuestionUseCase', () => {
           gameMode: 'jnj',
           intensity: 'soft',
           lang: 'en',
+          playerCount: 1,
         });
       });
 
@@ -150,6 +155,7 @@ describe('DrawQuestionUseCase', () => {
           gameMode: 'jnj',
           intensity: 'hot',
           lang: 'en',
+          playerCount: 1,
         });
       });
 
@@ -165,6 +171,7 @@ describe('DrawQuestionUseCase', () => {
           gameMode: 'jnj',
           intensity: 'mixed',
           lang: 'en',
+          playerCount: 1,
         });
       });
     });
@@ -185,6 +192,7 @@ describe('DrawQuestionUseCase', () => {
           gameMode: 'jnj',
           intensity: 'soft',
           lang: 'en',
+          playerCount: 1,
         });
       });
 
@@ -200,6 +208,7 @@ describe('DrawQuestionUseCase', () => {
           gameMode: 'tod',
           intensity: 'hot',
           lang: 'fr',
+          playerCount: 1,
         });
       });
 
@@ -215,6 +224,7 @@ describe('DrawQuestionUseCase', () => {
           gameMode: 'tpf',
           intensity: 'mixed',
           lang: 'de',
+          playerCount: 1,
         });
       });
 
@@ -230,6 +240,7 @@ describe('DrawQuestionUseCase', () => {
           gameMode: 'qpr',
           intensity: 'soft',
           lang: 'es',
+          playerCount: 1,
         });
       });
     });

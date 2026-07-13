@@ -6,7 +6,7 @@ export class DrawQuestionUseCase {
     this.questionRepositoryPort = questionRepositoryPort;
   }
 
-  async execute({ gameMode, intensity, lang, previousPlayerId = null }) {
+  async execute({ gameMode, intensity, lang, previousPlayerId = null, playerCount = null }) {
     const players = await this.playerRepositoryPort.getAllPlayers();
     if (!players || players.length === 0) {
       throw new NoPlayersError();
@@ -16,6 +16,7 @@ export class DrawQuestionUseCase {
       gameMode,
       intensity,
       lang,
+      playerCount: playerCount || players.length,
     });
     if (!question) {
       throw new NoQuestionsAvailableError(gameMode);

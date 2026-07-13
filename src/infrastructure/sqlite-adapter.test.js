@@ -207,8 +207,8 @@ describe('QuestionsDatabaseAdapter', () => {
 
     it('should return a question for ACTION_TRUTH mode (truth)', () => {
       // Mock pickGameKey to return 'tod'
-      const originalPick = adapter.pickGameKey;
-      adapter.pickGameKey = () => 'tod';
+      const originalPick = adapter.selectRandomGameKey;
+      adapter.selectRandomGameKey = () => 'tod';
 
       const question = adapter.getRandomQuestion({
         gameMode: GameMode.ACTION_TRUTH,
@@ -220,13 +220,13 @@ describe('QuestionsDatabaseAdapter', () => {
       expect(question.sentence).toBeTruthy();
       expect(question.promptKind).toBe('truth');
 
-      adapter.pickGameKey = originalPick;
+      adapter.selectRandomGameKey = originalPick;
     });
 
     it('should return a question for ACTION_TRUTH mode (dare)', () => {
       // Mock pickGameKey to return 'dare_chooser'
-      const originalPick = adapter.pickGameKey;
-      adapter.pickGameKey = () => 'dare_chooser';
+      const originalPick = adapter.selectRandomGameKey;
+      adapter.selectRandomGameKey = () => 'dare_chooser';
 
       const question = adapter.getRandomQuestion({
         gameMode: GameMode.ACTION_TRUTH,
@@ -238,7 +238,7 @@ describe('QuestionsDatabaseAdapter', () => {
       expect(question.sentence).toBeTruthy();
       expect(question.promptKind).toBe('dare');
 
-      adapter.pickGameKey = originalPick;
+      adapter.selectRandomGameKey = originalPick;
     });
 
     it('should return a question for WHO_COULD mode', () => {
@@ -352,8 +352,8 @@ describe('QuestionsDatabaseAdapter', () => {
     });
 
     it('should filter by intensity SOFT (category_id = 0)', () => {
-      const originalPick = adapter.pickGameKey;
-      adapter.pickGameKey = () => 'jnj';
+      const originalPick = adapter.selectRandomGameKey;
+      adapter.selectRandomGameKey = () => 'jnj';
 
       const question = adapter.getRandomQuestion({
         gameMode: GameMode.NEVER_HAVE_I_EVER,
@@ -368,12 +368,12 @@ describe('QuestionsDatabaseAdapter', () => {
         "Je n'ai jamais danse sur une table",
       ]).toContain(question.sentence);
 
-      adapter.pickGameKey = originalPick;
+      adapter.selectRandomGameKey = originalPick;
     });
 
     it('should filter by intensity HOT (category_id = 1)', () => {
-      const originalPick = adapter.pickGameKey;
-      adapter.pickGameKey = () => 'jnj';
+      const originalPick = adapter.selectRandomGameKey;
+      adapter.selectRandomGameKey = () => 'jnj';
 
       const question = adapter.getRandomQuestion({
         gameMode: GameMode.NEVER_HAVE_I_EVER,
@@ -384,12 +384,12 @@ describe('QuestionsDatabaseAdapter', () => {
       expect(question).toBeInstanceOf(Question);
       expect(question.sentence).toBe('Never have I ever kissed a stranger');
 
-      adapter.pickGameKey = originalPick;
+      adapter.selectRandomGameKey = originalPick;
     });
 
     it('should return any question for MIXED intensity', () => {
-      const originalPick = adapter.pickGameKey;
-      adapter.pickGameKey = () => 'jnj';
+      const originalPick = adapter.selectRandomGameKey;
+      adapter.selectRandomGameKey = () => 'jnj';
 
       const question = adapter.getRandomQuestion({
         gameMode: GameMode.NEVER_HAVE_I_EVER,
@@ -400,12 +400,12 @@ describe('QuestionsDatabaseAdapter', () => {
       expect(question).toBeInstanceOf(Question);
       expect(question.sentence).toBeTruthy();
 
-      adapter.pickGameKey = originalPick;
+      adapter.selectRandomGameKey = originalPick;
     });
 
     it('should include category_id=2 for dare_chooser MIXED intensity', () => {
-      const originalPick = adapter.pickGameKey;
-      adapter.pickGameKey = () => 'dare_chooser';
+      const originalPick = adapter.selectRandomGameKey;
+      adapter.selectRandomGameKey = () => 'dare_chooser';
 
       const question = adapter.getRandomQuestion({
         gameMode: GameMode.ACTION_TRUTH,
@@ -419,13 +419,13 @@ describe('QuestionsDatabaseAdapter', () => {
         question.sentence
       );
 
-      adapter.pickGameKey = originalPick;
+      adapter.selectRandomGameKey = originalPick;
     });
   });
 
-  describe('getRandomImpostorWord', () => {
+  describe('getImpostorQuestion', () => {
     it('should return an impostor word with hint', () => {
-      const question = adapter.getRandomImpostorWord({ lang: 'en' });
+      const question = adapter.getImpostorQuestion({ lang: 'en' });
 
       expect(question).toBeInstanceOf(Question);
       expect(['Apple', 'Banana']).toContain(question.sentence);
@@ -434,15 +434,15 @@ describe('QuestionsDatabaseAdapter', () => {
     });
 
     it('should return null when no impostor words found for language', () => {
-      const question = adapter.getRandomImpostorWord({ lang: 'unknown' });
+      const question = adapter.getImpostorQuestion({ lang: 'unknown' });
 
       expect(question).toBeNull();
     });
   });
 
-  describe('getRandomWouldYouRatherQuestion', () => {
+  describe('getWouldYouRatherQuestion', () => {
     it('should return a would you rather question', () => {
-      const question = adapter.getRandomWouldYouRatherQuestion({
+      const question = adapter.getWouldYouRatherQuestion({
         intensity: QuestionIntensity.SOFT,
         lang: 'en',
       });
@@ -454,7 +454,7 @@ describe('QuestionsDatabaseAdapter', () => {
     });
 
     it('should return null when no would you rather questions found', () => {
-      const question = adapter.getRandomWouldYouRatherQuestion({
+      const question = adapter.getWouldYouRatherQuestion({
         intensity: QuestionIntensity.SOFT,
         lang: 'unknown',
       });
@@ -463,7 +463,7 @@ describe('QuestionsDatabaseAdapter', () => {
     });
 
     it('should filter by HOT intensity', () => {
-      const question = adapter.getRandomWouldYouRatherQuestion({
+      const question = adapter.getWouldYouRatherQuestion({
         intensity: QuestionIntensity.HOT,
         lang: 'en',
       });
@@ -474,9 +474,9 @@ describe('QuestionsDatabaseAdapter', () => {
     });
   });
 
-  describe('pickGameKey', () => {
+  describe('selectRandomGameKey', () => {
     it('should return jnj for NEVER_HAVE_I_EVER', () => {
-      const key = adapter.pickGameKey(GameMode.NEVER_HAVE_I_EVER);
+      const key = adapter.selectRandomGameKey(GameMode.NEVER_HAVE_I_EVER);
       expect(key).toBe('jnj');
     });
 
@@ -484,37 +484,18 @@ describe('QuestionsDatabaseAdapter', () => {
       const keys = new Set();
       // Run multiple times to check randomness
       for (let i = 0; i < 100; i++) {
-        keys.add(adapter.pickGameKey(GameMode.ACTION_TRUTH));
+        keys.add(adapter.selectRandomGameKey(GameMode.ACTION_TRUTH));
       }
       expect(keys.has('tod') || keys.has('dare_chooser')).toBe(true);
     });
 
     it('should return qpr for WHO_COULD', () => {
-      const key = adapter.pickGameKey(GameMode.WHO_COULD);
+      const key = adapter.selectRandomGameKey(GameMode.WHO_COULD);
       expect(key).toBe('qpr');
     });
 
     it('should throw for unsupported game mode', () => {
-      expect(() => adapter.pickGameKey('unknown')).toThrow();
-    });
-  });
-
-  describe('getPromptKind', () => {
-    it('should return truth for tod', () => {
-      expect(adapter.getPromptKind('tod')).toBe('truth');
-    });
-
-    it('should return dare for dare_chooser', () => {
-      expect(adapter.getPromptKind('dare_chooser')).toBe('dare');
-    });
-
-    it('should return who_could for qpr', () => {
-      expect(adapter.getPromptKind('qpr')).toBe('who_could');
-    });
-
-    it('should return null for other game keys', () => {
-      expect(adapter.getPromptKind('jnj')).toBeNull();
-      expect(adapter.getPromptKind('unknown')).toBeNull();
+      expect(() => adapter.selectRandomGameKey('unknown')).toThrow();
     });
   });
 });

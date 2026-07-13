@@ -15,6 +15,7 @@ export class GameEventHandler {
     this.addPlayerUseCase = dependencies.addPlayerUseCase;
     this.removePlayerUseCase = dependencies.removePlayerUseCase;
     this.textToSpeech = dependencies.textToSpeech;
+    this._supportedLanguages = dependencies.supportedLanguages;
     this.roundRenderer = new RoundRenderer({
       view: dependencies.view,
       state: dependencies.state,

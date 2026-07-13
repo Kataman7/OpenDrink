@@ -32,22 +32,22 @@ describe('I18n', () => {
       expect(i18n.currentLang).toBe('en');
     });
 
-    it('initializes with provided translations and defaultLang', () => {
-      const i18n = new I18n({ translations, defaultLang: 'fr' });
+    it('initializes with provided translations', () => {
+      const i18n = new I18n({ translations });
       expect(i18n.translations).toEqual(translations);
-      expect(i18n.defaultLang).toBe('fr');
-      expect(i18n.currentLang).toBe('fr');
+      expect(i18n.defaultLang).toBe('en');
+      expect(i18n.currentLang).toBe('en');
     });
 
     it('starts with currentLang equal to defaultLang', () => {
-      const i18n = new I18n({ translations, defaultLang: 'en' });
+      const i18n = new I18n({ translations });
       expect(i18n.currentLang).toBe(i18n.defaultLang);
     });
   });
 
   describe('setLanguage', () => {
     it('changes the current language', () => {
-      const i18n = new I18n({ translations, defaultLang: 'en' });
+      const i18n = new I18n({ translations });
       i18n.setLanguage('fr');
       expect(i18n.currentLang).toBe('fr');
     });

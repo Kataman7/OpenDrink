@@ -84,7 +84,7 @@ describe('AntoinePersonalizer', () => {
       { id: 1, name: 'Alice' },
       players
     );
-    expect(result).toBe('Earn  points');
+    expect(result).toBe('Earn points');
   });
 
   it('should return sentence unchanged if no tokens', () => {

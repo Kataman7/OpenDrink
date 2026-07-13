@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import {
   PlayerNameEmptyError,
   QuestionTextEmptyError,
-  InvalidQuestionTypeError,
   DatabaseInitError,
   NoPlayersError,
   NoQuestionsAvailableError,
@@ -18,7 +17,7 @@ describe('PlayerNameEmptyError', () => {
 
   it('should have correct message', () => {
     const error = new PlayerNameEmptyError();
-    expect(error.message).toBe('Le nom du joueur ne peut pas être vide');
+    expect(error.message).toBe('Player name cannot be empty');
   });
 
   it('should be an instance of Error', () => {
@@ -35,28 +34,11 @@ describe('QuestionTextEmptyError', () => {
 
   it('should have correct message', () => {
     const error = new QuestionTextEmptyError();
-    expect(error.message).toBe('Le texte de la question ne peut pas être vide');
+    expect(error.message).toBe('Question text cannot be empty');
   });
 
   it('should be an instance of Error', () => {
     const error = new QuestionTextEmptyError();
-    expect(error instanceof Error).toBe(true);
-  });
-});
-
-describe('InvalidQuestionTypeError', () => {
-  it('should have correct name', () => {
-    const error = new InvalidQuestionTypeError('custom');
-    expect(error.name).toBe('InvalidQuestionTypeError');
-  });
-
-  it('should include type in message', () => {
-    const error = new InvalidQuestionTypeError('custom');
-    expect(error.message).toBe('Type de question invalide : custom');
-  });
-
-  it('should be an instance of Error', () => {
-    const error = new InvalidQuestionTypeError('custom');
     expect(error instanceof Error).toBe(true);
   });
 });
@@ -71,7 +53,7 @@ describe('DatabaseInitError', () => {
   it('should have correct message', () => {
     const cause = new Error('connection failed');
     const error = new DatabaseInitError(cause);
-    expect(error.message).toBe("Échec de l'initialisation de la base de données");
+    expect(error.message).toBe('Failed to initialize the database');
   });
 
   it('should store cause', () => {
@@ -94,7 +76,7 @@ describe('NoPlayersError', () => {
 
   it('should have correct message', () => {
     const error = new NoPlayersError();
-    expect(error.message).toBe('Aucun joueur ajouté pour cette partie');
+    expect(error.message).toBe('No players added for this game');
   });
 
   it('should be an instance of Error', () => {
@@ -111,7 +93,7 @@ describe('NoQuestionsAvailableError', () => {
 
   it('should include mode in message', () => {
     const error = new NoQuestionsAvailableError('jnj');
-    expect(error.message).toBe('Aucune question disponible pour le mode : jnj');
+    expect(error.message).toBe('No question available for mode: jnj');
   });
 
   it('should be an instance of Error', () => {

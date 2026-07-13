@@ -8,15 +8,15 @@ describe('preprocessForTts', () => {
 
   describe('when text is falsy', () => {
     it('should return empty string for null', () => {
-      expect(preprocessForTts(null, 'jnj', 'en', {})).toBe('');
+      expect(preprocessForTts(null, 'jnj', createMockI18n())).toBe('');
     });
 
     it('should return empty string for undefined', () => {
-      expect(preprocessForTts(undefined, 'jnj', 'en', {})).toBe('');
+      expect(preprocessForTts(undefined, 'jnj', createMockI18n())).toBe('');
     });
 
     it('should return empty string for empty string', () => {
-      expect(preprocessForTts('', 'jnj', 'en', {})).toBe('');
+      expect(preprocessForTts('', 'jnj', createMockI18n())).toBe('');
     });
   });
 
@@ -24,175 +24,162 @@ describe('preprocessForTts', () => {
     it('should remove dots from text', () => {
       const text = 'Hello. World.';
       const i18n = createMockI18n();
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('Hello World');
+      expect(preprocessForTts(text, 'jnj', i18n)).toBe('Hello World');
     });
 
     it('should normalize whitespace', () => {
       const text = 'Hello    World';
       const i18n = createMockI18n();
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('Hello World');
+      expect(preprocessForTts(text, 'jnj', i18n)).toBe('Hello World');
     });
 
     it('should trim leading and trailing whitespace', () => {
       const text = '  Hello World  ';
       const i18n = createMockI18n();
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('Hello World');
+      expect(preprocessForTts(text, 'jnj', i18n)).toBe('Hello World');
     });
 
     it('should process text with multiple whitespace and dots', () => {
       const text = '  Hello . World .  ';
       const i18n = createMockI18n();
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('Hello World');
+      expect(preprocessForTts(text, 'jnj', i18n)).toBe('Hello World');
     });
   });
 
   describe('i18n replacements', () => {
+    const translations = {
+      'round.ttsReplaceAnd': ' und ',
+      'round.ttsReplaceOr': ' oder ',
+    };
+
     it('should replace & with i18n translation', () => {
-      const text = 'Coffee & Tea';
-      const i18n = createMockI18n({
-        'round.ttsReplaceAnd': 'and',
-      });
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('Coffee and Tea');
+      const i18n = createMockI18n(translations);
+      expect(preprocessForTts('rock & roll', 'jnj', i18n)).toBe('rock und roll');
     });
 
     it('should replace / with i18n translation', () => {
-      const text = 'Coffee / Tea';
-      const i18n = createMockI18n({
-        'round.ttsReplaceOr': 'or',
-      });
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('Coffee or Tea');
+      const i18n = createMockI18n(translations);
+      expect(preprocessForTts('yes/no', 'jnj', i18n)).toBe('yes oder no');
     });
 
     it('should replace both & and / with i18n translations', () => {
-      const text = 'Coffee & Tea / Water';
-      const i18n = createMockI18n({
-        'round.ttsReplaceAnd': 'and',
-        'round.ttsReplaceOr': 'or',
-      });
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('Coffee and Tea or Water');
-    });
-
-    it('should not replace when i18n is not provided', () => {
-      const text = 'Coffee & Tea / Water';
-      expect(preprocessForTts(text, 'jnj', 'en', null)).toBe('Coffee & Tea / Water');
+      const i18n = createMockI18n(translations);
+      expect(preprocessForTts('rock & roll / nothing else', 'jnj', i18n)).toBe(
+        'rock und roll oder nothing else'
+      );
     });
 
     it('should use key as fallback when translation is not found', () => {
-      const text = 'Coffee & Tea';
       const i18n = createMockI18n({});
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('Coffee roundttsReplaceAnd Tea');
+      expect(preprocessForTts('rock & roll / nothing else', 'jnj', i18n)).toBe(
+        'rock roundttsReplaceAnd roll roundttsReplaceOr nothing else'
+      );
+    });
+
+    it('should not replace when i18n is not provided', () => {
+      expect(preprocessForTts('rock & roll / nothing else', 'jnj', null)).toBe(
+        'rock & roll / nothing else'
+      );
+    });
+
+    it('should use key as fallback when translation is not found', () => {
+      const i18n = createMockI18n({});
+      expect(preprocessForTts('rock & roll / nothing else', 'jnj', i18n)).toBe(
+        'rock roundttsReplaceAnd roll roundttsReplaceOr nothing else'
+      );
     });
   });
 
   describe('game mode prefixes', () => {
+    const translations = {
+      'round.ttsPrefixWouldYouRather': 'Would you rather ',
+      'round.ttsPrefixNeverHaveIEver': 'I have never ',
+      'round.ttsPrefixWhoCould': 'Who could ',
+    };
+
     it('should add prefix for would_you_rather mode', () => {
-      const text = 'Would you rather';
-      const i18n = createMockI18n({
-        'round.ttsPrefixWouldYouRather': 'Question:',
-      });
-      expect(preprocessForTts(text, 'would_you_rather', 'en', i18n)).toBe(
-        'Question:Would you rather'
+      const i18n = createMockI18n(translations);
+      expect(preprocessForTts('kiss or hug?', 'would_you_rather', i18n)).toBe(
+        'Would you rather kiss or hug?'
       );
     });
 
     it('should add prefix for never_have_i_ever mode', () => {
-      const text = 'Never have I ever';
-      const i18n = createMockI18n({
-        'round.ttsPrefixNeverHaveIEver': 'Statement:',
-      });
-      expect(preprocessForTts(text, 'never_have_i_ever', 'en', i18n)).toBe(
-        'Statement:Never have I ever'
+      const i18n = createMockI18n(translations);
+      expect(preprocessForTts('been to Paris', 'never_have_i_ever', i18n)).toBe(
+        'I have never been to Paris'
       );
     });
 
     it('should add prefix for who_could mode', () => {
-      const text = 'Who could';
-      const i18n = createMockI18n({
-        'round.ttsPrefixWhoCould': 'Who:',
-      });
-      expect(preprocessForTts(text, 'who_could', 'en', i18n)).toBe('Who:Who could');
+      const i18n = createMockI18n(translations);
+      expect(preprocessForTts('drink the most?', 'who_could', i18n)).toBe(
+        'Who could drink the most?'
+      );
     });
 
     it('should not add prefix when game mode has no prefix key', () => {
-      const text = 'Some question';
-      const i18n = createMockI18n({
-        'round.ttsPrefixWouldYouRather': 'Question:',
-      });
-      expect(preprocessForTts(text, 'unknown_mode', 'en', i18n)).toBe('Some question');
+      const i18n = createMockI18n(translations);
+      expect(preprocessForTts('some text', 'impostor', i18n)).toBe('some text');
     });
 
     it('should not add prefix when i18n is not provided', () => {
-      const text = 'Would you rather';
-      expect(preprocessForTts(text, 'would_you_rather', 'en', null)).toBe('Would you rather');
+      expect(preprocessForTts('drink the most?', 'who_could', null)).toBe('drink the most?');
     });
 
     it('should not add prefix when prefix key is not in i18n', () => {
-      const text = 'Would you rather';
       const i18n = createMockI18n({});
-      expect(preprocessForTts(text, 'would_you_rather', 'en', i18n)).toBe('Would you rather');
+      expect(preprocessForTts('drink the most?', 'who_could', i18n)).toBe('drink the most?');
     });
 
     it('should not add prefix when prefix key returns itself (fallback)', () => {
-      const text = 'Would you rather';
-      const i18n = createMockI18n({
-        'round.ttsPrefixWouldYouRather': 'round.ttsPrefixWouldYouRather',
-      });
-      expect(preprocessForTts(text, 'would_you_rather', 'en', i18n)).toBe('Would you rather');
+      const i18n = createMockI18n({});
+      expect(preprocessForTts('drink the most?', 'who_could', i18n)).toBe('drink the most?');
     });
   });
 
   describe('complete workflows', () => {
+    const translations = {
+      'round.ttsReplaceAnd': ' and ',
+      'round.ttsReplaceOr': ' or ',
+      'round.ttsPrefixWouldYouRather': 'Would you rather ',
+    };
+
     it('should process complex text with all transformations', () => {
-      const text = '  Would you rather & drink beer / water?  ';
-      const i18n = createMockI18n({
-        'round.ttsReplaceAnd': 'and',
-        'round.ttsReplaceOr': 'or',
-        'round.ttsPrefixWouldYouRather': 'Question:',
-      });
-      expect(preprocessForTts(text, 'would_you_rather', 'en', i18n)).toBe(
-        'Question:Would you rather and drink beer or water?'
+      const i18n = createMockI18n(translations);
+      expect(preprocessForTts('  Kiss & hug / slap . ', 'would_you_rather', i18n)).toBe(
+        'Would you rather Kiss and hug or slap'
       );
     });
 
     it('should process text with no tokens or special chars', () => {
-      const text = 'Just a simple question';
-      const i18n = createMockI18n();
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('Just a simple question');
+      const i18n = createMockI18n(translations);
+      expect(preprocessForTts('Hello World', 'jnj', i18n)).toBe('Hello World');
     });
 
     it('should handle multiple consecutive special characters', () => {
-      const text = 'This && is /// weird';
-      const i18n = createMockI18n({
-        'round.ttsReplaceAnd': 'and',
-        'round.ttsReplaceOr': 'or',
-      });
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('This andand is ororor weird');
+      const i18n = createMockI18n(translations);
+      expect(preprocessForTts('a & b & c', 'jnj', i18n)).toBe('a and b and c');
     });
   });
 
   describe('edge cases', () => {
+    const i18n = createMockI18n({});
+
     it('should handle text with only dots', () => {
-      const text = '...';
-      const i18n = createMockI18n();
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('');
+      expect(preprocessForTts('...', 'jnj', i18n)).toBe('');
     });
 
     it('should handle text with only whitespace', () => {
-      const text = '   ';
-      const i18n = createMockI18n();
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('');
+      expect(preprocessForTts('   ', 'jnj', i18n)).toBe('');
     });
 
     it('should handle single character', () => {
-      const text = 'A';
-      const i18n = createMockI18n();
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('A');
+      expect(preprocessForTts('a', 'jnj', i18n)).toBe('a');
     });
 
     it('should handle text with newlines and tabs', () => {
-      const text = 'Hello\n\t\tWorld';
-      const i18n = createMockI18n();
-      expect(preprocessForTts(text, 'jnj', 'en', i18n)).toBe('Hello World');
+      expect(preprocessForTts('Hello\n\tWorld', 'jnj', i18n)).toBe('Hello World');
     });
   });
 });

@@ -7,6 +7,8 @@ const MODES_WITH_HIDDEN_ROUND_PLAYER = new Set([
   'would_you_rather',
   'who_could',
   'never_have_i_ever',
+  'picolo',
+  'dormelles',
 ]);
 
 export const RANDOM_COMPATIBLE_MODES = [

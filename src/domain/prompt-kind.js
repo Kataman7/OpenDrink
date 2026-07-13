@@ -18,9 +18,9 @@ export const isModeOnlyLabel = promptKind =>
   promptKind === PromptKind.IMPOSTOR ||
   promptKind === PromptKind.QUIZ ||
   promptKind === PromptKind.DORMELLES ||
-  (promptKind && promptKind.startsWith('team_battle_')) ||
-  (promptKind && promptKind.startsWith('picolo_')) ||
-  (promptKind && promptKind.startsWith('truth_dare_'));
+  (typeof promptKind === 'string' && promptKind.startsWith('team_battle_')) ||
+  (typeof promptKind === 'string' && promptKind.startsWith('picolo_')) ||
+  (typeof promptKind === 'string' && promptKind.startsWith('truth_dare_'));
 
 export const GAME_KEY_MAP = {
   never_have_i_ever: ['jnj'],

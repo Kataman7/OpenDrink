@@ -18,7 +18,7 @@ import {
   DatabasePort,
 } from '../application/ports/repository-ports.js';
 
-const QUESTIONS_DB_PATH = '/questions.sqlite';
+const QUESTIONS_DB_PATH = `${import.meta.env.BASE_URL}questions.sqlite`;
 
 const CREATE_PLAYERS_TABLE_SQL =
   'CREATE TABLE players (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)';

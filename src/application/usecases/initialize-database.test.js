@@ -34,9 +34,7 @@ describe('InitializeDatabaseUseCase', () => {
     };
     const useCase = new InitializeDatabaseUseCase({ databasePort: mockDatabasePort });
 
-    await expect(useCase.execute()).rejects.toThrow(
-      "Échec de l'initialisation de la base de données"
-    );
+    await expect(useCase.execute()).rejects.toThrow('Failed to initialize the database');
     try {
       await useCase.execute();
     } catch (error) {

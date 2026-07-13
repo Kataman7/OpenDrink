@@ -256,7 +256,7 @@ describe('DrawQuestionUseCase', () => {
 
         await expect(
           useCase.execute({ gameMode: 'tod', intensity: 'hot', lang: 'fr' })
-        ).rejects.toThrow('Aucune question disponible pour le mode : tod');
+        ).rejects.toThrow('No question available for mode: tod');
       });
     });
 

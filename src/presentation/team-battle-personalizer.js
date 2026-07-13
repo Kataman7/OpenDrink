@@ -1,4 +1,4 @@
-import { pickRandomFromArray, randomInt, randomBoolean } from '../shared/random.js';
+import { randomFromArray, randomBoolean } from '../shared/random.js';
 
 function pickRandomName(playerIds, allPlayers, excludeId = null) {
   const candidates = playerIds.filter(id => id !== excludeId);
@@ -18,7 +18,7 @@ function pickRandomPlayerName(allPlayers, excludeId = null) {
   if (candidates.length === 0) {
     return allPlayers[0] ? allPlayers[0].name : '';
   }
-  return pickRandomFromArray(candidates).name;
+  return randomFromArray(candidates).name;
 }
 
 export class TeamBattlePersonalizer {

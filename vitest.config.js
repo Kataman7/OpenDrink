@@ -6,7 +6,11 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       include: ['src/**/*.js'],
-      exclude: ['src/**/*.test.js'],
+      exclude: [
+        'src/**/*.test.js',
+        'src/presentation/dependency-injection.js',
+        'src/presentation/i18n.js',
+      ],
       thresholds: {
         lines: 80,
         functions: 80,

@@ -24,6 +24,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "format": "prettier --write src/",
+    "check": "npm run lint && npx prettier --check src/ && npm test && npm run build",
     "prepare": "husky"
   },
   "dependencies": {

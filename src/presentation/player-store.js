@@ -1,5 +1,3 @@
-import { DEFAULT_LANG } from '../config.js';
-
 export class PlayerStore {
   constructor() {
     this.players = [];

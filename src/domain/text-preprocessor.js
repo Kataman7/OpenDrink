@@ -3,9 +3,7 @@ const TTS_PREFIX_KEYS = {
   never_have_i_ever: 'round.ttsPrefixNeverHaveIEver',
   who_could: 'round.ttsPrefixWhoCould',
   quiz: 'round.ttsPrefixQuiz',
-  team_battle: 'round.ttsPrefixTeamBattle',
   dormelles: 'round.ttsPrefixDormelles',
-  picolo: 'round.ttsPrefixPicolo',
   truth_dare: 'round.ttsPrefixTruthDare',
 };
 
@@ -19,7 +17,6 @@ export function preprocessForTts(text, gameMode, i18n) {
   const [andReplace, orReplace] = TTS_REPLACE_KEYS.map(key => i18n.t(key));
   result = result.replace(/&/g, andReplace);
   result = result.replace(/\//g, orReplace);
-  result = result.replace(/\./g, '');
   result = result.replace(/\s+/g, ' ').trim();
 
   const prefixKey = TTS_PREFIX_KEYS[gameMode];

@@ -272,9 +272,9 @@ export class GameView {
       if (quizOptions && !quizOptions.classList.contains(HIDDEN_CLASS)) {
         const optionTexts = Array.from(quizOptions.querySelectorAll('.quiz-option'))
           .map(btn => btn.textContent)
-          .join('. ');
+          .join('... ');
         const optionsLabel = this.i18n.t('game.options');
-        return `${sentenceEl.textContent} ${optionsLabel} ${optionTexts}`;
+        return `${sentenceEl.textContent}. ${optionsLabel} ${optionTexts}.`;
       }
       return sentenceEl.textContent;
     }

@@ -9,6 +9,7 @@ const MODES_WITH_HIDDEN_ROUND_PLAYER = new Set([
   'never_have_i_ever',
   'picolo',
   'dormelles',
+  'team_battle',
 ]);
 
 export const RANDOM_COMPATIBLE_MODES = [

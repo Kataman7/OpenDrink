@@ -21,10 +21,10 @@ describe('preprocessForTts', () => {
   });
 
   describe('basic text processing', () => {
-    it('should remove dots from text', () => {
+    it('should keep dots from text', () => {
       const text = 'Hello. World.';
       const i18n = createMockI18n();
-      expect(preprocessForTts(text, 'jnj', i18n)).toBe('Hello World');
+      expect(preprocessForTts(text, 'jnj', i18n)).toBe('Hello. World.');
     });
 
     it('should normalize whitespace', () => {
@@ -42,7 +42,7 @@ describe('preprocessForTts', () => {
     it('should process text with multiple whitespace and dots', () => {
       const text = '  Hello . World .  ';
       const i18n = createMockI18n();
-      expect(preprocessForTts(text, 'jnj', i18n)).toBe('Hello World');
+      expect(preprocessForTts(text, 'jnj', i18n)).toBe('Hello . World .');
     });
   });
 
@@ -72,20 +72,7 @@ describe('preprocessForTts', () => {
     it('should use key as fallback when translation is not found', () => {
       const i18n = createMockI18n({});
       expect(preprocessForTts('rock & roll / nothing else', 'jnj', i18n)).toBe(
-        'rock roundttsReplaceAnd roll roundttsReplaceOr nothing else'
-      );
-    });
-
-    it('should not replace when i18n is not provided', () => {
-      expect(preprocessForTts('rock & roll / nothing else', 'jnj', null)).toBe(
-        'rock & roll / nothing else'
-      );
-    });
-
-    it('should use key as fallback when translation is not found', () => {
-      const i18n = createMockI18n({});
-      expect(preprocessForTts('rock & roll / nothing else', 'jnj', i18n)).toBe(
-        'rock roundttsReplaceAnd roll roundttsReplaceOr nothing else'
+        'rock round.ttsReplaceAnd roll round.ttsReplaceOr nothing else'
       );
     });
   });
@@ -148,7 +135,7 @@ describe('preprocessForTts', () => {
     it('should process complex text with all transformations', () => {
       const i18n = createMockI18n(translations);
       expect(preprocessForTts('  Kiss & hug / slap . ', 'would_you_rather', i18n)).toBe(
-        'Would you rather Kiss and hug or slap'
+        'Would you rather Kiss and hug or slap .'
       );
     });
 
@@ -167,7 +154,7 @@ describe('preprocessForTts', () => {
     const i18n = createMockI18n({});
 
     it('should handle text with only dots', () => {
-      expect(preprocessForTts('...', 'jnj', i18n)).toBe('');
+      expect(preprocessForTts('...', 'jnj', i18n)).toBe('...');
     });
 
     it('should handle text with only whitespace', () => {

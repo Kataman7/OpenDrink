@@ -22,6 +22,7 @@ export default [
         HTMLElement: true,
         speechSynthesis: true,
         SpeechSynthesisUtterance: true,
+        process: true,
       },
     },
     rules: {

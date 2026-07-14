@@ -67,15 +67,10 @@
       "mrWhiteFound": "Mr. White found! Game over."
     },
     "impostorSettings": {
-      "title": "Impostor Settings",
-      "impostorCount": "Number of impostors",
-      "mrWhiteCount": "Number of Mr. White",
       "start": "Start Impostor",
       "minPlayers": "Need at least 3 players for impostor",
-      "impostors": "impostors",
-      "mrWhite": "Mr. White",
-      "normal": "normal",
-      "players": "players"
+      "impostors": "Impostors",
+      "citizens": "Citizens"
     },
     "common": {
       "back": "Back"
@@ -206,15 +201,10 @@
       "mrWhiteFound": "Mr. White trouvé ! Partie terminée."
     },
     "impostorSettings": {
-      "title": "Paramètres Imposteur",
-      "impostorCount": "Nombre d'imposteurs",
-      "mrWhiteCount": "Nombre de Mr. White",
       "start": "Lancer Imposteur",
       "minPlayers": "Il faut au moins 3 joueurs pour l'imposteur",
-      "impostors": "imposteurs",
-      "mrWhite": "Mr. White",
-      "normal": "normaux",
-      "players": "joueurs"
+      "impostors": "Imposteurs",
+      "citizens": "Citoyens"
     },
     "common": {
       "back": "Retour"

@@ -96,22 +96,19 @@ export class GameView {
   }
 
   renderImpostorSettings({ playerCount, impostorCount, mrWhiteCount }) {
-    this.getElement('impostor-count').textContent = String(impostorCount);
-    this.getElement('mr-white-count').textContent = String(mrWhiteCount);
-    this.updateImpostorRoleSummary(playerCount, impostorCount, mrWhiteCount);
+    this._setRoleCounts(playerCount, impostorCount, mrWhiteCount);
   }
 
   updateImpostorSettings(state) {
-    const playerCount = state.players.length;
-    this.getElement('impostor-count').textContent = String(state.impostorCount);
-    this.getElement('mr-white-count').textContent = String(state.mrWhiteCount);
-    this.updateImpostorRoleSummary(playerCount, state.impostorCount, state.mrWhiteCount);
+    this._setRoleCounts(state.players.length, state.impostorCount, state.mrWhiteCount);
   }
 
-  updateImpostorRoleSummary(playerCount, impostorCount, mrWhiteCount) {
-    const normalCount = playerCount - impostorCount - mrWhiteCount;
-    this.getElement('impostor-roles-summary').textContent =
-      `${impostorCount} ${this.i18n.t('impostorSettings.impostors')} + ${mrWhiteCount} ${this.i18n.t('impostorSettings.mrWhite')} + ${normalCount} ${this.i18n.t('impostorSettings.normal')} = ${playerCount} ${this.i18n.t('impostorSettings.players')}`;
+  _setRoleCounts(playerCount, impostorCount, mrWhiteCount) {
+    this.getElement('impostor-count').textContent = String(impostorCount);
+    this.getElement('mr-white-count').textContent = String(mrWhiteCount);
+    this.getElement('citizen-count').textContent = String(
+      playerCount - impostorCount - mrWhiteCount
+    );
   }
 
   renderImpostorDiscussionState() {

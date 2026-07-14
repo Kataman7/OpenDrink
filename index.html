@@ -90,7 +90,7 @@
               <span data-i18n="mode.whoCould">Who Could</span>
             </button>
             <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="impostor">
-              <span class="btn-mode-icon">🎯</span>
+              <span class="btn-mode-icon">🤫</span>
               <span data-i18n="mode.impostor">Impostor</span>
             </button>
             <button
@@ -127,16 +127,15 @@
             </button>
             <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="truth_dare">
               <span class="btn-mode-icon">🎴</span>
-              <span data-i18n="mode.truthDare">Truth or Dare (Classic)</span>
+              <span data-i18n="mode.truthDare">Truth or Dare</span>
             </button>
-            <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="random">
-              <span class="btn-mode-icon">🔀</span>
+            <button class="btn btn-large btn-accent" data-action="select-mode" data-mode="random">
+              <span class="btn-mode-icon">🎲</span>
               <span data-i18n="mode.random">Random</span>
             </button>
           </div>
           <button
-            id="btn-back-mode"
-            class="btn btn-secondary btn-small"
+            class="btn btn-large btn-secondary"
             data-action="back-lobby"
             data-i18n="common.back"
           >
@@ -161,7 +160,7 @@
           </button>
           <button
             id="btn-back-mode-random"
-            class="btn btn-secondary btn-small"
+            class="btn btn-large btn-secondary"
             data-action="back-lobby"
             data-i18n="common.back"
           >
@@ -208,7 +207,7 @@
           </button>
           <button
             id="btn-back-impostor"
-            class="btn btn-secondary btn-small"
+            class="btn btn-large btn-secondary"
             data-action="back-lobby"
             data-i18n="game.backToLobby"
           >
@@ -219,38 +218,39 @@
 
       <!-- SCREEN: IMPOSTOR SETTINGS -->
       <section id="screen-impostor_settings" class="screen hidden">
-        <div class="screen-inner">
-          <h2 class="title" data-i18n="impostorSettings.title">Impostor Settings</h2>
-          <div class="impostor-settings">
-            <div class="field-group">
-              <label class="field-label" data-i18n="impostorSettings.impostorCount"
-                >Impostors</label
-              >
-              <div class="stepper">
-                <button class="btn btn-small" data-action="impostor-dec-impostors">−</button>
-                <span id="impostor-count" class="stepper-value">1</span>
-                <button class="btn btn-small" data-action="impostor-inc-impostors">+</button>
+        <div class="screen-inner" style="max-width: 320px">
+          <div class="role-list">
+            <div class="role-card">
+              <span class="role-label" data-i18n="impostorSettings.impostors">Impostors</span>
+              <div class="role-row">
+                <button class="btn btn-large btn-round" data-action="impostor-dec-impostors">
+                  −
+                </button>
+                <span id="impostor-count" class="role-value">1</span>
+                <button class="btn btn-large btn-round" data-action="impostor-inc-impostors">
+                  +
+                </button>
               </div>
             </div>
-            <div class="field-group">
-              <label class="field-label" data-i18n="impostorSettings.mrWhiteCount">Mr. White</label>
-              <div class="stepper">
-                <button class="btn btn-small" data-action="impostor-dec-white">−</button>
-                <span id="mr-white-count" class="stepper-value">0</span>
-                <button class="btn btn-small" data-action="impostor-inc-white">+</button>
+            <div class="role-card">
+              <span class="role-label">Mr. White</span>
+              <div class="role-row">
+                <button class="btn btn-large btn-round" data-action="impostor-dec-white">−</button>
+                <span id="mr-white-count" class="role-value">0</span>
+                <button class="btn btn-large btn-round" data-action="impostor-inc-white">+</button>
               </div>
             </div>
-            <p id="impostor-roles-summary" class="hint">
-              2 impostors + 0 Mr. White + 5 normal = 7 players
-            </p>
-            <button class="btn btn-large btn-primary" data-action="impostor-start">
-              <span class="btn-mode-icon">🕵️</span>
-              <span data-i18n="impostorSettings.start">Start Impostor</span>
-            </button>
+            <div class="role-card">
+              <span class="role-label" data-i18n="impostorSettings.citizens">Citizens</span>
+              <span id="citizen-count" class="role-value role-value--auto">5</span>
+            </div>
           </div>
+          <button class="btn btn-large btn-accent" data-action="impostor-start">
+            <span class="btn-mode-icon">🕵️</span>
+            <span data-i18n="impostorSettings.start">Start Impostor</span>
+          </button>
           <button
-            id="btn-back-impostor-settings"
-            class="btn btn-secondary btn-small"
+            class="btn btn-large btn-secondary"
             data-action="back-lobby"
             data-i18n="common.back"
           >
@@ -291,7 +291,7 @@
           </div>
           <button
             id="btn-back-intensity"
-            class="btn btn-secondary btn-small"
+            class="btn btn-large btn-secondary"
             data-action="back-lobby"
             data-i18n="common.back"
           >
@@ -323,12 +323,16 @@
           >
             Next
           </button>
-          <button id="btn-auto-read" class="btn btn-secondary" data-action="toggle-auto-read">
+          <button
+            id="btn-auto-read"
+            class="btn btn-large btn-secondary"
+            data-action="toggle-auto-read"
+          >
             Lecture OFF
           </button>
           <button
             id="btn-back-game"
-            class="btn btn-secondary btn-small"
+            class="btn btn-large btn-secondary"
             data-action="back-lobby"
             data-i18n="game.backToLobby"
           >

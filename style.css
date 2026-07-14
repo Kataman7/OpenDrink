@@ -498,3 +498,25 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.stepper-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  min-width: 48px;
+  text-align: center;
+  color: var(--color-text);
+}
+
+.impostor-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}

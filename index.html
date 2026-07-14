@@ -217,6 +217,48 @@
         </div>
       </section>
 
+      <!-- SCREEN: IMPOSTOR SETTINGS -->
+      <section id="screen-impostor_settings" class="screen hidden">
+        <div class="screen-inner">
+          <h2 class="title" data-i18n="impostorSettings.title">Impostor Settings</h2>
+          <div class="impostor-settings">
+            <div class="field-group">
+              <label class="field-label" data-i18n="impostorSettings.impostorCount"
+                >Impostors</label
+              >
+              <div class="stepper">
+                <button class="btn btn-small" data-action="impostor-dec-impostors">−</button>
+                <span id="impostor-count" class="stepper-value">1</span>
+                <button class="btn btn-small" data-action="impostor-inc-impostors">+</button>
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label" data-i18n="impostorSettings.mrWhiteCount">Mr. White</label>
+              <div class="stepper">
+                <button class="btn btn-small" data-action="impostor-dec-white">−</button>
+                <span id="mr-white-count" class="stepper-value">0</span>
+                <button class="btn btn-small" data-action="impostor-inc-white">+</button>
+              </div>
+            </div>
+            <p id="impostor-roles-summary" class="hint">
+              2 impostors + 0 Mr. White + 5 normal = 7 players
+            </p>
+            <button class="btn btn-large btn-primary" data-action="impostor-start">
+              <span class="btn-mode-icon">🕵️</span>
+              <span data-i18n="impostorSettings.start">Start Impostor</span>
+            </button>
+          </div>
+          <button
+            id="btn-back-impostor-settings"
+            class="btn btn-secondary btn-small"
+            data-action="back-lobby"
+            data-i18n="common.back"
+          >
+            Back
+          </button>
+        </div>
+      </section>
+
       <!-- SCREEN: INTENSITY -->
       <section id="screen-intensity" class="screen hidden">
         <div class="screen-inner">

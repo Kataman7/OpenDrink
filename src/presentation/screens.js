@@ -6,4 +6,5 @@ export const SCREENS = {
   intensity: 'intensity',
   game: 'game',
   impostorReveal: 'impostor_reveal',
+  impostorSettings: 'impostor_settings',
 };

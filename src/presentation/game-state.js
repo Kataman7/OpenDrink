@@ -34,6 +34,8 @@ export class GameState {
     this.playerStore = new PlayerStore();
     this.teamManager = new TeamManager();
     this.roundState = new RoundState();
+    this.impostorCount = 1;
+    this.mrWhiteCount = 0;
   }
 
   get players() {

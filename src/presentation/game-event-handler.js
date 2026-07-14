@@ -133,7 +133,12 @@ export class GameEventHandler {
     }
 
     if (mode === GameMode.IMPOSTOR) {
-      await this.startImpostorRound();
+      this.view.renderImpostorSettings({
+        playerCount: this.state.players.length,
+        impostorCount: this.state.impostorCount,
+        mrWhiteCount: this.state.mrWhiteCount,
+      });
+      this.screenManager.navigateToImpostorSettings();
       return;
     }
 
@@ -165,6 +170,47 @@ export class GameEventHandler {
     this.state.selectIntensity(intensity);
     this.screenManager.navigateToGameScreen();
     await this.requestNextRound();
+  }
+
+  async handleImpostorStart() {
+    const playerCount = this.state.players.length;
+    const impostors = this.state.impostorCount;
+    const mrWhite = this.state.mrWhiteCount;
+    if (playerCount < impostors + mrWhite + 2) {
+      this.showError(this.i18n.t('impostorSettings.minPlayers'));
+      return;
+    }
+    await this.startImpostorRound();
+  }
+
+  handleImpostorDecImpostors() {
+    if (this.state.impostorCount > 1) {
+      this.state.impostorCount--;
+      this.view.updateImpostorSettings(this.state);
+    }
+  }
+
+  handleImpostorIncImpostors() {
+    const maxImpostor = Math.floor((this.state.players.length - this.state.mrWhiteCount) / 2);
+    if (this.state.impostorCount < maxImpostor) {
+      this.state.impostorCount++;
+      this.view.updateImpostorSettings(this.state);
+    }
+  }
+
+  handleImpostorDecWhite() {
+    if (this.state.mrWhiteCount > 0) {
+      this.state.mrWhiteCount--;
+      this.view.updateImpostorSettings(this.state);
+    }
+  }
+
+  handleImpostorIncWhite() {
+    const maxWhite = this.state.players.length - this.state.impostorCount - 1;
+    if (this.state.mrWhiteCount < maxWhite) {
+      this.state.mrWhiteCount++;
+      this.view.updateImpostorSettings(this.state);
+    }
   }
 
   async startImpostorRound() {
@@ -199,13 +245,15 @@ export class GameEventHandler {
   handleBackToLobby() {
     this.view.clearSevenTimer();
     this.impostorManager.finishRound();
-    this.screenManager.navigateToLobby();
+    this.screenManager.goBack();
   }
 
   handleImpostorReveal() {
     this.impostorManager.revealWord();
+    const result = this.impostorManager.getCurrentWord();
     this.view.renderImpostorRevealedWord({
-      word: this.impostorManager.getCurrentWord(),
+      word: result.word,
+      role: result.role,
       hasNextPlayer: this.impostorManager.hasMorePlayers(),
     });
   }
@@ -238,9 +286,11 @@ export class GameEventHandler {
     const playerId = Number(target.getAttribute('data-player-id'));
     if (!playerId) return;
 
-    const isImpostor = this.impostorManager.isImpostorPlayer(playerId);
+    const isBad =
+      this.impostorManager.isImpostorPlayer(playerId) ||
+      this.impostorManager.isMrWhitePlayer(playerId);
 
-    if (isImpostor) {
+    if (isBad) {
       this.view.renderImpostorAccusationResult(this.i18n.t('impostor.impostorFound'));
       this.impostorManager.finishRound();
       return;
@@ -295,6 +345,11 @@ const CLICK_ACTIONS = {
   'select-intensity': 'handleIntensitySelected',
   'next-round': 'handleNextRound',
   'back-lobby': 'handleBackToLobby',
+  'impostor-start': 'handleImpostorStart',
+  'impostor-dec-impostors': 'handleImpostorDecImpostors',
+  'impostor-inc-impostors': 'handleImpostorIncImpostors',
+  'impostor-dec-white': 'handleImpostorDecWhite',
+  'impostor-inc-white': 'handleImpostorIncWhite',
   'impostor-reveal': 'handleImpostorReveal',
   'impostor-next': 'handleImpostorNext',
   'impostor-finish': 'handleImpostorFinish',

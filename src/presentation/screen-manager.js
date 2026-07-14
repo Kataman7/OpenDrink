@@ -4,6 +4,7 @@ export class ScreenManager {
   constructor({ state, view }) {
     this.state = state;
     this.view = view;
+    this._navStack = [];
     this._setupBackButton();
   }
 
@@ -12,6 +13,7 @@ export class ScreenManager {
     this.view.hideError();
     this.renderCurrentScreen();
     if (screen === SCREENS.lobby) {
+      this.state.resetRoundSelection();
       this.renderPlayers();
     }
   }
@@ -24,45 +26,60 @@ export class ScreenManager {
     this.view.renderPlayerList(this.state.players);
   }
 
+  goBack() {
+    if (this._navStack.length === 0) {
+      this.navigateToLobby();
+      return;
+    }
+    const previousScreen = this._navStack.pop();
+    if (this.state.screen === SCREENS.game || this.state.screen === SCREENS.impostorReveal) {
+      this.state.resetRoundSelection();
+    }
+    this.switchScreen(previousScreen);
+  }
+
   navigateToLobby() {
-    this.state.resetRoundSelection();
+    this._navStack = [];
     this.switchScreen(SCREENS.lobby);
   }
 
   navigateToModeSelection() {
-    this._pushHistory();
-    this.switchScreen(SCREENS.mode);
+    this._push(SCREENS.mode);
   }
 
   navigateToModeRandom() {
-    this._pushHistory();
-    this.switchScreen(SCREENS.modeRandom);
+    this._push(SCREENS.modeRandom);
   }
 
   navigateToIntensitySelection() {
-    this._pushHistory();
-    this.switchScreen(SCREENS.intensity);
+    this._push(SCREENS.intensity);
   }
 
   navigateToGameScreen() {
-    this._pushHistory();
-    this.switchScreen(SCREENS.game);
+    this._push(SCREENS.game);
   }
 
   navigateToImpostorReveal() {
+    this._push(SCREENS.impostorReveal);
+  }
+
+  navigateToImpostorSettings() {
+    this._push(SCREENS.impostorSettings);
+  }
+
+  _push(screen) {
+    this._navStack.push(this.state.screen);
     this._pushHistory();
-    this.switchScreen(SCREENS.impostorReveal);
+    this.switchScreen(screen);
   }
 
   _pushHistory() {
-    history.pushState({ screen: this.state.screen }, '');
+    history.pushState({ nav: true }, '');
   }
 
   _setupBackButton() {
     window.addEventListener('popstate', () => {
-      if (this.state.screen !== SCREENS.lobby) {
-        this.navigateToLobby();
-      }
+      this.goBack();
     });
   }
 }

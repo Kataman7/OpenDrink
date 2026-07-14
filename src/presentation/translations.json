@@ -61,7 +61,21 @@
       "discussionTitle": "Everyone has a word",
       "discussionHint": "Play at least one round before voting for the impostor.",
       "notImpostor": "Not the impostor. Keep searching.",
-      "impostorFound": "Impostor found! Game over."
+      "impostorFound": "Impostor found! Game over.",
+      "mrWhiteLabel": "Your role: Mr. White",
+      "mrWhiteWord": "You don't have a word. Act like you know it!",
+      "mrWhiteFound": "Mr. White found! Game over."
+    },
+    "impostorSettings": {
+      "title": "Impostor Settings",
+      "impostorCount": "Number of impostors",
+      "mrWhiteCount": "Number of Mr. White",
+      "start": "Start Impostor",
+      "minPlayers": "Need at least 3 players for impostor",
+      "impostors": "impostors",
+      "mrWhite": "Mr. White",
+      "normal": "normal",
+      "players": "players"
     },
     "common": {
       "back": "Back"
@@ -186,7 +200,21 @@
       "discussionTitle": "Tout le monde a son mot",
       "discussionHint": "Jouez au moins 1 tour avant de voter pour l'imposteur.",
       "notImpostor": "Ce n'est pas l'imposteur. Continuez.",
-      "impostorFound": "Imposteur trouvé ! Partie terminée."
+      "impostorFound": "Imposteur trouvé ! Partie terminée.",
+      "mrWhiteLabel": "Ton rôle : Mr. White",
+      "mrWhiteWord": "Tu n'as pas de mot. Fais comme si tu le connaissais !",
+      "mrWhiteFound": "Mr. White trouvé ! Partie terminée."
+    },
+    "impostorSettings": {
+      "title": "Paramètres Imposteur",
+      "impostorCount": "Nombre d'imposteurs",
+      "mrWhiteCount": "Nombre de Mr. White",
+      "start": "Lancer Imposteur",
+      "minPlayers": "Il faut au moins 3 joueurs pour l'imposteur",
+      "impostors": "imposteurs",
+      "mrWhite": "Mr. White",
+      "normal": "normaux",
+      "players": "joueurs"
     },
     "common": {
       "back": "Retour"

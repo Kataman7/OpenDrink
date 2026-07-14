@@ -81,13 +81,37 @@ export class GameView {
     this.getElement('btn-impostor-finish').classList.add(HIDDEN_CLASS);
   }
 
-  renderImpostorRevealedWord({ word, hasNextPlayer }) {
-    this.getElement('impostor-step-hint').textContent = this.i18n.t('impostor.wordLabel');
-    this.getElement('impostor-word').textContent = word;
+  renderImpostorRevealedWord({ word, role, hasNextPlayer }) {
+    if (role === 'mr_white') {
+      this.getElement('impostor-step-hint').textContent = this.i18n.t('impostor.mrWhiteLabel');
+      this.getElement('impostor-word').textContent = this.i18n.t('impostor.mrWhiteWord');
+    } else {
+      this.getElement('impostor-step-hint').textContent = this.i18n.t('impostor.wordLabel');
+      this.getElement('impostor-word').textContent = word;
+    }
     this.getElement('impostor-word').classList.remove(HIDDEN_CLASS);
     this.getElement('btn-impostor-reveal').classList.add(HIDDEN_CLASS);
     this.getElement('btn-impostor-next').classList.toggle(HIDDEN_CLASS, !hasNextPlayer);
     this.getElement('btn-impostor-finish').classList.toggle(HIDDEN_CLASS, hasNextPlayer);
+  }
+
+  renderImpostorSettings({ playerCount, impostorCount, mrWhiteCount }) {
+    this.getElement('impostor-count').textContent = String(impostorCount);
+    this.getElement('mr-white-count').textContent = String(mrWhiteCount);
+    this.updateImpostorRoleSummary(playerCount, impostorCount, mrWhiteCount);
+  }
+
+  updateImpostorSettings(state) {
+    const playerCount = state.players.length;
+    this.getElement('impostor-count').textContent = String(state.impostorCount);
+    this.getElement('mr-white-count').textContent = String(state.mrWhiteCount);
+    this.updateImpostorRoleSummary(playerCount, state.impostorCount, state.mrWhiteCount);
+  }
+
+  updateImpostorRoleSummary(playerCount, impostorCount, mrWhiteCount) {
+    const normalCount = playerCount - impostorCount - mrWhiteCount;
+    this.getElement('impostor-roles-summary').textContent =
+      `${impostorCount} ${this.i18n.t('impostorSettings.impostors')} + ${mrWhiteCount} ${this.i18n.t('impostorSettings.mrWhite')} + ${normalCount} ${this.i18n.t('impostorSettings.normal')} = ${playerCount} ${this.i18n.t('impostorSettings.players')}`;
   }
 
   renderImpostorDiscussionState() {

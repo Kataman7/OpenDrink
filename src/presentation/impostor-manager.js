@@ -7,10 +7,10 @@ export class ImpostorManager {
   reset() {
     this.starterId = null;
     this.orderedPlayerIds = [];
-    this.impostorPlayerId = null;
+    this.impostorPlayerIds = [];
+    this.mrWhitePlayerId = null;
     this.normalWord = null;
     this.impostorWord = null;
-    this.impostorWordRevealed = false;
     this.currentIndex = 0;
     this.accusationIds = [];
   }
@@ -21,10 +21,10 @@ export class ImpostorManager {
 
     this.starterId = gameState.pickRandomPlayerId();
     this.orderedPlayerIds = this.buildOrder(playerIds, this.starterId);
-    this.impostorPlayerId = gameState.pickRandomPlayerId();
-    this.currentIndex = 0;
     this.accusationIds = [...playerIds];
-    this.impostorWordRevealed = false;
+    this.currentIndex = 0;
+
+    this.assignRoles(playerIds, gameState.impostorCount, gameState.mrWhiteCount);
 
     try {
       const { normalWord, impostorWord } = await this.getImpostorWordUseCase.execute({
@@ -39,6 +39,17 @@ export class ImpostorManager {
     }
   }
 
+  assignRoles(playerIds, impostorCount, mrWhiteCount) {
+    const shuffled = [...playerIds];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    this.impostorPlayerIds = shuffled.slice(0, impostorCount);
+    this.mrWhitePlayerId = mrWhiteCount > 0 ? shuffled[impostorCount] : null;
+  }
+
   buildOrder(playerIds, starterId) {
     const starterIndex = playerIds.indexOf(starterId);
     if (starterIndex < 0) return playerIds;
@@ -46,9 +57,7 @@ export class ImpostorManager {
   }
 
   getCurrentPlayer(players) {
-    if (this.currentIndex >= this.orderedPlayerIds.length) {
-      return null;
-    }
+    if (this.currentIndex >= this.orderedPlayerIds.length) return null;
     const playerId = this.orderedPlayerIds[this.currentIndex];
     return players.find(p => p.id === playerId) || null;
   }
@@ -58,30 +67,28 @@ export class ImpostorManager {
   }
 
   revealWord() {
-    this.impostorWordRevealed = true;
-  }
-
-  isWordRevealed() {
-    return this.impostorWordRevealed;
+    this.currentWordRevealed = true;
   }
 
   getCurrentWord() {
-    const currentPlayer = this.orderedPlayerIds[this.currentIndex];
-    return currentPlayer === this.impostorPlayerId ? this.impostorWord : this.normalWord;
-  }
-
-  isCurrentPlayerImpostor() {
-    const currentPlayer = this.orderedPlayerIds[this.currentIndex];
-    return currentPlayer === this.impostorPlayerId;
-  }
-
-  isImpostorPlayer(playerId) {
-    return this.impostorPlayerId === playerId;
+    const currentId = this.orderedPlayerIds[this.currentIndex];
+    if (currentId === this.mrWhitePlayerId) return { word: null, role: 'mr_white' };
+    if (this.impostorPlayerIds.includes(currentId))
+      return { word: this.impostorWord, role: 'impostor' };
+    return { word: this.normalWord, role: 'normal' };
   }
 
   moveToNextPlayer() {
     this.currentIndex++;
-    this.impostorWordRevealed = false;
+    this.currentWordRevealed = false;
+  }
+
+  isImpostorPlayer(playerId) {
+    return this.impostorPlayerIds.includes(playerId);
+  }
+
+  isMrWhitePlayer(playerId) {
+    return this.mrWhitePlayerId === playerId;
   }
 
   removeFromAccusations(playerId) {

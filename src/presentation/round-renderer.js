@@ -76,17 +76,7 @@ export class RoundRenderer {
   renderTruthDare({ player, question, label, showPlayerName, players }) {
     const personalizer = new AntoinePersonalizer();
     const personalized = personalizer.personalize(question.sentence, player, players);
-    const i18n = this.roundLabelBuilder.i18n;
-    const partyLabel = question.partyType
-      ? `[${i18n.t(`truthDareModes.${question.partyType}`) || question.partyType}] `
-      : '';
-    const diffLabel = question.difficulty != null ? `[Diff. ${question.difficulty}/10] ` : '';
-    this.view.renderRound({
-      player,
-      label,
-      showPlayerName,
-      sentence: partyLabel + diffLabel + personalized,
-    });
+    this.view.renderRound({ player, label, showPlayerName, sentence: personalized });
   }
 
   renderTeamBattle({ player, question, label, showPlayerName, players }) {

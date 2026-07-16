@@ -153,6 +153,7 @@ export class GameView {
 
     clearInterval(this._sevenTimer);
     this._sevenTimer = setInterval(() => {
+      if (remaining > 0) this._tick();
       remaining--;
       if (remaining <= 0) {
         clearInterval(this._sevenTimer);
@@ -160,11 +161,29 @@ export class GameView {
         this.getElement('question-text').classList.add(HIDDEN_CLASS);
         timerEl.textContent = this.i18n.t('game.finished');
         this._beep();
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
         return;
       }
       timerEl.textContent = remaining;
     }, 1000);
+  }
+
+  _tick() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = 1200;
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.06);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.06);
+    } catch {
+      // ignore
+    }
   }
 
   _beep() {

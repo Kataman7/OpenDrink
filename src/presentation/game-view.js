@@ -49,6 +49,7 @@ export class GameView {
   renderRound({ player, label, sentence, choiceA, choiceB, options, showPlayerName = true }) {
     this.clearSevenTimer();
     this.getElement('seven-timer').classList.add(HIDDEN_CLASS);
+    this.getElement('btn-start-timer').classList.add(HIDDEN_CLASS);
     this.getElement('player-name').textContent = player.name;
     this.getElement('player-name').classList.toggle(HIDDEN_CLASS, !showPlayerName);
     this.getElement('question-type').textContent = label;
@@ -140,6 +141,13 @@ export class GameView {
     this.renderSentence(sentence);
     const timerEl = this.getElement('seven-timer');
     timerEl.classList.remove(HIDDEN_CLASS);
+    timerEl.textContent = '7';
+    this.getElement('btn-start-timer').classList.remove(HIDDEN_CLASS);
+  }
+
+  startSevenTimer() {
+    this.getElement('btn-start-timer').classList.add(HIDDEN_CLASS);
+    const timerEl = this.getElement('seven-timer');
     let remaining = 7;
     timerEl.textContent = remaining;
 
@@ -150,11 +158,27 @@ export class GameView {
         clearInterval(this._sevenTimer);
         this._sevenTimer = null;
         this.getElement('question-text').classList.add(HIDDEN_CLASS);
-        this.getElement('seven-timer').textContent = this.i18n.t('game.finished');
+        timerEl.textContent = this.i18n.t('game.finished');
+        this._beep();
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
         return;
       }
       timerEl.textContent = remaining;
     }, 1000);
+  }
+
+  _beep() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 880;
+      gain.gain.value = 0.5;
+      osc.start();
+      osc.stop(ctx.currentTime + 0.5);
+    } catch (_) {}
   }
 
   clearSevenTimer() {
@@ -162,6 +186,8 @@ export class GameView {
       clearInterval(this._sevenTimer);
       this._sevenTimer = null;
     }
+    const btn = document.getElementById('btn-start-timer');
+    if (btn) btn.classList.add(HIDDEN_CLASS);
   }
 
   renderWouldYouRather(choiceA, choiceB) {

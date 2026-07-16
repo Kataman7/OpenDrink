@@ -313,6 +313,10 @@ export class GameEventHandler {
     }
   }
 
+  handleStartSevenTimer() {
+    this.view.startSevenTimer();
+  }
+
   handleQuizAnswer(target) {
     document.querySelectorAll('.quiz-option').forEach(opt => {
       opt.disabled = true;
@@ -355,6 +359,7 @@ const CLICK_ACTIONS = {
   'impostor-finish': 'handleImpostorFinish',
   'impostor-accuse': 'handleImpostorAccuse',
   'toggle-auto-read': 'handleToggleAutoRead',
+  'start-seven-timer': 'handleStartSevenTimer',
   'quiz-answer': 'handleQuizAnswer',
   'random-confirm': 'handleRandomConfirm',
 };

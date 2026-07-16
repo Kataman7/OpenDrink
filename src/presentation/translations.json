@@ -50,7 +50,8 @@
       "options": "Options:",
       "lectureOn": "Lecture ON",
       "lectureOff": "Lecture OFF",
-      "finished": "Time's up!"
+      "finished": "Time's up!",
+      "startTimer": "Start"
     },
     "impostor": {
       "passPhoneTo": "{name}",
@@ -184,7 +185,8 @@
       "options": "Options :",
       "lectureOn": "Lecture ON",
       "lectureOff": "Lecture OFF",
-      "finished": "Fini !"
+      "finished": "Fini !",
+      "startTimer": "Lancer"
     },
     "impostor": {
       "passPhoneTo": "{name}",

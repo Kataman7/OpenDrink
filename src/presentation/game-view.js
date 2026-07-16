@@ -170,15 +170,26 @@ export class GameView {
   _beep() {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = 880;
-      gain.gain.value = 0.5;
-      osc.start();
-      osc.stop(ctx.currentTime + 0.5);
-    } catch (_) {}
+      const now = ctx.currentTime;
+      for (let i = 0; i < 3; i++) {
+        const t = now + i * 1.4;
+        [440, 480].forEach(freq => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0, t);
+          gain.gain.linearRampToValueAtTime(0.3, t + 0.02);
+          gain.gain.linearRampToValueAtTime(0, t + 0.35);
+          osc.start(t);
+          osc.stop(t + 0.35);
+        });
+      }
+    } catch {
+      // ignore
+    }
   }
 
   clearSevenTimer() {

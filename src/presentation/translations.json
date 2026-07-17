@@ -45,7 +45,6 @@
     },
     "game": {
       "next": "Next",
-      "backToLobby": "Back to lobby",
       "or": "or",
       "options": "Options:",
       "lectureOn": "Lecture ON",
@@ -180,7 +179,6 @@
     },
     "game": {
       "next": "Suivant",
-      "backToLobby": "Retour au lobby",
       "or": "ou",
       "options": "Options :",
       "lectureOn": "Lecture ON",

@@ -83,6 +83,7 @@ export class RoundRenderer {
     const personalizer = new TeamBattlePersonalizer();
     const mode = question.promptKind ? question.promptKind.replace('team_battle_', '') : '';
     const modeLabel = mode ? this.roundLabelBuilder.i18n.t(`teamBattleModes.${mode}`) || mode : '';
+    const displayLabel = modeLabel ? `${label} — ${modeLabel}` : label;
     const personalized = personalizer.personalize(question.sentence, {
       currentPlayer: player,
       allPlayers: players,
@@ -90,8 +91,7 @@ export class RoundRenderer {
       teamTwoIds: this.state.teamTwoPlayerIds,
       i18n: this.roundLabelBuilder.i18n,
     });
-    const displaySentence = modeLabel ? `[${modeLabel}] ${personalized}` : personalized;
-    this.view.renderRound({ player, label, showPlayerName, sentence: displaySentence });
+    this.view.renderRound({ player, label: displayLabel, showPlayerName, sentence: personalized });
   }
 
   renderDefault({ player, question, label, showPlayerName, players }) {

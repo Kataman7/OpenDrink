@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { GameMode, QuestionIntensity } from './value-objects.js';
+import { GameMode } from './game-mode.js';
+import { QuestionIntensity } from './question-intensity.js';
 import { UnsupportedGameModeError, UnsupportedIntensityError } from './errors.js';
 
 describe('GameMode', () => {

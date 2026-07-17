@@ -7,7 +7,8 @@ import {
   SqlJsPlayerRepositoryAdapter,
   SqlJsDatabaseAdapter,
 } from './sqlite-adapter.js';
-import { GameMode, QuestionIntensity } from '../domain/value-objects.js';
+import { GameMode } from '../domain/game-mode.js';
+import { QuestionIntensity } from '../domain/question-intensity.js';
 import { Question } from '../domain/entities.js';
 
 /**

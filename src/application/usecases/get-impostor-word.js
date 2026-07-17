@@ -1,5 +1,5 @@
 import { NoQuestionsAvailableError } from '../../domain/errors.js';
-import { GameMode } from '../../domain/value-objects.js';
+import { GameMode } from '../../domain/game-mode.js';
 
 export class GetImpostorWordUseCase {
   constructor({ questionRepositoryPort }) {

@@ -1,4 +1,4 @@
-import { QuestionIntensity } from './question-intensity.js';
+import { QuestionIntensity } from '../domain/question-intensity.js';
 
 function buildCategoryAwareQuery(table, columns, intensity) {
   const categoryId = QuestionIntensity.toCategoryId(intensity);

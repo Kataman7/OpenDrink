@@ -11,7 +11,7 @@ import {
   buildDormellesQuery,
   buildPicoloQuery,
   buildTruthDareQuery,
-} from '../domain/query-builders.js';
+} from './query-builders.js';
 import {
   QuestionRepositoryPort,
   PlayerRepositoryPort,

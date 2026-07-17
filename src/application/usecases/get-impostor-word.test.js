@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GetImpostorWordUseCase } from './get-impostor-word.js';
 import { NoQuestionsAvailableError } from '../../domain/errors.js';
-import { GameMode } from '../../domain/value-objects.js';
+import { GameMode } from '../../domain/game-mode.js';
 
 describe('GetImpostorWordUseCase', () => {
   it('should return impostor word when question is available', async () => {

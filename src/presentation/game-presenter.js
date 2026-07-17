@@ -1,4 +1,4 @@
-import { SUPPORTED_LANGUAGES } from '../domain/value-objects.js';
+import { SUPPORTED_LANGUAGES } from '../domain/languages.js';
 import { createI18n } from './i18n.js';
 import { GameView } from './game-view.js';
 import { RoundLabelBuilder } from './round-label-builder.js';

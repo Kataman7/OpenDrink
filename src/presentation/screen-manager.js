@@ -32,9 +32,6 @@ export class ScreenManager {
       return;
     }
     const previousScreen = this._navStack.pop();
-    if (this.state.screen === SCREENS.game || this.state.screen === SCREENS.impostorReveal) {
-      this.state.resetRoundSelection();
-    }
     this.switchScreen(previousScreen);
   }
 

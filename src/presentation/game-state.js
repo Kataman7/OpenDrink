@@ -66,6 +66,10 @@ export class GameState {
     return this.roundState.currentRoundMode;
   }
 
+  getActiveGameMode() {
+    return this.roundState.getActiveGameMode();
+  }
+
   get randomModeIds() {
     return this.roundState.randomModeIds;
   }

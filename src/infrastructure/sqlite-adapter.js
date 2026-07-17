@@ -36,9 +36,24 @@ export class QuestionsDatabaseAdapter {
   }
 
   getRandomQuestion({ gameMode, intensity, lang, playerCount }) {
-    const dispatcher = this.dispatchers[gameMode];
-    if (dispatcher) return dispatcher.call(this, { intensity, lang, playerCount });
-    return this.getGenericQuestion({ gameMode, intensity, lang });
+    switch (gameMode) {
+      case GameMode.IMPOSTOR:
+        return this.getImpostorQuestion({ lang });
+      case GameMode.WOULD_YOU_RATHER:
+        return this.getWouldYouRatherQuestion({ intensity, lang });
+      case GameMode.QUIZ:
+        return this.getQuizQuestion({ intensity, lang });
+      case GameMode.TEAM_BATTLE:
+        return this.getTeamBattleQuestion({ intensity, lang });
+      case GameMode.DORMELLES:
+        return this.getDormellesQuestion({ intensity, lang });
+      case GameMode.PICOLO:
+        return this.getPicoloQuestion({ lang });
+      case GameMode.TRUTH_DARE:
+        return this.getTruthDareQuestion({ lang, playerCount });
+      default:
+        return this.getGenericQuestion({ gameMode, intensity, lang });
+    }
   }
 
   getGenericQuestion({ gameMode, intensity, lang }) {
@@ -121,17 +136,6 @@ export class QuestionsDatabaseAdapter {
     return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
-  get dispatchers() {
-    return {
-      [GameMode.IMPOSTOR]: this.getImpostorQuestion,
-      [GameMode.WOULD_YOU_RATHER]: this.getWouldYouRatherQuestion,
-      [GameMode.QUIZ]: this.getQuizQuestion,
-      [GameMode.TEAM_BATTLE]: this.getTeamBattleQuestion,
-      [GameMode.DORMELLES]: this.getDormellesQuestion,
-      [GameMode.PICOLO]: this.getPicoloQuestion,
-      [GameMode.TRUTH_DARE]: this.getTruthDareQuestion,
-    };
-  }
 }
 
 export class PlayersDatabaseAdapter {

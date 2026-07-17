@@ -1,4 +1,5 @@
 import { RANDOM_COMPATIBLE_MODES } from './game-state.js';
+import { SEVEN_SECONDS_DURATION } from '../config.js';
 
 const SCREEN_PREFIX = 'screen-';
 const HIDDEN_CLASS = 'hidden';
@@ -6,6 +7,12 @@ const HIDDEN_CLASS = 'hidden';
 export class GameView {
   constructor({ i18n }) {
     this.i18n = i18n;
+    this._audioCtx = null;
+  }
+
+  _getAudioCtx() {
+    if (!this._audioCtx) this._audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return this._audioCtx;
   }
 
   renderLanguageSelector({ languages, selectedLang }) {
@@ -141,14 +148,14 @@ export class GameView {
     this.renderSentence(sentence);
     const timerEl = this.getElement('seven-timer');
     timerEl.classList.remove(HIDDEN_CLASS);
-    timerEl.textContent = '7';
+    timerEl.textContent = String(SEVEN_SECONDS_DURATION);
     this.getElement('btn-start-timer').classList.remove(HIDDEN_CLASS);
   }
 
   startSevenTimer() {
     this.getElement('btn-start-timer').classList.add(HIDDEN_CLASS);
     const timerEl = this.getElement('seven-timer');
-    let remaining = 7;
+    let remaining = SEVEN_SECONDS_DURATION;
     timerEl.textContent = remaining;
 
     clearInterval(this._sevenTimer);
@@ -170,7 +177,7 @@ export class GameView {
 
   _tick() {
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = this._getAudioCtx();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);
@@ -188,7 +195,7 @@ export class GameView {
 
   _beep() {
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = this._getAudioCtx();
       const now = ctx.currentTime;
       for (let i = 0; i < 3; i++) {
         const t = now + i * 1.4;

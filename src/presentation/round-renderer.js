@@ -97,8 +97,7 @@ export class RoundRenderer {
   renderDefault({ player, question, label, showPlayerName, players }) {
     const personalizer = new QuestionTextPersonalizer(players);
     const sentence = personalizer.personalize(question.sentence, player.name);
-    const mode = this.state.currentRoundMode || this.state.selectedGameMode;
-    if (mode === 'seven_seconds') {
+    if (this.state.getActiveGameMode() === 'seven_seconds') {
       this.view.renderSevenSeconds({ player, label, sentence });
     } else {
       this.view.renderRound({ player, label, showPlayerName, sentence });
@@ -108,8 +107,7 @@ export class RoundRenderer {
   readCurrentQuestion() {
     const text = this.view.getQuestionText();
     if (!text) return;
-    const gameMode = this.state.currentRoundMode || this.state.selectedGameMode;
     const lang = this.state.selectedLang;
-    this.textToSpeech.speak(text, gameMode, lang, this.roundLabelBuilder.i18n);
+    this.textToSpeech.speak(text, this.state.getActiveGameMode(), lang, this.roundLabelBuilder.i18n);
   }
 }

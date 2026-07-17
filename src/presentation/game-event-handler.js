@@ -125,33 +125,33 @@ export class GameEventHandler {
   async handleModeSelected(target) {
     const mode = target.getAttribute('data-mode');
     this.state.selectMode(mode);
+    const handlerName = MODE_HANDLERS[mode] || MODE_HANDLERS._default;
+    await this[handlerName]();
+  }
 
-    if (mode === GameMode.RANDOM) {
-      this.screenManager.navigateToModeRandom();
-      this.view.renderModeRandomList();
-      return;
-    }
+  async _handleModeRandom() {
+    this.screenManager.navigateToModeRandom();
+    this.view.renderModeRandomList();
+  }
 
-    if (mode === GameMode.IMPOSTOR) {
-      this.view.renderImpostorSettings({
-        playerCount: this.state.players.length,
-        impostorCount: this.state.impostorCount,
-        mrWhiteCount: this.state.mrWhiteCount,
-      });
-      this.screenManager.navigateToImpostorSettings();
-      return;
-    }
+  async _handleModeImpostor() {
+    this.view.renderImpostorSettings({
+      playerCount: this.state.players.length,
+      impostorCount: this.state.impostorCount,
+      mrWhiteCount: this.state.mrWhiteCount,
+    });
+    this.screenManager.navigateToImpostorSettings();
+  }
 
-    if (mode === GameMode.PICOLO || mode === GameMode.TRUTH_DARE) {
-      this.screenManager.navigateToGameScreen();
-      await this.requestNextRound();
-      return;
-    }
+  async _handleModeNoIntensity() {
+    this.screenManager.navigateToGameScreen();
+    await this.requestNextRound();
+  }
 
-    if (mode === GameMode.TEAM_BATTLE) {
+  async _handleModeDefault() {
+    if (this.state.selectedGameMode === GameMode.TEAM_BATTLE) {
       this.state.buildTeams();
     }
-
     this.screenManager.navigateToIntensitySelection();
   }
 
@@ -226,6 +226,7 @@ export class GameEventHandler {
   }
 
   async handleNextRound() {
+    this._quizLocked = false;
     await this.requestNextRound();
   }
 
@@ -318,6 +319,8 @@ export class GameEventHandler {
   }
 
   handleQuizAnswer(target) {
+    if (this._quizLocked) return;
+    this._quizLocked = true;
     document.querySelectorAll('.quiz-option').forEach(opt => {
       opt.disabled = true;
       opt.classList.remove('btn-accent');
@@ -340,6 +343,14 @@ export class GameEventHandler {
     this._errorTimeout = setTimeout(() => this.view.hideError(), ERROR_DISPLAY_DURATION_MS);
   }
 }
+
+const MODE_HANDLERS = {
+  [GameMode.RANDOM]: '_handleModeRandom',
+  [GameMode.IMPOSTOR]: '_handleModeImpostor',
+  [GameMode.PICOLO]: '_handleModeNoIntensity',
+  [GameMode.TRUTH_DARE]: '_handleModeNoIntensity',
+  _default: '_handleModeDefault',
+};
 
 const CLICK_ACTIONS = {
   'add-player': 'handleAddPlayer',

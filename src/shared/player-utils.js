@@ -1,8 +1,6 @@
 export const getOtherPlayerNames = (players, currentPlayerName) =>
   players.map(p => p.name).filter(name => name !== currentPlayerName);
 
-export const getPlayersExcluding = (players, excludeId) => players.filter(p => p.id !== excludeId);
-
 export const pickRandomFromIds = (playerIds, allPlayers, excludeId = null) => {
   const candidates = playerIds.filter(id => id !== excludeId);
   if (candidates.length === 0) {

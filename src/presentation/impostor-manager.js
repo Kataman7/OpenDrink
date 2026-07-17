@@ -1,3 +1,5 @@
+import { shuffleArray } from '../shared/random.js';
+
 export class ImpostorManager {
   constructor({ getImpostorWordUseCase }) {
     this.getImpostorWordUseCase = getImpostorWordUseCase;
@@ -40,14 +42,11 @@ export class ImpostorManager {
   }
 
   assignRoles(playerIds, impostorCount, mrWhiteCount) {
-    const shuffled = [...playerIds];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-
-    this.impostorPlayerIds = shuffled.slice(0, impostorCount);
-    this.mrWhitePlayerId = mrWhiteCount > 0 ? shuffled[impostorCount] : null;
+    const shuffled = shuffleArray(playerIds);
+    const totalRoles = impostorCount + mrWhiteCount;
+    this.impostorPlayerIds = shuffled.slice(0, Math.min(impostorCount, shuffled.length));
+    this.mrWhitePlayerId =
+      mrWhiteCount > 0 && impostorCount < shuffled.length ? shuffled[impostorCount] : null;
   }
 
   buildOrder(playerIds, starterId) {

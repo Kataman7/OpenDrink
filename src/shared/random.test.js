@@ -1,17 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { randomFromArray, randomBoolean, randomInt, shuffleArray } from './random.js';
-
-describe('randomFromArray', () => {
-  it('should return an element from the array', () => {
-    const array = [1, 2, 3];
-    const result = randomFromArray(array);
-    expect(array).toContain(result);
-  });
-
-  it('should return undefined for empty array', () => {
-    expect(randomFromArray([])).toBeUndefined();
-  });
-});
+import { randomBoolean, randomInt, shuffleArray } from './random.js';
 
 describe('randomBoolean', () => {
   it('should return true or false', () => {

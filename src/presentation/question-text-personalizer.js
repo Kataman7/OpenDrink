@@ -9,7 +9,7 @@ export class QuestionTextPersonalizer {
   personalize(sentence, currentPlayerName) {
     const replacedTokens = new Map();
     const mappedSlots = new Map();
-    const selectableNames = this.buildSelectableNames(currentPlayerName);
+    const selectableNames = this.buildSelectableNames();
 
     let result = sentence;
     result = result.replace(/%s/g, () => {
@@ -35,10 +35,8 @@ export class QuestionTextPersonalizer {
     return result;
   }
 
-  buildSelectableNames(currentPlayerName) {
-    return this.players
-      .map(player => player.name)
-      .filter(playerName => playerName !== currentPlayerName);
+  buildSelectableNames() {
+    return this.players.map(player => player.name);
   }
 
   extractTokenSlot(token, fallbackSlot) {

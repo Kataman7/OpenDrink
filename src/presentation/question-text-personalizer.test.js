@@ -13,20 +13,20 @@ describe('QuestionTextPersonalizer', () => {
 
   it('replaces ${} tokens with player names', () => {
     const result = personalizer.personalize('${1} boit', 'Alice');
-    expect(result).toMatch(/^(Bob|Charlie|Diana) boit$/);
+    expect(['Alice', 'Bob', 'Charlie', 'Diana']).toContain(result.replace(' boit', ''));
   });
 
   it('replaces %s tokens with player names', () => {
     const result = personalizer.personalize('%s boit', 'Alice');
-    expect(result).toMatch(/^(Bob|Charlie|Diana) boit$/);
+    expect(['Alice', 'Bob', 'Charlie', 'Diana']).toContain(result.replace(' boit', ''));
   });
 
   it('replaces multiple %s with different players', () => {
     const result = personalizer.personalize('%s et %s', 'Alice');
     const names = result.split(' et ');
     expect(names[0]).not.toBe(names[1]);
-    expect(['Bob', 'Charlie', 'Diana']).toContain(names[0]);
-    expect(['Bob', 'Charlie', 'Diana']).toContain(names[1]);
+    expect(['Alice', 'Bob', 'Charlie', 'Diana']).toContain(names[0]);
+    expect(['Alice', 'Bob', 'Charlie', 'Diana']).toContain(names[1]);
   });
 
   it('replaces mixed %s and ${} (same slot = same player)', () => {
@@ -45,17 +45,17 @@ describe('QuestionTextPersonalizer', () => {
 
   it('does not replace $ inside ${}', () => {
     const result = personalizer.personalize('${1} boit $ fois', 'Alice');
-    expect(result).toMatch(/^(Bob|Charlie|Diana) boit \d fois$/);
+    expect(result).toMatch(/^\w+ boit \d fois$/);
   });
 
-  it('excludes current player from picks', () => {
-    const solo = new QuestionTextPersonalizer([{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]);
-    const result = solo.personalize('%s et %s', 'Alice');
-    expect(result).not.toContain('Alice');
-    expect(result.split(' et ')).toEqual(['Bob', 'Bob']);
+  it('picks from all players including current', () => {
+    const p = new QuestionTextPersonalizer([{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]);
+    const result = p.personalize('%s et %s', 'Alice');
+    const names = result.split(' et ');
+    expect(names.every(n => n === 'Alice' || n === 'Bob')).toBe(true);
   });
 
-  it('uses current player name when no other players available', () => {
+  it('returns player name from single player pool', () => {
     const solo = new QuestionTextPersonalizer([{ id: 1, name: 'Alice' }]);
     expect(solo.personalize('%s boit', 'Alice')).toBe('Alice boit');
     expect(solo.personalize('${1} boit', 'Alice')).toBe('Alice boit');

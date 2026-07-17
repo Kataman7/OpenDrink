@@ -1,3 +1,6 @@
+import { randomInt } from '../shared/random.js';
+import { PICOL0_MIN, PICOL0_MAX } from '../config.js';
+
 export class QuestionTextPersonalizer {
   constructor(players) {
     this.players = players;
@@ -8,7 +11,15 @@ export class QuestionTextPersonalizer {
     const mappedSlots = new Map();
     const selectableNames = this.buildSelectableNames(currentPlayerName);
 
-    return sentence.replace(/\$\{([^}]+)\}/g, (_, token) => {
+    let result = sentence;
+    result = result.replace(/%s/g, () => {
+      const slot = mappedSlots.size + 1;
+      const name = this.selectPlayerName(slot, mappedSlots, selectableNames, currentPlayerName);
+      mappedSlots.set(slot, name);
+      return name;
+    });
+    result = result.replace(/\$(?![\d{])/g, () => String(randomInt(PICOL0_MIN, PICOL0_MAX)));
+    result = result.replace(/\$\{([^}]+)\}/g, (_, token) => {
       if (replacedTokens.has(token)) return replacedTokens.get(token);
       const tokenSlot = this.extractTokenSlot(token, mappedSlots.size + 1);
       const selectedName = this.selectPlayerName(
@@ -21,6 +32,7 @@ export class QuestionTextPersonalizer {
       replacedTokens.set(token, selectedName);
       return selectedName;
     });
+    return result;
   }
 
   buildSelectableNames(currentPlayerName) {

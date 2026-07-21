@@ -262,8 +262,11 @@ export class GameView {
       .map(
         game => `
       <button class="btn btn-large btn-card-game" data-action="select-card-game" data-game="${game.id}">
-        <span class="card-game-title">${game.title}</span>
-        <span class="card-game-desc">${game.description[lang] || game.description.en}</span>
+        <span class="btn-mode-icon">${game.icon}</span>
+        <div>
+          <div class="card-game-title">${game.title}</div>
+          <div class="card-game-desc">${game.description[lang] || game.description.en}</div>
+        </div>
       </button>
     `
       )
@@ -272,7 +275,9 @@ export class GameView {
 
   renderCardGameDetail(title, rulesText) {
     this.getElement('card-game-title').textContent = title;
-    this.getElement('card-game-rules').textContent = rulesText;
+    this.getElement('card-game-rules').innerHTML = rulesText
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
   }
 
   showError(message) {

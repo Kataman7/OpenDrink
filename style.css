@@ -573,7 +573,11 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100%;
-  gap: 32px;
+  gap: 16px;
+}
+
+.home-lang {
+  max-width: 220px;
 }
 
 .home-buttons {
@@ -607,34 +611,44 @@ body {
 
 .btn-card-game {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  padding: 16px;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 24px;
   text-align: left;
   line-height: 1.3;
   height: auto;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 2px solid transparent;
+}
+
+.btn-card-game:hover {
+  border-color: var(--color-primary);
 }
 
 .card-game-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
 }
 
 .card-game-desc {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--color-text-muted);
   font-weight: 400;
+  margin-top: 2px;
 }
 
 .card-game-rules {
   width: 100%;
-  max-width: 500px;
   text-align: left;
   overflow-y: auto;
-  padding-bottom: 16px;
   font-size: 0.9rem;
-  line-height: 1.55;
+  line-height: 1.6;
   white-space: pre-wrap;
   color: var(--color-text);
+}
+
+.card-game-rules strong {
+  color: var(--color-accent);
+  font-size: 1rem;
 }

@@ -23,6 +23,10 @@
         <div class="screen-inner home-screen">
           <h1 class="title">OpenDrink</h1>
           <p class="subtitle" data-i18n="home.subtitle">Que veux-tu faire ?</p>
+          <div class="field-group home-lang">
+            <label class="field-label" for="lang-select" data-i18n="lobby.language">Language</label>
+            <select id="lang-select" class="input-field select-field"></select>
+          </div>
           <div class="home-buttons">
             <button class="btn btn-large btn-accent btn-home" data-action="go-lobby">
               <span class="btn-home-icon">🍻</span>
@@ -41,11 +45,6 @@
         <div class="screen-inner">
           <h1 class="title" data-i18n="app.title">OpenDrink</h1>
           <p class="subtitle" data-i18n="lobby.subtitle">Add players to start</p>
-
-          <div class="field-group">
-            <label class="field-label" for="lang-select" data-i18n="lobby.language">Language</label>
-            <select id="lang-select" class="input-field select-field"></select>
-          </div>
 
           <div class="input-row">
             <input
@@ -288,9 +287,11 @@
 
       <!-- SCREEN: CARD GAME DETAIL -->
       <section id="screen-card_game_detail" class="screen">
-        <div class="screen-inner">
-          <h2 id="card-game-title" class="title"></h2>
-          <div id="card-game-rules" class="card-game-rules"></div>
+        <div class="screen-inner game-screen-inner">
+          <div class="game-card">
+            <h2 id="card-game-title" class="game-player" style="font-size:1.6rem"></h2>
+            <div id="card-game-rules" class="card-game-rules"></div>
+          </div>
           <button class="btn btn-large btn-secondary" data-action="back-card-games" data-i18n="common.back">Back</button>
         </div>
       </section>

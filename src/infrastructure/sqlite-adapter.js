@@ -135,7 +135,6 @@ export class QuestionsDatabaseAdapter {
     const candidates = GameMode.getCandidateGameKeys(gameMode);
     return candidates[Math.floor(Math.random() * candidates.length)];
   }
-
 }
 
 export class PlayersDatabaseAdapter {

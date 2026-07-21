@@ -1,8 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  getOtherPlayerNames,
-  pickRandomPlayerName,
-} from './player-utils.js';
+import { getOtherPlayerNames, pickRandomPlayerName } from './player-utils.js';
 
 const players = [
   { id: 1, name: 'Alice' },

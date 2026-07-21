@@ -108,6 +108,11 @@ export class RoundRenderer {
     const text = this.view.getQuestionText();
     if (!text) return;
     const lang = this.state.selectedLang;
-    this.textToSpeech.speak(text, this.state.getActiveGameMode(), lang, this.roundLabelBuilder.i18n);
+    this.textToSpeech.speak(
+      text,
+      this.state.getActiveGameMode(),
+      lang,
+      this.roundLabelBuilder.i18n
+    );
   }
 }

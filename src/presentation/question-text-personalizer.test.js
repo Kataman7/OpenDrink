@@ -49,7 +49,10 @@ describe('QuestionTextPersonalizer', () => {
   });
 
   it('picks from all players including current', () => {
-    const p = new QuestionTextPersonalizer([{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]);
+    const p = new QuestionTextPersonalizer([
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+    ]);
     const result = p.personalize('%s et %s', 'Alice');
     const names = result.split(' et ');
     expect(names.every(n => n === 'Alice' || n === 'Bob')).toBe(true);

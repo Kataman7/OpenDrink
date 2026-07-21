@@ -105,7 +105,7 @@ Team Dutch : form teams that add up their scores.`,
     id: '99',
     title: '99',
     description: {
-      fr: 'Posez des cartes pour faire grimper le total jusqu\'à 99 sans le dépasser.',
+      fr: "Posez des cartes pour faire grimper le total jusqu'à 99 sans le dépasser.",
       en: 'Play cards to push the total to 99 without going over.',
     },
     rules: {

@@ -171,7 +171,6 @@ export class GameEventHandler {
     const game = CARD_GAMES.find(g => g.id === gameId);
     if (!game) return;
     const lang = this.state.selectedLang;
-    const description = game.description[lang] || game.description.en;
     const rules = game.rules[lang] || game.rules.en;
     this.screenManager.navigateToCardGameDetail();
     this.view.renderCardGameDetail(game.title, rules);

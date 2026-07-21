@@ -43,7 +43,6 @@ export class ImpostorManager {
 
   assignRoles(playerIds, impostorCount, mrWhiteCount) {
     const shuffled = shuffleArray(playerIds);
-    const totalRoles = impostorCount + mrWhiteCount;
     this.impostorPlayerIds = shuffled.slice(0, Math.min(impostorCount, shuffled.length));
     this.mrWhitePlayerId =
       mrWhiteCount > 0 && impostorCount < shuffled.length ? shuffled[impostorCount] : null;

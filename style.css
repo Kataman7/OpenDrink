@@ -573,12 +573,14 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100%;
-  gap: 16px;
+  gap: 20px;
 }
 
 .home-lang {
-  max-width: 220px;
+  width: 100%;
+  max-width: 300px;
 }
+
 
 .home-buttons {
   display: flex;

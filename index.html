@@ -18,6 +18,24 @@
         </div>
       </section>
 
+      <!-- SCREEN: HOME -->
+      <section id="screen-home" class="screen">
+        <div class="screen-inner home-screen">
+          <h1 class="title">OpenDrink</h1>
+          <p class="subtitle" data-i18n="home.subtitle">Que veux-tu faire ?</p>
+          <div class="home-buttons">
+            <button class="btn btn-large btn-accent btn-home" data-action="go-lobby">
+              <span class="btn-home-icon">🍻</span>
+              <span data-i18n="home.opendrink">Jeu OpenDrink</span>
+            </button>
+            <button class="btn btn-large btn-primary btn-home" data-action="go-card-games">
+              <span class="btn-home-icon">🃏</span>
+              <span data-i18n="home.cardGames">Règles jeu de cartes</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
       <!-- SCREEN: LOBBY -->
       <section id="screen-lobby" class="screen">
         <div class="screen-inner">
@@ -256,6 +274,24 @@
           >
             Back
           </button>
+        </div>
+      </section>
+
+      <!-- SCREEN: CARD GAMES -->
+      <section id="screen-card_games" class="screen">
+        <div class="screen-inner">
+          <h2 class="title" data-i18n="cardGames.title">Jeux de cartes</h2>
+          <div id="card-games-list" class="card-games-list"></div>
+          <button class="btn btn-large btn-secondary" data-action="back-home" data-i18n="common.back">Back</button>
+        </div>
+      </section>
+
+      <!-- SCREEN: CARD GAME DETAIL -->
+      <section id="screen-card_game_detail" class="screen">
+        <div class="screen-inner">
+          <h2 id="card-game-title" class="title"></h2>
+          <div id="card-game-rules" class="card-game-rules"></div>
+          <button class="btn btn-large btn-secondary" data-action="back-card-games" data-i18n="common.back">Back</button>
         </div>
       </section>
 

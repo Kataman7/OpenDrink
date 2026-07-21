@@ -72,6 +72,14 @@
       "impostors": "Impostors",
       "citizens": "Citizens"
     },
+    "home": {
+      "subtitle": "What do you want to do?",
+      "opendrink": "OpenDrink game",
+      "cardGames": "Card game rules"
+    },
+    "cardGames": {
+      "title": "Card games"
+    },
     "common": {
       "back": "Back"
     },
@@ -205,6 +213,14 @@
       "minPlayers": "Il faut au moins 3 joueurs pour l'imposteur",
       "impostors": "Imposteurs",
       "citizens": "Citoyens"
+    },
+    "home": {
+      "subtitle": "Que veux-tu faire ?",
+      "opendrink": "Jeu OpenDrink",
+      "cardGames": "Règles jeu de cartes"
+    },
+    "cardGames": {
+      "title": "Jeux de cartes"
     },
     "common": {
       "back": "Retour"

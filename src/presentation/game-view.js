@@ -256,6 +256,40 @@ export class GameView {
     container.classList.remove(HIDDEN_CLASS);
   }
 
+  renderCardGamesList(games) {
+    const container = this.getElement('card-games-list');
+    container.innerHTML = games
+      .map(
+        game => `
+      <button class="btn btn-large btn-card-game" data-action="select-card-game" data-game="${game.id}">
+        <span class="card-game-title">${game.title}</span>
+        <span class="card-game-desc">${game.description}</span>
+      </button>
+    `
+      )
+      .join('');
+  }
+
+  renderCardGameDetail(game) {
+    this.getElement('card-game-title').textContent = game.title;
+    const container = this.getElement('card-game-rules');
+    container.innerHTML = game.sections
+      .map(
+        section => `
+      <div class="rule-section">
+        ${section.heading ? `<h3 class="rule-heading">${section.heading}</h3>` : ''}
+        <ul class="rule-list">
+          ${section.lines
+            .filter(line => line)
+            .map(line => `<li${line.startsWith('  ') ? ' class="rule-sublist"' : ''}>${line.trim()}</li>`)
+            .join('')}
+        </ul>
+      </div>
+    `
+      )
+      .join('');
+  }
+
   showError(message) {
     const toast = this.getElement('error-toast');
     toast.textContent = message;

@@ -28,16 +28,29 @@ export class ScreenManager {
 
   goBack() {
     if (this._navStack.length === 0) {
-      this.navigateToLobby();
+      this.navigateToHome();
       return;
     }
     const previousScreen = this._navStack.pop();
     this.switchScreen(previousScreen);
   }
 
+  navigateToHome() {
+    this._navStack = [];
+    this.switchScreen(SCREENS.home);
+  }
+
   navigateToLobby() {
     this._navStack = [];
     this.switchScreen(SCREENS.lobby);
+  }
+
+  navigateToCardGames() {
+    this._push(SCREENS.cardGames);
+  }
+
+  navigateToCardGameDetail() {
+    this._push(SCREENS.cardGameDetail);
   }
 
   navigateToModeSelection() {

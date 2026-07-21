@@ -1,5 +1,6 @@
 import { GameMode } from '../domain/game-mode.js';
 import { RoundRenderer } from './round-renderer.js';
+import { CARD_GAMES } from './card-games.js';
 import { ERROR_DISPLAY_DURATION_MS } from '../config.js';
 
 export class GameEventHandler {
@@ -44,7 +45,7 @@ export class GameEventHandler {
     this.view.applyStaticTranslations(this.state.selectedLang);
     await this.initializeDatabaseUseCase.execute();
     await this.restorePlayers();
-    this.screenManager.navigateToLobby();
+    this.screenManager.navigateToHome();
   }
 
   async restorePlayers() {
@@ -153,6 +154,31 @@ export class GameEventHandler {
       this.state.buildTeams();
     }
     this.screenManager.navigateToIntensitySelection();
+  }
+
+  handleGoLobby() {
+    this.screenManager.navigateToLobby();
+  }
+
+  handleGoCardGames() {
+    this.screenManager.navigateToCardGames();
+    this.view.renderCardGamesList(CARD_GAMES);
+  }
+
+  handleSelectCardGame(target) {
+    const gameId = target.getAttribute('data-game');
+    const game = CARD_GAMES.find(g => g.id === gameId);
+    if (!game) return;
+    this.screenManager.navigateToCardGameDetail();
+    this.view.renderCardGameDetail(game);
+  }
+
+  handleBackHome() {
+    this.screenManager.goBack();
+  }
+
+  handleBackCardGames() {
+    this.screenManager.goBack();
   }
 
   handleRandomConfirm() {
@@ -373,4 +399,9 @@ const CLICK_ACTIONS = {
   'start-seven-timer': 'handleStartSevenTimer',
   'quiz-answer': 'handleQuizAnswer',
   'random-confirm': 'handleRandomConfirm',
+  'go-lobby': 'handleGoLobby',
+  'go-card-games': 'handleGoCardGames',
+  'select-card-game': 'handleSelectCardGame',
+  'back-home': 'handleBackHome',
+  'back-card-games': 'handleBackCardGames',
 };

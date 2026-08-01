@@ -18,22 +18,20 @@ describe('DormellesPersonalizer', () => {
     expect(number).toBeLessThanOrEqual(5);
   });
 
-  it('should replace ${j1} with a different player name', () => {
+  it('should replace ${j1} with a player name', () => {
     const result = personalizer.personalize('Kiss ${j1}', 'Alice', players);
-    expect(['Bob', 'Charlie']).toContain(result.replace('Kiss ', ''));
+    expect(['Alice', 'Bob', 'Charlie']).toContain(result.replace('Kiss ', ''));
   });
 
-  it('should replace ${j2} with a different player name', () => {
+  it('should replace ${j2} with a player name', () => {
     const result = personalizer.personalize('Hug ${j2}', 'Alice', players);
-    expect(['Bob', 'Charlie']).toContain(result.replace('Hug ', ''));
+    expect(['Alice', 'Bob', 'Charlie']).toContain(result.replace('Hug ', ''));
   });
 
-  it('should replace multiple tokens with different players', () => {
+  it('should pick different players for different tokens', () => {
     const result = personalizer.personalize('${j1} kisses ${j2}', 'Alice', players);
     const match = result.match(/(\w+) kisses (\w+)/);
     expect(match).toBeTruthy();
-    expect(match[1]).not.toBe('Alice');
-    expect(match[2]).not.toBe('Alice');
     expect(match[1]).not.toBe(match[2]);
   });
 

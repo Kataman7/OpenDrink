@@ -1,15 +1,12 @@
+import { PlayerPicker } from '../shared/player-picker.js';
+
 export class AntoinePersonalizer {
   personalize(sentence, currentPlayer, allPlayers) {
-    const excludeId = currentPlayer ? currentPlayer.id : null;
-    const otherPlayers = allPlayers.filter(p => p.id !== excludeId);
+    const picker = new PlayerPicker(allPlayers);
     const totalPlayers = allPlayers.length;
 
-    const pickOther = () => {
-      if (otherPlayers.length === 0) return currentPlayer ? currentPlayer.name : '';
-      return otherPlayers[Math.floor(Math.random() * otherPlayers.length)].name;
-    };
+    const pickOther = () => picker.pick() || (currentPlayer ? currentPlayer.name : '');
 
-    // {scope#primary*fallback} — if scope matches, use primary; else fallback
     const replaceConditional = (_, scope, block) => {
       const [primary, fallback] = block.split('*');
       const normalizedScope = scope.toLowerCase();
@@ -20,7 +17,6 @@ export class AntoinePersonalizer {
       return '';
     };
 
-    // {scope#option1*option2} — always picks the first option (pronoun)
     const replacePronoun = (_, _scope, alternatives) => {
       const parts = alternatives.split('*');
       return parts[0] || '';

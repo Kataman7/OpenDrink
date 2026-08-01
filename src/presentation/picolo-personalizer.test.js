@@ -9,13 +9,13 @@ describe('PicoloPersonalizer', () => {
     { id: 3, name: 'Charlie' },
   ];
 
-  it('should replace %s with a random player name excluding current player', () => {
+  it('should replace %s with a player name', () => {
     const result = personalizer.personalize(
       '%s, take a penalty',
       { id: 1, name: 'Alice' },
       players
     );
-    expect(['Bob', 'Charlie']).toContain(result.replace(', take a penalty', ''));
+    expect(['Alice', 'Bob', 'Charlie']).toContain(result.replace(', take a penalty', ''));
   });
 
   it('should replace $ with a number between 1 and 5', () => {
@@ -32,7 +32,7 @@ describe('PicoloPersonalizer', () => {
     expect(['Team 1 wins!', 'Team 2 wins!']).toContain(result);
   });
 
-  it('should handle multiple %s placeholders', () => {
+  it('should pick different players for multiple %s', () => {
     const result = personalizer.personalize(
       '%s and %s are buddies',
       { id: 1, name: 'Alice' },
@@ -40,7 +40,7 @@ describe('PicoloPersonalizer', () => {
     );
     const names = result.replace(' and ', ',').replace(' are buddies', '').split(',');
     expect(names.length).toBe(2);
-    names.forEach(n => expect(['Bob', 'Charlie']).toContain(n));
+    expect(names[0]).not.toBe(names[1]);
   });
 
   it('should return the sentence unchanged if no placeholders', () => {

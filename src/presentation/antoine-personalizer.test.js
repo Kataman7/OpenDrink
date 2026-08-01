@@ -14,14 +14,14 @@ describe('AntoinePersonalizer', () => {
     expect(result).toContain('Alice');
   });
 
-  it('should replace %OX with a random other player', () => {
+  it('should replace %OX with a player name', () => {
     const result = personalizer.personalize('%OX, your turn', { id: 1, name: 'Alice' }, players);
-    expect(['Bob', 'Charlie']).toContain(result.replace(', your turn', ''));
+    expect(['Alice', 'Bob', 'Charlie']).toContain(result.replace(', your turn', ''));
   });
 
-  it('should replace %O with a random other player', () => {
+  it('should replace %O with a player name', () => {
     const result = personalizer.personalize('%O, pick one', { id: 1, name: 'Alice' }, players);
-    expect(['Bob', 'Charlie']).toContain(result.replace(', pick one', ''));
+    expect(['Alice', 'Bob', 'Charlie']).toContain(result.replace(', pick one', ''));
   });
 
   it('should replace {P#him*her*them} with first alternative', () => {

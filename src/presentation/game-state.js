@@ -1,15 +1,16 @@
 import { DEFAULT_LANG } from '../config.js';
+import { GameMode } from '../domain/game-mode.js';
 import { PlayerStore } from './player-store.js';
 import { TeamManager } from './team-manager.js';
 import { RoundState } from './round-state.js';
 
 const MODES_WITH_HIDDEN_ROUND_PLAYER = new Set([
-  'would_you_rather',
-  'who_could',
-  'never_have_i_ever',
-  'picolo',
-  'dormelles',
-  'team_battle',
+  GameMode.WOULD_YOU_RATHER,
+  GameMode.WHO_COULD,
+  GameMode.NEVER_HAVE_I_EVER,
+  GameMode.PICOLO,
+  GameMode.DORMELLES,
+  GameMode.TEAM_BATTLE,
 ]);
 
 export const RANDOM_COMPATIBLE_MODES = [

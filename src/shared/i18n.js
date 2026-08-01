@@ -1,19 +1,18 @@
-import { DEFAULT_LANG } from '../config.js';
+export const FALLBACK_LANG = 'en';
 
 export class I18n {
-  constructor({ translations = {} } = {}) {
+  constructor({ translations = {}, defaultLang = FALLBACK_LANG } = {}) {
     this.translations = translations;
-    this.defaultLang = DEFAULT_LANG;
-    this.currentLang = DEFAULT_LANG;
+    this.defaultLang = defaultLang;
+    this.currentLang = defaultLang;
   }
 
   setLanguage(lang) {
     this.currentLang = lang || this.defaultLang;
   }
-
   t(key, params = {}) {
-    const langPack = this.translations[this.currentLang] || this.translations[this.defaultLang];
-    const fallbackPack = this.translations[this.defaultLang];
+    const langPack = this.translations[this.currentLang] || this.translations[FALLBACK_LANG];
+    const fallbackPack = this.translations[FALLBACK_LANG];
     const raw = this.getNestedValue(langPack, key) ?? this.getNestedValue(fallbackPack, key) ?? key;
     if (typeof raw !== 'string') return key;
     return this.replaceParams(raw, params);

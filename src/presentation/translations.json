@@ -63,8 +63,7 @@
       "notImpostor": "Not the impostor. Keep searching.",
       "impostorFound": "Impostor found! Game over.",
       "mrWhiteLabel": "Your role: Mr. White",
-      "mrWhiteWord": "You don't have a word. Act like you know it!",
-      "mrWhiteFound": "Mr. White found! Game over."
+      "mrWhiteWord": "You don't have a word. Act like you know it!"
     },
     "impostorSettings": {
       "start": "Start Impostor",
@@ -121,24 +120,8 @@
       "what_opposite_prefer": "What would they prefer?",
       "what_team": "Which team?"
     },
-    "truthDareModes": {
-      "All": "All",
-      "Group Only": "Group",
-      "Couple Only": "Couple"
-    },
-    "picoloPacks": {
-      "default": "Default",
-      "hot": "Hot",
-      "bar": "Bar",
-      "silly": "Silly",
-      "war": "War"
-    },
     "errors": {
-      "minPlayers": "Add at least {count} players",
-      "emptyPlayerName": "Player name cannot be empty",
-      "noPlayers": "No players available",
-      "noQuestions": "No question available for this mode",
-      "dbInit": "Failed to initialize the database"
+      "minPlayers": "Add at least {count} players"
     }
   },
   "fr": {
@@ -205,8 +188,7 @@
       "notImpostor": "Ce n'est pas l'imposteur. Continuez.",
       "impostorFound": "Imposteur trouvé ! Partie terminée.",
       "mrWhiteLabel": "Ton rôle : Mr. White",
-      "mrWhiteWord": "Tu n'as pas de mot. Fais comme si tu le connaissais !",
-      "mrWhiteFound": "Mr. White trouvé ! Partie terminée."
+      "mrWhiteWord": "Tu n'as pas de mot. Fais comme si tu le connaissais !"
     },
     "impostorSettings": {
       "start": "Lancer Imposteur",
@@ -263,24 +245,8 @@
       "what_opposite_prefer": "Que préféreraient-ils ?",
       "what_team": "Quelle équipe ?"
     },
-    "truthDareModes": {
-      "All": "Tout le monde",
-      "Group Only": "Groupe",
-      "Couple Only": "Couple"
-    },
-    "picoloPacks": {
-      "default": "Normal",
-      "hot": "Hot",
-      "bar": "Bar",
-      "silly": "Délire",
-      "war": "Guerre"
-    },
     "errors": {
-      "minPlayers": "Ajoute au moins {count} joueurs",
-      "emptyPlayerName": "Le nom du joueur ne peut pas être vide",
-      "noPlayers": "Aucun joueur disponible",
-      "noQuestions": "Aucune question disponible pour ce mode",
-      "dbInit": "Échec de l'initialisation de la base"
+      "minPlayers": "Ajoute au moins {count} joueurs"
     }
   }
 }

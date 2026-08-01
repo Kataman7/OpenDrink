@@ -23,6 +23,8 @@ export class GameEventHandler {
       roundLabelBuilder: dependencies.roundLabelBuilder,
       textToSpeech: dependencies.textToSpeech,
     });
+    this._quizLocked = false;
+    this._errorTimeout = null;
   }
 
   bind() {

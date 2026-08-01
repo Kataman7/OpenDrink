@@ -179,10 +179,6 @@ body {
   border-radius: var(--radius);
 }
 
-.btn-small {
-  font-size: 0.9rem;
-}
-
 .btn-round {
   width: 56px;
   height: 56px;
@@ -539,18 +535,6 @@ body {
   display: flex;
   align-items: center;
   gap: 20px;
-}
-
-.role-row .btn-role {
-  width: 52px;
-  height: 52px;
-  font-size: 1.6rem;
-  font-weight: 700;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
 }
 
 .role-value {

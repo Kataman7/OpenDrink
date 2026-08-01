@@ -126,6 +126,7 @@ export class QuestionsDatabaseAdapter {
   }
 
   executeSingleQuery(query, lang) {
+    if (!this.db) throw new Error('Database not loaded');
     const result = this.db.exec(query.sql, query.params(lang));
     if (!result.length || !result[0].values.length) return null;
     return result[0].values[0];
@@ -159,12 +160,14 @@ export class PlayersDatabaseAdapter {
   }
 
   getAllPlayers() {
+    if (!this.db) throw new Error('Database not initialized');
     const result = this.db.exec('SELECT id, name FROM players');
     if (!result.length) return [];
     return result[0].values.map(([id, name]) => ({ id, name }));
   }
 
   removePlayerById(playerId) {
+    if (!this.db) throw new Error('Database not initialized');
     this.db.run('DELETE FROM players WHERE id = ?', [playerId]);
   }
 }

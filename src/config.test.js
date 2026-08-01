@@ -1,5 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import {
+import { describe, it, expect, vi } from 'vitest';
+
+vi.stubGlobal('navigator', { language: 'en' });
+
+const {
   DEFAULT_LANG,
   SEVEN_SECONDS_DURATION,
   ERROR_DISPLAY_DURATION_MS,
@@ -8,7 +11,7 @@ import {
   TOZ_MAX,
   PICOL0_MIN,
   PICOL0_MAX,
-} from './config.js';
+} = await import('./config.js');
 
 describe('config constants', () => {
   it('should have correct default language', () => {

@@ -9,7 +9,6 @@ const MODES_WITH_HIDDEN_ROUND_PLAYER = new Set([
   GameMode.WHO_COULD,
   GameMode.NEVER_HAVE_I_EVER,
   GameMode.PICOLO,
-  GameMode.DORMELLES,
   GameMode.TEAM_BATTLE,
 ]);
 

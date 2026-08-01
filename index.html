@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#0f0f1a" />
     <link rel="icon" type="image/x-icon" href="/icon.ico" />
+    <link rel="manifest" href="/manifest.json" />
     <title>OpenDrink</title>
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -37,6 +38,15 @@
               <span data-i18n="home.cardGames">Règles jeu de cartes</span>
             </button>
           </div>
+          <button
+            id="btn-install"
+            class="btn btn-large btn-secondary btn-install hidden"
+            data-action="install-app"
+            data-i18n="home.install"
+          >
+            <span class="btn-home-icon">📲</span>
+            Installer l'app
+          </button>
         </div>
       </section>
 

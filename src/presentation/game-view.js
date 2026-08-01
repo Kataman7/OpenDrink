@@ -209,6 +209,11 @@ export class GameView {
     container.classList.remove(HIDDEN_CLASS);
   }
 
+  showInstallButton(visible) {
+    const btn = document.getElementById('btn-install');
+    if (btn) btn.classList.toggle(HIDDEN_CLASS, !visible);
+  }
+
   showError(message) {
     const toast = this.getElement('error-toast');
     toast.textContent = message;

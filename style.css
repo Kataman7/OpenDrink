@@ -574,6 +574,14 @@ body {
   max-width: 320px;
 }
 
+.btn-install {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
 .btn-home {
   display: flex;
   flex-direction: column;

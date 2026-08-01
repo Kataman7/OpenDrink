@@ -1,0 +1,15 @@
+{
+  "name": "OpenDrink",
+  "short_name": "OpenDrink",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0f0f1a",
+  "background_color": "#0f0f1a",
+  "icons": [
+    {
+      "src": "/icon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}

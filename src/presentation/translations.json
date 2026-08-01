@@ -74,7 +74,8 @@
     "home": {
       "subtitle": "What do you want to do?",
       "opendrink": "OpenDrink game",
-      "cardGames": "Card game rules"
+      "cardGames": "Card game rules",
+      "install": "Install app"
     },
     "cardGames": {
       "title": "Card games"
@@ -199,7 +200,8 @@
     "home": {
       "subtitle": "Que veux-tu faire ?",
       "opendrink": "Jeu OpenDrink",
-      "cardGames": "Règles jeu de cartes"
+      "cardGames": "Règles jeu de cartes",
+      "install": "Installer l'app"
     },
     "cardGames": {
       "title": "Jeux de cartes"

@@ -28,6 +28,15 @@ export class GameEventHandler {
     this.cardGameView = new CardGameView(dependencies.view);
     this._quizLocked = false;
     this._errorTimeout = null;
+    this._installPrompt = null;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      this._installPrompt = e;
+      this.view.showInstallButton(true);
+    });
+    window.addEventListener('appinstalled', () => {
+      this.view.showInstallButton(false);
+    });
   }
 
   bind() {
@@ -147,6 +156,16 @@ export class GameEventHandler {
   handleGoCardGames() {
     this.screenManager.navigateToCardGames();
     this.cardGameView.renderList(CARD_GAMES, this.state.selectedLang);
+  }
+
+  async handleInstallApp() {
+    if (!this._installPrompt) return;
+    this._installPrompt.prompt();
+    const result = await this._installPrompt.userChoice;
+    if (result.outcome === 'accepted') {
+      this.view.showInstallButton(false);
+    }
+    this._installPrompt = null;
   }
 
   handleSelectCardGame(target) {
@@ -382,4 +401,5 @@ const CLICK_ACTIONS = {
   'select-card-game': 'handleSelectCardGame',
   'back-home': 'handleBackHome',
   'back-card-games': 'handleBackCardGames',
+  'install-app': 'handleInstallApp',
 };

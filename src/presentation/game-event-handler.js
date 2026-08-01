@@ -1,6 +1,8 @@
 import { GameMode } from '../domain/game-mode.js';
 import { RoundRenderer } from './round-renderer.js';
+import { CardGameView } from './card-game-view.js';
 import { CARD_GAMES } from './card-games.js';
+import { MODE_HANDLERS } from './mode-handlers.js';
 import { ERROR_DISPLAY_DURATION_MS } from '../config.js';
 
 export class GameEventHandler {
@@ -23,6 +25,7 @@ export class GameEventHandler {
       roundLabelBuilder: dependencies.roundLabelBuilder,
       textToSpeech: dependencies.textToSpeech,
     });
+    this.cardGameView = new CardGameView(dependencies.view);
     this._quizLocked = false;
     this._errorTimeout = null;
   }
@@ -128,34 +131,13 @@ export class GameEventHandler {
   async handleModeSelected(target) {
     const mode = target.getAttribute('data-mode');
     this.state.selectMode(mode);
-    const handlerName = MODE_HANDLERS[mode] || MODE_HANDLERS._default;
-    await this[handlerName]();
-  }
-
-  async _handleModeRandom() {
-    this.screenManager.navigateToModeRandom();
-    this.view.renderModeRandomList();
-  }
-
-  async _handleModeImpostor() {
-    this.view.renderImpostorSettings({
-      playerCount: this.state.players.length,
-      impostorCount: this.state.impostorCount,
-      mrWhiteCount: this.state.mrWhiteCount,
-    });
-    this.screenManager.navigateToImpostorSettings();
+    const handler = MODE_HANDLERS[mode] || MODE_HANDLERS._default;
+    await handler(this);
   }
 
   async _handleModeNoIntensity() {
     this.screenManager.navigateToGameScreen();
     await this.requestNextRound();
-  }
-
-  async _handleModeDefault() {
-    if (this.state.selectedGameMode === GameMode.TEAM_BATTLE) {
-      this.state.buildTeams();
-    }
-    this.screenManager.navigateToIntensitySelection();
   }
 
   handleGoLobby() {
@@ -164,8 +146,7 @@ export class GameEventHandler {
 
   handleGoCardGames() {
     this.screenManager.navigateToCardGames();
-    const lang = this.state.selectedLang;
-    this.view.renderCardGamesList(CARD_GAMES, lang);
+    this.cardGameView.renderList(CARD_GAMES, this.state.selectedLang);
   }
 
   handleSelectCardGame(target) {
@@ -175,7 +156,7 @@ export class GameEventHandler {
     const lang = this.state.selectedLang;
     const rules = game.rules[lang] || game.rules.en;
     this.screenManager.navigateToCardGameDetail();
-    this.view.renderCardGameDetail(game.title, rules);
+    this.cardGameView.renderDetail(game.title, rules);
   }
 
   handleBackHome() {
@@ -374,14 +355,6 @@ export class GameEventHandler {
     this._errorTimeout = setTimeout(() => this.view.hideError(), ERROR_DISPLAY_DURATION_MS);
   }
 }
-
-const MODE_HANDLERS = {
-  [GameMode.RANDOM]: '_handleModeRandom',
-  [GameMode.IMPOSTOR]: '_handleModeImpostor',
-  [GameMode.PICOLO]: '_handleModeNoIntensity',
-  [GameMode.TRUTH_DARE]: '_handleModeNoIntensity',
-  _default: '_handleModeDefault',
-};
 
 const CLICK_ACTIONS = {
   'add-player': 'handleAddPlayer',

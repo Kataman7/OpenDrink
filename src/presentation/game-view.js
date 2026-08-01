@@ -1,5 +1,6 @@
 import { RANDOM_COMPATIBLE_MODES } from './game-state.js';
 import { SEVEN_SECONDS_DURATION } from '../config.js';
+import { AudioService } from '../shared/audio-service.js';
 
 const SCREEN_PREFIX = 'screen-';
 const HIDDEN_CLASS = 'hidden';
@@ -7,12 +8,7 @@ const HIDDEN_CLASS = 'hidden';
 export class GameView {
   constructor({ i18n }) {
     this.i18n = i18n;
-    this._audioCtx = null;
-  }
-
-  _getAudioCtx() {
-    if (!this._audioCtx) this._audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    return this._audioCtx;
+    this.audio = new AudioService();
   }
 
   renderLanguageSelector({ languages, selectedLang }) {
@@ -160,62 +156,19 @@ export class GameView {
 
     clearInterval(this._sevenTimer);
     this._sevenTimer = setInterval(() => {
-      if (remaining > 0) this._tick();
+      if (remaining > 0) this.audio.tick();
       remaining--;
       if (remaining <= 0) {
         clearInterval(this._sevenTimer);
         this._sevenTimer = null;
         this.getElement('question-text').classList.add(HIDDEN_CLASS);
         timerEl.textContent = this.i18n.t('game.finished');
-        this._beep();
+        this.audio.ring();
         if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
         return;
       }
       timerEl.textContent = remaining;
     }, 1000);
-  }
-
-  _tick() {
-    try {
-      const ctx = this._getAudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = 'sine';
-      osc.frequency.value = 1200;
-      gain.gain.setValueAtTime(0.15, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.06);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.06);
-    } catch {
-      // ignore
-    }
-  }
-
-  _beep() {
-    try {
-      const ctx = this._getAudioCtx();
-      const now = ctx.currentTime;
-      for (let i = 0; i < 3; i++) {
-        const t = now + i * 1.4;
-        [440, 480].forEach(freq => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.type = 'sine';
-          osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0, t);
-          gain.gain.linearRampToValueAtTime(0.3, t + 0.02);
-          gain.gain.linearRampToValueAtTime(0, t + 0.35);
-          osc.start(t);
-          osc.stop(t + 0.35);
-        });
-      }
-    } catch {
-      // ignore
-    }
   }
 
   clearSevenTimer() {
@@ -254,30 +207,6 @@ export class GameView {
       })
       .join('');
     container.classList.remove(HIDDEN_CLASS);
-  }
-
-  renderCardGamesList(games, lang) {
-    const container = this.getElement('card-games-list');
-    container.innerHTML = games
-      .map(
-        game => `
-      <button class="btn btn-large btn-card-game" data-action="select-card-game" data-game="${game.id}">
-        <span class="btn-mode-icon">${game.icon}</span>
-        <div>
-          <div class="card-game-title">${game.title}</div>
-          <div class="card-game-desc">${game.description[lang] || game.description.en}</div>
-        </div>
-      </button>
-    `
-      )
-      .join('');
-  }
-
-  renderCardGameDetail(title, rulesText) {
-    this.getElement('card-game-title').textContent = title;
-    this.getElement('card-game-rules').innerHTML = rulesText
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n/g, '<br>');
   }
 
   showError(message) {

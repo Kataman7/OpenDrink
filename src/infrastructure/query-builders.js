@@ -61,10 +61,11 @@ export const buildTeamBattleQuery = intensity =>
 export const buildDormellesQuery = intensity =>
   buildCategoryAwareQuery('dormelles_questions', ['card_id', 'sentence'], intensity);
 
-export function buildImpostorWordQuery() {
+export function buildImpostorWordQuery(packId = null) {
+  const packFilter = packId && packId !== 'all' ? 'AND pack_id = ?' : '';
   return {
-    sql: 'SELECT word, imposter_hint_word FROM imposter_words WHERE lang = ? ORDER BY RANDOM() LIMIT 1',
-    params: lang => [lang],
+    sql: `SELECT word, imposter_hint_word FROM imposter_words WHERE lang = ? ${packFilter} AND word IS NOT NULL AND trim(word) != '' ORDER BY RANDOM() LIMIT 1`,
+    params: lang => (packId && packId !== 'all' ? [lang, packId] : [lang]),
   };
 }
 
@@ -85,10 +86,16 @@ const PICOLO_LANGS = new Set([
   'sv',
 ]);
 
-export function buildPicoloQuery(playerCount = null) {
+export function buildPicoloQuery(playerCount = null, intensity = null) {
   const playerFilter = playerCount !== null ? 'AND (nb_players IS NULL OR nb_players <= ?)' : '';
+  let packFilter = "AND pack_name != 'war'";
+  if (intensity === 'soft') {
+    packFilter = "AND pack_name IN ('default', 'bar', 'silly')";
+  } else if (intensity === 'hot') {
+    packFilter = "AND pack_name = 'hot'";
+  }
   return {
-    sql: `SELECT type, text, pack_name FROM picolo_rules WHERE language = ? AND (parent_key IS NULL OR parent_key = '') ${playerFilter} ORDER BY RANDOM() LIMIT 1`,
+    sql: `SELECT type, text, pack_name FROM picolo_rules WHERE language = ? AND (parent_key IS NULL OR parent_key = '') AND text IS NOT NULL AND trim(text) != '' ${packFilter} ${playerFilter} ORDER BY RANDOM() LIMIT 1`,
     params: lang => {
       const resolvedLang = PICOLO_LANGS.has(lang) ? lang : 'en';
       return playerCount !== null ? [resolvedLang, playerCount] : [resolvedLang];
@@ -113,15 +120,21 @@ const ANTOINE_LANG_MAP = {
   el: 'el',
 };
 
-export function buildTruthDareQuery(playerCount) {
+export function buildTruthDareQuery(playerCount, intensity = null) {
   let partyFilter = '';
   if (playerCount <= 2) {
     partyFilter = "AND (party_type = 'Couple Only' OR party_type = 'All')";
   } else {
     partyFilter = "AND (party_type = 'Group Only' OR party_type = 'All')";
   }
+  let diffFilter = '';
+  if (intensity === 'soft') {
+    diffFilter = 'AND difficulty <= 4';
+  } else if (intensity === 'hot') {
+    diffFilter = 'AND difficulty >= 5';
+  }
   return {
-    sql: `SELECT sentence, is_action, party_type, difficulty, timer FROM antoine_dares WHERE lang = ? ${partyFilter} ORDER BY RANDOM() LIMIT 1`,
+    sql: `SELECT sentence, is_action, party_type, difficulty, timer FROM antoine_dares WHERE lang = ? AND sentence IS NOT NULL AND trim(sentence) != '' ${partyFilter} ${diffFilter} ORDER BY RANDOM() LIMIT 1`,
     params: lang => [ANTOINE_LANG_MAP[lang] || 'en'],
   };
 }

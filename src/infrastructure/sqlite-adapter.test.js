@@ -44,6 +44,7 @@ async function createTestQuestionsDb() {
   db.run(`
     CREATE TABLE imposter_words (
       id INTEGER PRIMARY KEY,
+      pack_id TEXT,
       lang TEXT NOT NULL,
       word TEXT NOT NULL,
       imposter_hint_word TEXT NOT NULL
@@ -98,10 +99,10 @@ async function createTestQuestionsDb() {
 
   // Insert test data for Impostor words
   db.run(
-    "INSERT INTO imposter_words (lang, word, imposter_hint_word) VALUES ('en', 'Apple', 'Fruit')"
+    "INSERT INTO imposter_words (pack_id, lang, word, imposter_hint_word) VALUES ('food', 'en', 'Apple', 'Fruit')"
   );
   db.run(
-    "INSERT INTO imposter_words (lang, word, imposter_hint_word) VALUES ('en', 'Banana', 'Yellow')"
+    "INSERT INTO imposter_words (pack_id, lang, word, imposter_hint_word) VALUES ('animals', 'en', 'Lion', 'King')"
   );
 
   // Insert test data for 7 Seconds (7seconds)
@@ -172,6 +173,44 @@ async function createTestQuestionsDb() {
   );
   db.run(
     "INSERT INTO dormelles_questions (card_id, category_id, lang, sentence) VALUES (2, 1, 'en', 'Kiss ${j1} or take ${toz} toz')"
+  );
+
+  // Create picolo_rules table
+  db.run(`
+    CREATE TABLE picolo_rules (
+      id INTEGER PRIMARY KEY,
+      type TEXT NOT NULL,
+      text TEXT NOT NULL,
+      pack_name TEXT NOT NULL,
+      language TEXT NOT NULL,
+      parent_key TEXT,
+      nb_players INTEGER
+    )
+  `);
+  db.run(
+    "INSERT INTO picolo_rules (type, text, pack_name, language, parent_key, nb_players) VALUES ('default', 'Drink 2 sips %s', 'default', 'en', NULL, NULL)"
+  );
+  db.run(
+    "INSERT INTO picolo_rules (type, text, pack_name, language, parent_key, nb_players) VALUES ('hot', 'Kiss %s', 'hot', 'en', NULL, NULL)"
+  );
+
+  // Create antoine_dares table
+  db.run(`
+    CREATE TABLE antoine_dares (
+      id INTEGER PRIMARY KEY,
+      sentence TEXT NOT NULL,
+      is_action INTEGER NOT NULL,
+      party_type TEXT NOT NULL,
+      difficulty INTEGER NOT NULL,
+      timer INTEGER,
+      lang TEXT NOT NULL
+    )
+  `);
+  db.run(
+    "INSERT INTO antoine_dares (sentence, is_action, party_type, difficulty, timer, lang) VALUES ('Tell secret', 0, 'All', 2, 0, 'en')"
+  );
+  db.run(
+    "INSERT INTO antoine_dares (sentence, is_action, party_type, difficulty, timer, lang) VALUES ('Do dance', 1, 'Group Only', 7, 30, 'en')"
   );
 
   return db;
@@ -429,15 +468,68 @@ describe('QuestionsDatabaseAdapter', () => {
       const question = adapter.getImpostorQuestion({ lang: 'en' });
 
       expect(question).toBeInstanceOf(Question);
-      expect(['Apple', 'Banana']).toContain(question.sentence);
-      expect(['Fruit', 'Yellow']).toContain(question.impostorHintWord);
+      expect(['Apple', 'Lion']).toContain(question.sentence);
+      expect(['Fruit', 'King']).toContain(question.impostorHintWord);
       expect(question.promptKind).toBe('impostor');
+    });
+
+    it('should return word from specific pack when packId provided', () => {
+      const question = adapter.getImpostorQuestion({ lang: 'en', packId: 'food' });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.sentence).toBe('Apple');
+      expect(question.impostorHintWord).toBe('Fruit');
+    });
+
+    it('should fallback to all packs when specific pack is not found', () => {
+      const question = adapter.getImpostorQuestion({ lang: 'en', packId: 'nonexistent' });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(['Apple', 'Lion']).toContain(question.sentence);
     });
 
     it('should return null when no impostor words found for language', () => {
       const question = adapter.getImpostorQuestion({ lang: 'unknown' });
 
       expect(question).toBeNull();
+    });
+  });
+
+  describe('getPicoloQuestion', () => {
+    it('should return a picolo question', () => {
+      const question = adapter.getPicoloQuestion({ lang: 'en', playerCount: 4 });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.sentence).toBeTruthy();
+      expect(question.promptKind).toMatch(/^picolo_/);
+    });
+
+    it('should filter by intensity', () => {
+      const question = adapter.getPicoloQuestion({ lang: 'en', playerCount: 4, intensity: 'hot' });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.packName).toBe('hot');
+    });
+  });
+
+  describe('getTruthDareQuestion', () => {
+    it('should return a truth or dare question', () => {
+      const question = adapter.getTruthDareQuestion({ lang: 'en', playerCount: 4 });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.sentence).toBeTruthy();
+      expect(question.promptKind).toMatch(/^truth_dare_/);
+    });
+
+    it('should filter soft difficulty for soft intensity', () => {
+      const question = adapter.getTruthDareQuestion({
+        lang: 'en',
+        playerCount: 2,
+        intensity: 'soft',
+      });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.difficulty).toBeLessThanOrEqual(4);
     });
   });
 

@@ -14,11 +14,6 @@ export async function handleModeImpostor(ctx) {
   ctx.screenManager.navigateToImpostorSettings();
 }
 
-export async function handleModeNoIntensity(ctx) {
-  ctx.screenManager.navigateToGameScreen();
-  await ctx.requestNextRound();
-}
-
 export async function handleModeDefault(ctx) {
   if (ctx.state.selectedGameMode === GameMode.TEAM_BATTLE) {
     ctx.state.buildTeams();
@@ -29,7 +24,5 @@ export async function handleModeDefault(ctx) {
 export const MODE_HANDLERS = {
   [GameMode.RANDOM]: handleModeRandom,
   [GameMode.IMPOSTOR]: handleModeImpostor,
-  [GameMode.PICOLO]: handleModeNoIntensity,
-  [GameMode.TRUTH_DARE]: handleModeNoIntensity,
   _default: handleModeDefault,
 };

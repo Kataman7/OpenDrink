@@ -24,10 +24,6 @@ export class GameMode {
 
   static needsIntensity(gameMode) {
     if (gameMode === GameMode.RANDOM) return true;
-    return (
-      gameMode !== GameMode.IMPOSTOR &&
-      gameMode !== GameMode.PICOLO &&
-      gameMode !== GameMode.TRUTH_DARE
-    );
+    return gameMode !== GameMode.IMPOSTOR;
   }
 }

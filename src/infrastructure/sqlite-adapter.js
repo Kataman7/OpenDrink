@@ -35,10 +35,10 @@ export class QuestionsDatabaseAdapter {
     this.db = new SQL.Database(new Uint8Array(buffer));
   }
 
-  getRandomQuestion({ gameMode, intensity, lang, playerCount }) {
+  getRandomQuestion({ gameMode, intensity, lang, playerCount, packId }) {
     switch (gameMode) {
       case GameMode.IMPOSTOR:
-        return this.getImpostorQuestion({ lang });
+        return this.getImpostorQuestion({ lang, packId });
       case GameMode.WOULD_YOU_RATHER:
         return this.getWouldYouRatherQuestion({ intensity, lang });
       case GameMode.QUIZ:
@@ -48,9 +48,9 @@ export class QuestionsDatabaseAdapter {
       case GameMode.DORMELLES:
         return this.getDormellesQuestion({ intensity, lang });
       case GameMode.PICOLO:
-        return this.getPicoloQuestion({ lang, playerCount });
+        return this.getPicoloQuestion({ lang, playerCount, intensity });
       case GameMode.TRUTH_DARE:
-        return this.getTruthDareQuestion({ lang, playerCount });
+        return this.getTruthDareQuestion({ lang, playerCount, intensity });
       default:
         return this.getGenericQuestion({ gameMode, intensity, lang });
     }
@@ -65,9 +65,12 @@ export class QuestionsDatabaseAdapter {
     return new Question({ sentence: row[0], promptKind });
   }
 
-  getImpostorQuestion({ lang }) {
-    const query = buildImpostorWordQuery();
-    const row = this.executeSingleQuery(query, lang);
+  getImpostorQuestion({ lang, packId = null }) {
+    const query = buildImpostorWordQuery(packId);
+    let row = this.executeSingleQuery(query, lang);
+    if (!row && packId) {
+      row = this.executeSingleQuery(buildImpostorWordQuery(null), lang);
+    }
     if (!row) return null;
     return new Question({ sentence: row[0], impostorHintWord: row[1], promptKind: 'impostor' });
   }
@@ -106,15 +109,15 @@ export class QuestionsDatabaseAdapter {
     return new Question({ sentence: row[1], promptKind: 'dormelles', cardId: row[0] });
   }
 
-  getPicoloQuestion({ lang, playerCount }) {
-    const query = buildPicoloQuery(playerCount);
+  getPicoloQuestion({ lang, playerCount, intensity = null }) {
+    const query = buildPicoloQuery(playerCount, intensity);
     const row = this.executeSingleQuery(query, lang);
     if (!row) return null;
     return new Question({ sentence: row[1], promptKind: `picolo_${row[0]}`, packName: row[2] });
   }
 
-  getTruthDareQuestion({ lang, playerCount }) {
-    const query = buildTruthDareQuery(playerCount);
+  getTruthDareQuestion({ lang, playerCount, intensity = null }) {
+    const query = buildTruthDareQuery(playerCount, intensity);
     const row = this.executeSingleQuery(query, lang);
     if (!row) return null;
     return new Question({

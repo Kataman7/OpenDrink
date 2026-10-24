@@ -36,6 +36,7 @@ export class GameState {
     this.roundState = new RoundState();
     this.impostorCount = 1;
     this.mrWhiteCount = 0;
+    this.impostorPack = null;
   }
 
   get players() {

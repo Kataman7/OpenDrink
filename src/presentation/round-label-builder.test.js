@@ -75,4 +75,22 @@ describe('RoundLabelBuilder', () => {
     });
     expect(label).toBe('Truth or Dare (Dare) - Soft');
   });
+
+  it('should build truth_dare_0 (Truth) label with intensity', () => {
+    const label = builder.build({
+      gameMode: 'truth_dare',
+      intensity: 'hot',
+      promptKind: 'truth_dare_0',
+    });
+    expect(label).toBe('Truth or Dare (Classic) (Truth) - Hot');
+  });
+
+  it('should build truth_dare_1 (Dare) label without intensity', () => {
+    const label = builder.build({
+      gameMode: 'truth_dare',
+      intensity: null,
+      promptKind: 'truth_dare_1',
+    });
+    expect(label).toBe('Truth or Dare (Classic) (Dare)');
+  });
 });

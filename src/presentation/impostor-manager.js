@@ -32,6 +32,7 @@ export class ImpostorManager {
     try {
       const { normalWord, impostorWord } = await this.getImpostorWordUseCase.execute({
         lang: gameState.selectedLang,
+        packId: gameState.impostorPack,
       });
       this.normalWord = normalWord;
       this.impostorWord = impostorWord;

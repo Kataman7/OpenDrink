@@ -236,6 +236,11 @@ export class GameView {
     return this.getElement('lang-select').value;
   }
 
+  readSelectedImpostorPack() {
+    const el = document.getElementById('impostor-pack-select');
+    return el ? el.value : 'all';
+  }
+
   applyStaticTranslations(selectedLang) {
     document.documentElement.lang = selectedLang;
     this.translateNodesWithText();

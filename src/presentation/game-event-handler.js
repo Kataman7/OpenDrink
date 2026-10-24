@@ -211,6 +211,8 @@ export class GameEventHandler {
       this.showError(this.i18n.t('impostorSettings.minPlayers'));
       return;
     }
+    const pack = this.view.readSelectedImpostorPack();
+    this.state.impostorPack = pack === 'all' ? null : pack;
     await this.startImpostorRound();
   }
 

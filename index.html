@@ -109,7 +109,7 @@
               data-mode="action_truth"
             >
               <span class="btn-mode-icon">🎭</span>
-              <span data-i18n="mode.truthOrDare">Truth or Dare</span>
+              <span data-i18n="mode.truthOrDare">Truth or Dare (Classic)</span>
             </button>
             <button
               class="btn btn-large btn-mode"
@@ -161,7 +161,7 @@
             </button>
             <button class="btn btn-large btn-mode" data-action="select-mode" data-mode="truth_dare">
               <span class="btn-mode-icon">🎴</span>
-              <span data-i18n="mode.truthDare">Truth or Dare</span>
+              <span data-i18n="mode.truthDare">Truth or Dare (Party & Dares)</span>
             </button>
             <button class="btn btn-large btn-accent" data-action="select-mode" data-mode="random">
               <span class="btn-mode-icon">🎲</span>
@@ -254,6 +254,25 @@
       <section id="screen-impostor_settings" class="screen hidden">
         <div class="screen-inner" style="max-width: 320px">
           <div class="role-list">
+            <div class="role-card">
+              <span class="role-label" data-i18n="impostorSettings.theme">Theme</span>
+              <select id="impostor-pack-select" class="input-field select-field" style="width: 100%; text-align: center;">
+                <option value="all" data-i18n="impostorSettings.packs.all">All Themes</option>
+                <option value="daily_life" data-i18n="impostorSettings.packs.daily_life">Daily Life</option>
+                <option value="food" data-i18n="impostorSettings.packs.food">Food & Drinks</option>
+                <option value="animals" data-i18n="impostorSettings.packs.animals">Animals</option>
+                <option value="movies" data-i18n="impostorSettings.packs.movies">Movies & Series</option>
+                <option value="celebrities" data-i18n="impostorSettings.packs.celebrities">Celebrities</option>
+                <option value="games" data-i18n="impostorSettings.packs.games">Video Games</option>
+                <option value="sports" data-i18n="impostorSettings.packs.sports">Sports</option>
+                <option value="football" data-i18n="impostorSettings.packs.football">Football</option>
+                <option value="travel" data-i18n="impostorSettings.packs.travel">Travel & World</option>
+                <option value="brands" data-i18n="impostorSettings.packs.brands">Brands</option>
+                <option value="fictional_characters" data-i18n="impostorSettings.packs.fictional_characters">Fictional Characters</option>
+                <option value="party" data-i18n="impostorSettings.packs.party">Party & Nightlife</option>
+                <option value="hot" data-i18n="impostorSettings.packs.hot">Hot / 18+</option>
+              </select>
+            </div>
             <div class="role-card">
               <span class="role-label" data-i18n="impostorSettings.impostors">Impostors</span>
               <div class="role-row">

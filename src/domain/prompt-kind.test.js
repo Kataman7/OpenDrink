@@ -29,12 +29,13 @@ describe('isModeOnlyLabel', () => {
   it('should return true for prefixed kinds', () => {
     expect(isModeOnlyLabel('team_battle_1')).toBe(true);
     expect(isModeOnlyLabel('picolo_2')).toBe(true);
-    expect(isModeOnlyLabel('truth_dare_0')).toBe(true);
   });
 
   it('should return false for other kinds', () => {
     expect(isModeOnlyLabel('truth')).toBe(false);
     expect(isModeOnlyLabel('dare')).toBe(false);
+    expect(isModeOnlyLabel('truth_dare_0')).toBe(false);
+    expect(isModeOnlyLabel('truth_dare_1')).toBe(false);
     expect(isModeOnlyLabel('would_you_rather_extra')).toBe(false);
     expect(isModeOnlyLabel(null)).toBe(false);
     expect(isModeOnlyLabel(undefined)).toBe(false);

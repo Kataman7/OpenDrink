@@ -36,9 +36,16 @@ describe('buildWouldYouRatherQuery', () => {
 });
 
 describe('buildImpostorWordQuery', () => {
-  it('should query imposter_words', () => {
+  it('should query imposter_words without packId', () => {
     const query = buildImpostorWordQuery();
     expect(query.sql).toContain('SELECT word, imposter_hint_word FROM imposter_words');
+    expect(query.params('fr')).toEqual(['fr']);
+  });
+
+  it('should query imposter_words with packId', () => {
+    const query = buildImpostorWordQuery('food');
+    expect(query.sql).toContain('AND pack_id = ?');
+    expect(query.params('fr')).toEqual(['fr', 'food']);
   });
 });
 
@@ -69,6 +76,17 @@ describe('buildPicoloQuery', () => {
     expect(query.sql).toContain(
       'SELECT type, text, pack_name FROM picolo_rules WHERE language = ?'
     );
+    expect(query.sql).toContain("pack_name != 'war'");
+  });
+
+  it('should filter soft packs for soft intensity', () => {
+    const query = buildPicoloQuery(4, 'soft');
+    expect(query.sql).toContain("pack_name IN ('default', 'bar', 'silly')");
+  });
+
+  it('should filter hot pack for hot intensity', () => {
+    const query = buildPicoloQuery(4, 'hot');
+    expect(query.sql).toContain("pack_name = 'hot'");
   });
 });
 
@@ -83,6 +101,16 @@ describe('buildTruthDareQuery', () => {
     expect(query.params('en')).toEqual(['en']);
     expect(query.params('de')).toEqual(['de']);
     expect(query.params('unknown')).toEqual(['en']);
+  });
+
+  it('should filter difficulty <= 4 for soft intensity', () => {
+    const query = buildTruthDareQuery(3, 'soft');
+    expect(query.sql).toContain('difficulty <= 4');
+  });
+
+  it('should filter difficulty >= 5 for hot intensity', () => {
+    const query = buildTruthDareQuery(3, 'hot');
+    expect(query.sql).toContain('difficulty >= 5');
   });
 
   it('should filter Couple Only for 2 or fewer players', () => {

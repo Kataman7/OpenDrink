@@ -23,6 +23,28 @@ describe('GetImpostorWordUseCase', () => {
       gameMode: GameMode.IMPOSTOR,
       intensity: null,
       lang: 'en',
+      packId: null,
+    });
+  });
+
+  it('should pass packId when provided', async () => {
+    const mockQuestion = {
+      sentence: 'croissant',
+      impostorHintWord: 'baguette',
+    };
+    const mockGetRandomQuestion = vi.fn().mockResolvedValue(mockQuestion);
+    const mockRepo = { getRandomQuestion: mockGetRandomQuestion };
+    const useCase = new GetImpostorWordUseCase({ questionRepositoryPort: mockRepo });
+
+    const result = await useCase.execute({ lang: 'fr', packId: 'food' });
+
+    expect(result.normalWord).toBe('croissant');
+    expect(result.impostorWord).toBe('baguette');
+    expect(mockGetRandomQuestion).toHaveBeenCalledWith({
+      gameMode: GameMode.IMPOSTOR,
+      intensity: null,
+      lang: 'fr',
+      packId: 'food',
     });
   });
 
@@ -72,6 +94,7 @@ describe('GetImpostorWordUseCase', () => {
       gameMode: GameMode.IMPOSTOR,
       intensity: null,
       lang: 'fr',
+      packId: null,
     });
   });
 });

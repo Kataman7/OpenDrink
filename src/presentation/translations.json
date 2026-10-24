@@ -18,7 +18,7 @@
     "mode": {
       "title": "Choose mode",
       "neverHaveIEver": "Never Have I Ever",
-      "truthOrDare": "Truth or Dare",
+      "truthOrDare": "Truth or Dare (Classic)",
       "wouldYouRather": "Would You Rather",
       "whoCould": "Who Could",
       "impostor": "Impostor",
@@ -28,7 +28,7 @@
       "teamBattle": "Team Battle",
       "dormelles": "Dormelles",
       "picolo": "Picolo",
-      "truthDare": "Truth or Dare",
+      "truthDare": "Truth or Dare (Party & Dares)",
       "random": "Random"
     },
     "modeRandom": {
@@ -69,7 +69,24 @@
       "start": "Start Impostor",
       "minPlayers": "Need at least 3 players for impostor",
       "impostors": "Impostors",
-      "citizens": "Citizens"
+      "citizens": "Citizens",
+      "theme": "Theme",
+      "packs": {
+        "all": "All Themes",
+        "daily_life": "Daily Life",
+        "food": "Food & Drinks",
+        "animals": "Animals",
+        "movies": "Movies & Series",
+        "celebrities": "Celebrities",
+        "games": "Video Games",
+        "sports": "Sports",
+        "football": "Football",
+        "travel": "Travel & World",
+        "brands": "Brands",
+        "fictional_characters": "Fictional Characters",
+        "party": "Party & Nightlife",
+        "hot": "Hot / 18+"
+      }
     },
     "home": {
       "subtitle": "What do you want to do?",
@@ -146,7 +163,7 @@
     "mode": {
       "title": "Choisis un mode",
       "neverHaveIEver": "Je n'ai jamais",
-      "truthOrDare": "Action ou Vérité",
+      "truthOrDare": "Action ou Vérité (Classique)",
       "wouldYouRather": "Tu préfères",
       "whoCould": "Qui pourrait",
       "impostor": "Imposteur",
@@ -156,7 +173,7 @@
       "teamBattle": "Battle d'équipe",
       "dormelles": "Dormelles",
       "picolo": "Picolo",
-      "truthDare": "Action ou Vérité",
+      "truthDare": "Action ou Vérité (Gages & Soirée)",
       "random": "Aléatoire"
     },
     "modeRandom": {
@@ -197,7 +214,24 @@
       "start": "Lancer Imposteur",
       "minPlayers": "Il faut au moins 3 joueurs pour l'imposteur",
       "impostors": "Imposteurs",
-      "citizens": "Citoyens"
+      "citizens": "Citoyens",
+      "theme": "Thème",
+      "packs": {
+        "all": "Tous les thèmes",
+        "daily_life": "Vie quotidienne",
+        "food": "Nourriture & Boissons",
+        "animals": "Animaux",
+        "movies": "Films & Séries",
+        "celebrities": "Célébrités",
+        "games": "Jeux vidéo",
+        "sports": "Sports",
+        "football": "Football",
+        "travel": "Voyage & Monde",
+        "brands": "Marques",
+        "fictional_characters": "Personnages fictifs",
+        "party": "Soirée & Fête",
+        "hot": "Hot / Coquin"
+      }
     },
     "home": {
       "subtitle": "Que veux-tu faire ?",

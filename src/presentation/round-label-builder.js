@@ -30,10 +30,20 @@ export class RoundLabelBuilder {
     const modeLabel = this.i18n.t(MODE_KEY_BY_VALUE[gameMode] || '');
     if (isModeOnlyLabel(promptKind)) return modeLabel;
 
-    const intensityLabel = this.i18n.t(INTENSITY_KEY_BY_VALUE[intensity]);
-    if (promptKind === 'truth') return this.buildTruthLabel(modeLabel, intensityLabel);
-    if (promptKind === 'dare') return this.buildDareLabel(modeLabel, intensityLabel);
-    return this.i18n.t('round.withIntensity', { mode: modeLabel, intensity: intensityLabel });
+    const intensityLabel = intensity ? this.i18n.t(INTENSITY_KEY_BY_VALUE[intensity]) : null;
+    if (promptKind === 'truth' || promptKind === 'truth_dare_0') {
+      return intensityLabel
+        ? this.buildTruthLabel(modeLabel, intensityLabel)
+        : `${modeLabel} (${this.i18n.t('round.truth')})`;
+    }
+    if (promptKind === 'dare' || promptKind === 'truth_dare_1') {
+      return intensityLabel
+        ? this.buildDareLabel(modeLabel, intensityLabel)
+        : `${modeLabel} (${this.i18n.t('round.dare')})`;
+    }
+    return intensityLabel
+      ? this.i18n.t('round.withIntensity', { mode: modeLabel, intensity: intensityLabel })
+      : modeLabel;
   }
 
   buildTruthLabel(modeLabel, intensityLabel) {

@@ -40,14 +40,14 @@ describe('GameMode', () => {
   describe('needsIntensity', () => {
     it('should return false for modes that do not need intensity', () => {
       expect(GameMode.needsIntensity(GameMode.IMPOSTOR)).toBe(false);
-      expect(GameMode.needsIntensity(GameMode.PICOLO)).toBe(false);
-      expect(GameMode.needsIntensity(GameMode.TRUTH_DARE)).toBe(false);
     });
 
     it('should return true for modes that need intensity', () => {
       expect(GameMode.needsIntensity(GameMode.RANDOM)).toBe(true);
       expect(GameMode.needsIntensity(GameMode.NEVER_HAVE_I_EVER)).toBe(true);
       expect(GameMode.needsIntensity(GameMode.ACTION_TRUTH)).toBe(true);
+      expect(GameMode.needsIntensity(GameMode.PICOLO)).toBe(true);
+      expect(GameMode.needsIntensity(GameMode.TRUTH_DARE)).toBe(true);
       expect(GameMode.needsIntensity(GameMode.QUIZ)).toBe(true);
     });
   });

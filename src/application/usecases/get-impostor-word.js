@@ -6,11 +6,12 @@ export class GetImpostorWordUseCase {
     this.questionRepositoryPort = questionRepositoryPort;
   }
 
-  async execute({ lang }) {
+  async execute({ lang, packId = null }) {
     const question = await this.questionRepositoryPort.getRandomQuestion({
       gameMode: GameMode.IMPOSTOR,
       intensity: null,
       lang,
+      packId,
     });
 
     if (!question) {

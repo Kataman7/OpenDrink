@@ -21,7 +21,11 @@ describe('GameMode', () => {
   describe('getCandidateGameKeys', () => {
     it('should return correct keys for each mode', () => {
       expect(GameMode.getCandidateGameKeys(GameMode.NEVER_HAVE_I_EVER)).toEqual(['jnj']);
-      expect(GameMode.getCandidateGameKeys(GameMode.ACTION_TRUTH)).toEqual(['tod', 'dare_chooser']);
+      expect(GameMode.getCandidateGameKeys(GameMode.ACTION_TRUTH)).toEqual([
+        'tod',
+        'dare_chooser',
+        'antoine_dares',
+      ]);
       expect(GameMode.getCandidateGameKeys(GameMode.WHO_COULD)).toEqual(['qpr']);
       expect(GameMode.getCandidateGameKeys(GameMode.SEVEN_SECONDS)).toEqual(['7seconds']);
       expect(GameMode.getCandidateGameKeys(GameMode.ITS_A_10)).toEqual(['a_10']);

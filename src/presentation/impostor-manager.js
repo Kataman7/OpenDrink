@@ -33,7 +33,11 @@ export class ImpostorManager {
       const { normalWord, impostorWord } = await this.getImpostorWordUseCase.execute({
         lang: gameState.selectedLang,
         packId: gameState.impostorPack,
+        excludeWords: gameState.seenQuestions ? Array.from(gameState.seenQuestions) : [],
       });
+      if (typeof gameState.recordSeenQuestion === 'function') {
+        gameState.recordSeenQuestion({ word: normalWord });
+      }
       this.normalWord = normalWord;
       this.impostorWord = impostorWord;
       return true;

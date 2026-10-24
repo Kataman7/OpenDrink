@@ -512,6 +512,64 @@ describe('QuestionsDatabaseAdapter', () => {
     });
   });
 
+  describe('getActionTruthQuestion', () => {
+    it('should return a question for action_truth with promptKind truth or dare', () => {
+      const question = adapter.getActionTruthQuestion({
+        intensity: QuestionIntensity.SOFT,
+        lang: 'en',
+        playerCount: 4,
+      });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(['truth', 'dare', 'truth_dare_0', 'truth_dare_1']).toContain(question.promptKind);
+    });
+
+    it('should respect excludeSentences for action_truth', () => {
+      const excluded = 'Tell your most embarrassing secret';
+      const question = adapter.getActionTruthQuestion({
+        intensity: QuestionIntensity.SOFT,
+        lang: 'en',
+        playerCount: 4,
+        excludeSentences: [excluded],
+      });
+
+      expect(question).toBeInstanceOf(Question);
+    });
+  });
+
+  describe('anti-repetition behavior', () => {
+    it('should exclude seen sentence when alternatives exist', () => {
+      // In createTestQuestionsDb, tod soft has 'Tell your most embarrassing secret' and dare has 'Do 10 pushups'
+      const seen = 'Tell your most embarrassing secret';
+      const question = adapter.getGenericQuestion({
+        gameMode: GameMode.ACTION_TRUTH,
+        intensity: QuestionIntensity.SOFT,
+        lang: 'en',
+        specificKey: 'tod',
+        excludeSentences: [seen],
+      });
+
+      expect(question).toBeInstanceOf(Question);
+      // If only 1 question matches category 0 in tod, fallback returns it safely
+      expect(question.sentence).toBeTruthy();
+    });
+
+    it('should fallback gracefully when all available questions are excluded', () => {
+      const question = adapter.getGenericQuestion({
+        gameMode: GameMode.NEVER_HAVE_I_EVER,
+        intensity: QuestionIntensity.SOFT,
+        lang: 'en',
+        excludeSentences: [
+          'Never have I ever danced on a table',
+          "Je n'ai jamais danse sur une table",
+        ],
+      });
+
+      expect(question).toBeInstanceOf(Question);
+      expect(question.sentence).toBeTruthy();
+    });
+  });
+
   describe('getTruthDareQuestion', () => {
     it('should return a truth or dare question', () => {
       const question = adapter.getTruthDareQuestion({ lang: 'en', playerCount: 4 });

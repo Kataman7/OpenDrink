@@ -6,18 +6,30 @@ export class DrawQuestionUseCase {
     this.questionRepositoryPort = questionRepositoryPort;
   }
 
-  async execute({ gameMode, intensity, lang, previousPlayerId = null, playerCount = null }) {
+  async execute({
+    gameMode,
+    intensity,
+    lang,
+    previousPlayerId = null,
+    playerCount = null,
+    excludeSentences = [],
+  }) {
     const players = await this.playerRepositoryPort.getAllPlayers();
     if (!players || players.length === 0) {
       throw new NoPlayersError();
     }
 
-    const question = await this.questionRepositoryPort.getRandomQuestion({
+    const questionRequest = {
       gameMode,
       intensity,
       lang,
       playerCount: playerCount || players.length,
-    });
+    };
+    if (excludeSentences && excludeSentences.length > 0) {
+      questionRequest.excludeSentences = excludeSentences;
+    }
+
+    const question = await this.questionRepositoryPort.getRandomQuestion(questionRequest);
     if (!question) {
       throw new NoQuestionsAvailableError(gameMode);
     }

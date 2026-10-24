@@ -18,7 +18,7 @@
     "mode": {
       "title": "Choose mode",
       "neverHaveIEver": "Never Have I Ever",
-      "truthOrDare": "Truth or Dare (Classic)",
+      "truthOrDare": "Truth or Dare",
       "wouldYouRather": "Would You Rather",
       "whoCould": "Who Could",
       "impostor": "Impostor",
@@ -163,7 +163,7 @@
     "mode": {
       "title": "Choisis un mode",
       "neverHaveIEver": "Je n'ai jamais",
-      "truthOrDare": "Action ou Vérité (Classique)",
+      "truthOrDare": "Action ou Vérité",
       "wouldYouRather": "Tu préfères",
       "whoCould": "Qui pourrait",
       "impostor": "Imposteur",

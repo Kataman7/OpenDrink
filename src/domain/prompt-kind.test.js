@@ -45,7 +45,7 @@ describe('isModeOnlyLabel', () => {
 describe('GAME_KEY_MAP', () => {
   it('should have all mode keys', () => {
     expect(GAME_KEY_MAP.never_have_i_ever).toEqual(['jnj']);
-    expect(GAME_KEY_MAP.action_truth).toEqual(['tod', 'dare_chooser']);
+    expect(GAME_KEY_MAP.action_truth).toEqual(['tod', 'dare_chooser', 'antoine_dares']);
     expect(GAME_KEY_MAP.impostor).toEqual(['imposter_words']);
     expect(GAME_KEY_MAP.truth_dare).toEqual(['antoine_dares']);
   });

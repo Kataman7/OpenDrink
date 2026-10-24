@@ -23,7 +23,7 @@ export const isModeOnlyLabel = promptKind =>
 
 export const GAME_KEY_MAP = {
   never_have_i_ever: ['jnj'],
-  action_truth: ['tod', 'dare_chooser'],
+  action_truth: ['tod', 'dare_chooser', 'antoine_dares'],
   who_could: ['qpr'],
   seven_seconds: ['7seconds'],
   its_a_10: ['a_10'],

@@ -22,7 +22,6 @@ export const RANDOM_COMPATIBLE_MODES = [
   { id: 'quiz', icon: '🧠', labelKey: 'mode.quiz' },
   { id: 'dormelles', icon: '🃏', labelKey: 'mode.dormelles' },
   { id: 'picolo', icon: '🍻', labelKey: 'mode.picolo' },
-  { id: 'truth_dare', icon: '🎴', labelKey: 'mode.truthDare' },
 ];
 
 export class GameState {
@@ -37,6 +36,7 @@ export class GameState {
     this.impostorCount = 1;
     this.mrWhiteCount = 0;
     this.impostorPack = null;
+    this.seenQuestions = new Set();
   }
 
   get players() {
@@ -170,7 +170,29 @@ export class GameState {
       lang: this.selectedLang,
       previousPlayerId: this.previousPlayerId,
       playerCount: this.players.length,
+      excludeSentences: Array.from(this.seenQuestions),
     };
+  }
+
+  recordSeenQuestion(question) {
+    if (!question) return;
+    const key = this.getQuestionKey(question);
+    if (key) {
+      this.seenQuestions.add(key);
+    }
+  }
+
+  getQuestionKey(question) {
+    if (question.sentence) return question.sentence.trim();
+    if (question.choiceA && question.choiceB) {
+      return `${question.choiceA.trim()}::${question.choiceB.trim()}`;
+    }
+    if (question.word) return `impostor:${question.word.trim()}`;
+    return null;
+  }
+
+  clearSeenQuestions() {
+    this.seenQuestions.clear();
   }
 
   buildRoundLabelInput(promptKind) {

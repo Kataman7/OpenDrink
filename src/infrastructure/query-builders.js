@@ -6,12 +6,12 @@ function buildCategoryAwareQuery(table, columns, intensity) {
 
   if (categoryId !== null) {
     return {
-      sql: `SELECT ${columnList} FROM ${table} WHERE category_id = ? AND lang = ? ORDER BY RANDOM() LIMIT 1`,
+      sql: `SELECT ${columnList} FROM ${table} WHERE category_id = ? AND lang = ? ORDER BY RANDOM() LIMIT 50`,
       params: lang => [categoryId, lang],
     };
   }
   return {
-    sql: `SELECT ${columnList} FROM ${table} WHERE category_id IN (0, 1) AND lang = ? ORDER BY RANDOM() LIMIT 1`,
+    sql: `SELECT ${columnList} FROM ${table} WHERE category_id IN (0, 1) AND lang = ? ORDER BY RANDOM() LIMIT 50`,
     params: lang => [lang],
   };
 }
@@ -21,19 +21,19 @@ export function buildQuestionQuery(gameKey, intensity) {
 
   if (gameKey === 'dare_chooser' && categoryId === null) {
     return {
-      sql: 'SELECT sentence FROM questions WHERE game_key = ? AND category_id IN (0, 1, 2) AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 1',
+      sql: 'SELECT sentence FROM questions WHERE game_key = ? AND category_id IN (0, 1, 2) AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 50',
       params: lang => [gameKey, lang],
     };
   }
 
   if (categoryId !== null) {
     return {
-      sql: 'SELECT sentence FROM questions WHERE game_key = ? AND category_id = ? AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 1',
+      sql: 'SELECT sentence FROM questions WHERE game_key = ? AND category_id = ? AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 50',
       params: lang => [gameKey, categoryId, lang],
     };
   }
   return {
-    sql: 'SELECT sentence FROM questions WHERE game_key = ? AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 1',
+    sql: 'SELECT sentence FROM questions WHERE game_key = ? AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 50',
     params: lang => [gameKey, lang],
   };
 }
@@ -45,12 +45,12 @@ export function buildQuizQuery(intensity) {
   const categoryId = QuestionIntensity.toCategoryId(intensity);
   if (categoryId !== null) {
     return {
-      sql: 'SELECT sentence, options_json FROM quiz_questions WHERE category_id = ? AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 1',
+      sql: 'SELECT sentence, options_json FROM quiz_questions WHERE category_id = ? AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 50',
       params: lang => [categoryId, lang],
     };
   }
   return {
-    sql: 'SELECT sentence, options_json FROM quiz_questions WHERE category_id IN (0, 1, 2, 3) AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 1',
+    sql: 'SELECT sentence, options_json FROM quiz_questions WHERE category_id IN (0, 1, 2, 3) AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 50',
     params: lang => [lang],
   };
 }
@@ -64,7 +64,7 @@ export const buildDormellesQuery = intensity =>
 export function buildImpostorWordQuery(packId = null) {
   const packFilter = packId && packId !== 'all' ? 'AND pack_id = ?' : '';
   return {
-    sql: `SELECT word, imposter_hint_word FROM imposter_words WHERE lang = ? ${packFilter} AND word IS NOT NULL AND trim(word) != '' ORDER BY RANDOM() LIMIT 1`,
+    sql: `SELECT word, imposter_hint_word FROM imposter_words WHERE lang = ? ${packFilter} AND word IS NOT NULL AND trim(word) != '' ORDER BY RANDOM() LIMIT 50`,
     params: lang => (packId && packId !== 'all' ? [lang, packId] : [lang]),
   };
 }
@@ -95,7 +95,7 @@ export function buildPicoloQuery(playerCount = null, intensity = null) {
     packFilter = "AND pack_name = 'hot'";
   }
   return {
-    sql: `SELECT type, text, pack_name FROM picolo_rules WHERE language = ? AND (parent_key IS NULL OR parent_key = '') AND text IS NOT NULL AND trim(text) != '' ${packFilter} ${playerFilter} ORDER BY RANDOM() LIMIT 1`,
+    sql: `SELECT type, text, pack_name FROM picolo_rules WHERE language = ? AND (parent_key IS NULL OR parent_key = '') AND text IS NOT NULL AND trim(text) != '' ${packFilter} ${playerFilter} ORDER BY RANDOM() LIMIT 50`,
     params: lang => {
       const resolvedLang = PICOLO_LANGS.has(lang) ? lang : 'en';
       return playerCount !== null ? [resolvedLang, playerCount] : [resolvedLang];
@@ -120,7 +120,7 @@ const ANTOINE_LANG_MAP = {
   el: 'el',
 };
 
-export function buildTruthDareQuery(playerCount, intensity = null) {
+export function buildTruthDareQuery(playerCount, intensity = null, isAction = null) {
   let partyFilter = '';
   if (playerCount <= 2) {
     partyFilter = "AND (party_type = 'Couple Only' OR party_type = 'All')";
@@ -133,8 +133,18 @@ export function buildTruthDareQuery(playerCount, intensity = null) {
   } else if (intensity === 'hot') {
     diffFilter = 'AND difficulty >= 5';
   }
+  let actionFilter = '';
+  if (isAction !== null && isAction !== undefined) {
+    actionFilter = 'AND is_action = ?';
+  }
   return {
-    sql: `SELECT sentence, is_action, party_type, difficulty, timer FROM antoine_dares WHERE lang = ? AND sentence IS NOT NULL AND trim(sentence) != '' ${partyFilter} ${diffFilter} ORDER BY RANDOM() LIMIT 1`,
-    params: lang => [ANTOINE_LANG_MAP[lang] || 'en'],
+    sql: `SELECT sentence, is_action, party_type, difficulty, timer FROM antoine_dares WHERE lang = ? AND sentence IS NOT NULL AND trim(sentence) != '' ${partyFilter} ${diffFilter} ${actionFilter} ORDER BY RANDOM() LIMIT 50`,
+    params: lang => {
+      const p = [ANTOINE_LANG_MAP[lang] || 'en'];
+      if (isAction !== null && isAction !== undefined) {
+        p.push(isAction);
+      }
+      return p;
+    },
   };
 }

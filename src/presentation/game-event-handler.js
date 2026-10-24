@@ -269,6 +269,7 @@ export class GameEventHandler {
         this.state.setCurrentRoundMode(this.state.pickRandomRoundMode());
       }
       const round = await this.drawQuestionUseCase.execute(this.state.buildRoundRequest());
+      this.state.recordSeenQuestion(round.question);
       this.roundRenderer.renderRound(round);
       this.state.setPreviousPlayer(round.player.id);
     } catch (error) {
@@ -277,6 +278,7 @@ export class GameEventHandler {
   }
 
   handleBackToLobby() {
+    this.state.clearSeenQuestions();
     this.view.clearSevenTimer();
     this.impostorManager.finishRound();
     this.screenManager.goBack();

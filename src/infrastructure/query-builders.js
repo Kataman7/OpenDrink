@@ -21,19 +21,19 @@ export function buildQuestionQuery(gameKey, intensity) {
 
   if (gameKey === 'dare_chooser' && categoryId === null) {
     return {
-      sql: 'SELECT sentence FROM questions WHERE game_key = ? AND category_id IN (0, 1, 2) AND lang = ? ORDER BY RANDOM() LIMIT 1',
+      sql: 'SELECT sentence FROM questions WHERE game_key = ? AND category_id IN (0, 1, 2) AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 1',
       params: lang => [gameKey, lang],
     };
   }
 
   if (categoryId !== null) {
     return {
-      sql: 'SELECT sentence FROM questions WHERE game_key = ? AND category_id = ? AND lang = ? ORDER BY RANDOM() LIMIT 1',
+      sql: 'SELECT sentence FROM questions WHERE game_key = ? AND category_id = ? AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 1',
       params: lang => [gameKey, categoryId, lang],
     };
   }
   return {
-    sql: 'SELECT sentence FROM questions WHERE game_key = ? AND lang = ? ORDER BY RANDOM() LIMIT 1',
+    sql: 'SELECT sentence FROM questions WHERE game_key = ? AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 1',
     params: lang => [gameKey, lang],
   };
 }
@@ -41,8 +41,19 @@ export function buildQuestionQuery(gameKey, intensity) {
 export const buildWouldYouRatherQuery = intensity =>
   buildCategoryAwareQuery('tpf_questions', ['choice1', 'choice2'], intensity);
 
-export const buildQuizQuery = intensity =>
-  buildCategoryAwareQuery('quiz_questions', ['sentence', 'options_json'], intensity);
+export function buildQuizQuery(intensity) {
+  const categoryId = QuestionIntensity.toCategoryId(intensity);
+  if (categoryId !== null) {
+    return {
+      sql: 'SELECT sentence, options_json FROM quiz_questions WHERE category_id = ? AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 1',
+      params: lang => [categoryId, lang],
+    };
+  }
+  return {
+    sql: 'SELECT sentence, options_json FROM quiz_questions WHERE category_id IN (0, 1, 2, 3) AND lang = ? AND sentence IS NOT NULL AND trim(sentence) != "" ORDER BY RANDOM() LIMIT 1',
+    params: lang => [lang],
+  };
+}
 
 export const buildTeamBattleQuery = intensity =>
   buildCategoryAwareQuery('team_battle_questions', ['mode', 'sentence'], intensity);
@@ -57,10 +68,31 @@ export function buildImpostorWordQuery() {
   };
 }
 
-export function buildPicoloQuery() {
+const PICOLO_LANGS = new Set([
+  'da',
+  'de',
+  'en',
+  'es',
+  'fi',
+  'fr',
+  'it',
+  'ja',
+  'ko',
+  'nb',
+  'nl',
+  'pl',
+  'pt',
+  'sv',
+]);
+
+export function buildPicoloQuery(playerCount = null) {
+  const playerFilter = playerCount !== null ? 'AND (nb_players IS NULL OR nb_players <= ?)' : '';
   return {
-    sql: 'SELECT type, text, pack_name FROM picolo_rules WHERE language = ? ORDER BY RANDOM() LIMIT 1',
-    params: lang => [lang],
+    sql: `SELECT type, text, pack_name FROM picolo_rules WHERE language = ? AND (parent_key IS NULL OR parent_key = '') ${playerFilter} ORDER BY RANDOM() LIMIT 1`,
+    params: lang => {
+      const resolvedLang = PICOLO_LANGS.has(lang) ? lang : 'en';
+      return playerCount !== null ? [resolvedLang, playerCount] : [resolvedLang];
+    },
   };
 }
 
@@ -89,7 +121,7 @@ export function buildTruthDareQuery(playerCount) {
     partyFilter = "AND (party_type = 'Group Only' OR party_type = 'All')";
   }
   return {
-    sql: `SELECT sentence, is_action, party_type, difficulty FROM antoine_dares WHERE lang = ? ${partyFilter} ORDER BY RANDOM() LIMIT 1`,
+    sql: `SELECT sentence, is_action, party_type, difficulty, timer FROM antoine_dares WHERE lang = ? ${partyFilter} ORDER BY RANDOM() LIMIT 1`,
     params: lang => [ANTOINE_LANG_MAP[lang] || 'en'],
   };
 }

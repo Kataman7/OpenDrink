@@ -286,7 +286,7 @@ export class GameEventHandler {
     this.view.renderImpostorRevealedWord({
       word: result.word,
       role: result.role,
-      hasNextPlayer: this.impostorManager.hasMorePlayers(),
+      hasNextPlayer: this.impostorManager.hasNextPlayer(),
     });
   }
 
@@ -323,8 +323,21 @@ export class GameEventHandler {
       this.impostorManager.isMrWhitePlayer(playerId);
 
     if (isBad) {
-      this.view.renderImpostorAccusationResult(this.i18n.t('impostor.impostorFound'));
-      this.impostorManager.finishRound();
+      this.impostorManager.removeBadPlayer(playerId);
+      this.impostorManager.removeFromAccusations(playerId);
+      this.view.renderImpostorAccusationList(
+        this.impostorManager.getAccusationPlayers(this.state.players)
+      );
+
+      if (this.impostorManager.getRemainingBadCount() === 0) {
+        this.view.renderImpostorAccusationResult(this.i18n.t('impostor.impostorFound'));
+        this.impostorManager.finishRound();
+      } else {
+        const remaining = this.impostorManager.getRemainingBadCount();
+        this.view.renderImpostorAccusationResult(
+          `${this.i18n.t('impostor.impostorFound')} (${remaining} restant${remaining > 1 ? 's' : ''})`
+        );
+      }
       return;
     }
 

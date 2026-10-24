@@ -64,7 +64,29 @@ export class RoundRenderer {
   renderDormelles({ player, question, label, showPlayerName, players }) {
     const personalizer = new DormellesPersonalizer();
     const personalized = personalizer.personalize(question.sentence, player.name, players);
-    this.view.renderRound({ player, label, showPlayerName, sentence: personalized });
+    const cardName = this.formatDormellesCard(question.cardId);
+    const displayLabel = cardName ? `${label} — ${cardName}` : label;
+    this.view.renderRound({ player, label: displayLabel, showPlayerName, sentence: personalized });
+  }
+
+  formatDormellesCard(cardId) {
+    if (!cardId) return '';
+    const CARD_MAP = {
+      2: '2',
+      3: '3',
+      4: '4',
+      5: '5',
+      6: '6',
+      7: '7',
+      8: '8',
+      9: '9',
+      10: '10',
+      11: 'Valet',
+      12: 'Dame',
+      13: 'Roi',
+      14: 'As',
+    };
+    return CARD_MAP[cardId] || String(cardId);
   }
 
   renderPicolo({ player, question, label, showPlayerName, players }) {
@@ -75,7 +97,12 @@ export class RoundRenderer {
 
   renderTruthDare({ player, question, label, showPlayerName, players }) {
     const personalizer = new AntoinePersonalizer();
-    const personalized = personalizer.personalize(question.sentence, player, players);
+    const personalized = personalizer.personalize(
+      question.sentence,
+      player,
+      players,
+      question.timer
+    );
     this.view.renderRound({ player, label, showPlayerName, sentence: personalized });
   }
 
@@ -91,7 +118,25 @@ export class RoundRenderer {
       teamTwoIds: this.state.teamTwoPlayerIds,
       i18n: this.roundLabelBuilder.i18n,
     });
-    this.view.renderRound({ player, label: displayLabel, showPlayerName, sentence: personalized });
+    const team1Names = this.state
+      .getTeamOnePlayers()
+      .map(p => p.name)
+      .join(', ');
+    const team2Names = this.state
+      .getTeamTwoPlayers()
+      .map(p => p.name)
+      .join(', ');
+    const teamsHeader =
+      team1Names && team2Names
+        ? `${this.roundLabelBuilder.i18n.t('teamBattle.team1') || 'Équipe 1'}: ${team1Names}  ⚡  ${this.roundLabelBuilder.i18n.t('teamBattle.team2') || 'Équipe 2'}: ${team2Names}`
+        : '';
+
+    this.view.renderRound({
+      player: { name: teamsHeader || player.name },
+      label: displayLabel,
+      showPlayerName: Boolean(teamsHeader || showPlayerName),
+      sentence: personalized,
+    });
   }
 
   renderDefault({ player, question, label, showPlayerName, players }) {

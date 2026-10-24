@@ -7,36 +7,34 @@ export class QuestionTextPersonalizer {
   }
 
   personalize(sentence, currentPlayerName) {
-    const replacedTokens = new Map();
     const mappedSlots = new Map();
-    const selectableNames = this.buildSelectableNames();
 
     let result = sentence;
     result = result.replace(/%s/g, () => {
       const slot = mappedSlots.size + 1;
-      const name = this.selectPlayerName(slot, mappedSlots, selectableNames, currentPlayerName);
-      mappedSlots.set(slot, name);
-      return name;
+      return this.selectPlayerName(slot, mappedSlots, currentPlayerName);
     });
-    result = result.replace(/\$(?![\d{])/g, () => String(randomInt(PICOL0_MIN, PICOL0_MAX)));
+
+    // Replace penalty dollar only when it is not part of currency
+    result = result.replace(/(?<!(?:\d|R)\s*)\$(?![\d{]|\s*\d)/g, () =>
+      String(randomInt(PICOL0_MIN, PICOL0_MAX))
+    );
+
     result = result.replace(/\$\{([^}]+)\}/g, (_, token) => {
-      if (replacedTokens.has(token)) return replacedTokens.get(token);
       const tokenSlot = this.extractTokenSlot(token, mappedSlots.size + 1);
-      const selectedName = this.selectPlayerName(
-        tokenSlot,
-        mappedSlots,
-        selectableNames,
-        currentPlayerName
-      );
-      mappedSlots.set(tokenSlot, selectedName);
-      replacedTokens.set(token, selectedName);
+      const selectedName = this.selectPlayerName(tokenSlot, mappedSlots, currentPlayerName);
+
+      if (token.startsWith('de')) {
+        const isVowel = /^[aeiouyéèêëàâîïôûùh]/i.test(selectedName.trim());
+        return isVowel ? `d'${selectedName}` : `de ${selectedName}`;
+      }
+      if (token.startsWith('que')) {
+        const isVowel = /^[aeiouyéèêëàâîïôûùh]/i.test(selectedName.trim());
+        return isVowel ? `qu'${selectedName}` : `que ${selectedName}`;
+      }
       return selectedName;
     });
     return result;
-  }
-
-  buildSelectableNames() {
-    return this.players.map(player => player.name);
   }
 
   extractTokenSlot(token, fallbackSlot) {
@@ -45,18 +43,34 @@ export class QuestionTextPersonalizer {
     return Number.parseInt(match[1], 10);
   }
 
-  selectPlayerName(slot, mappedSlots, selectableNames, currentPlayerName) {
-    const existingName = mappedSlots.get(slot);
-    if (existingName) return existingName;
-    const unassignedNames = this.findUnassignedNames(mappedSlots, selectableNames);
-    const pool = unassignedNames.length > 0 ? unassignedNames : selectableNames;
-    if (pool.length === 0) return currentPlayerName;
-    return this.pickRandomItem(pool);
-  }
+  selectPlayerName(slot, mappedSlots, currentPlayerName) {
+    const existing = mappedSlots.get(slot);
+    if (existing) return existing.name;
 
-  findUnassignedNames(mappedSlots, selectableNames) {
-    const usedNames = new Set(mappedSlots.values());
-    return selectableNames.filter(name => !usedNames.has(name));
+    const usedIds = new Set(
+      Array.from(mappedSlots.values())
+        .map(p => p.id)
+        .filter(id => id !== undefined)
+    );
+    const unassigned = this.players.filter(p => !usedIds.has(p.id));
+
+    // Prefer other players if available to avoid active player self-targeting
+    const otherUnassigned = currentPlayerName
+      ? unassigned.filter(p => p.name !== currentPlayerName)
+      : unassigned;
+
+    let pool = otherUnassigned.length > 0 ? otherUnassigned : unassigned;
+    if (pool.length === 0) {
+      const otherPlayers = currentPlayerName
+        ? this.players.filter(p => p.name !== currentPlayerName)
+        : this.players;
+      pool = otherPlayers.length > 0 ? otherPlayers : this.players;
+    }
+    if (pool.length === 0) return currentPlayerName || '';
+
+    const picked = this.pickRandomItem(pool);
+    mappedSlots.set(slot, picked);
+    return picked.name;
   }
 
   pickRandomItem(items) {

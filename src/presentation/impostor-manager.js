@@ -10,11 +10,12 @@ export class ImpostorManager {
     this.starterId = null;
     this.orderedPlayerIds = [];
     this.impostorPlayerIds = [];
-    this.mrWhitePlayerId = null;
+    this.mrWhitePlayerIds = [];
     this.normalWord = null;
     this.impostorWord = null;
     this.currentIndex = 0;
     this.accusationIds = [];
+    this.currentWordRevealed = false;
   }
 
   async initializeRound(gameState) {
@@ -43,9 +44,10 @@ export class ImpostorManager {
 
   assignRoles(playerIds, impostorCount, mrWhiteCount) {
     const shuffled = shuffleArray(playerIds);
-    this.impostorPlayerIds = shuffled.slice(0, Math.min(impostorCount, shuffled.length));
-    this.mrWhitePlayerId =
-      mrWhiteCount > 0 && impostorCount < shuffled.length ? shuffled[impostorCount] : null;
+    const safeImpostorCount = Math.min(impostorCount, shuffled.length);
+    this.impostorPlayerIds = shuffled.slice(0, safeImpostorCount);
+    const safeWhiteCount = Math.min(mrWhiteCount, Math.max(0, shuffled.length - safeImpostorCount));
+    this.mrWhitePlayerIds = shuffled.slice(safeImpostorCount, safeImpostorCount + safeWhiteCount);
   }
 
   buildOrder(playerIds, starterId) {
@@ -64,13 +66,17 @@ export class ImpostorManager {
     return this.currentIndex < this.orderedPlayerIds.length;
   }
 
+  hasNextPlayer() {
+    return this.currentIndex < this.orderedPlayerIds.length - 1;
+  }
+
   revealWord() {
     this.currentWordRevealed = true;
   }
 
   getCurrentWord() {
     const currentId = this.orderedPlayerIds[this.currentIndex];
-    if (currentId === this.mrWhitePlayerId) return { word: null, role: 'mr_white' };
+    if (this.mrWhitePlayerIds.includes(currentId)) return { word: null, role: 'mr_white' };
     if (this.impostorPlayerIds.includes(currentId))
       return { word: this.impostorWord, role: 'impostor' };
     return { word: this.normalWord, role: 'normal' };
@@ -86,7 +92,16 @@ export class ImpostorManager {
   }
 
   isMrWhitePlayer(playerId) {
-    return this.mrWhitePlayerId === playerId;
+    return this.mrWhitePlayerIds.includes(playerId);
+  }
+
+  removeBadPlayer(playerId) {
+    this.impostorPlayerIds = this.impostorPlayerIds.filter(id => id !== playerId);
+    this.mrWhitePlayerIds = this.mrWhitePlayerIds.filter(id => id !== playerId);
+  }
+
+  getRemainingBadCount() {
+    return this.impostorPlayerIds.length + this.mrWhitePlayerIds.length;
   }
 
   removeFromAccusations(playerId) {

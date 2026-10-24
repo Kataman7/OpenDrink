@@ -22,6 +22,7 @@ export class Question {
     packName = null,
     partyType = null,
     difficulty = null,
+    timer = null,
   }) {
     const hasSentence = Boolean(sentence && sentence.trim().length > 0);
     const hasChoices = Boolean(choiceA && choiceB);
@@ -39,5 +40,6 @@ export class Question {
     this.packName = packName;
     this.partyType = partyType;
     this.difficulty = difficulty;
+    this.timer = timer;
   }
 }

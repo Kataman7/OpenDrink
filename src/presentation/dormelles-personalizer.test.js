@@ -49,4 +49,37 @@ describe('DormellesPersonalizer', () => {
     const result = personalizer.personalize('Take 2 toz', 'Alice', players);
     expect(result).toBe('Take 2 toz');
   });
+
+  it('should avoid self targeting when other players are available', () => {
+    const duo = [
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+    ];
+    const result = personalizer.personalize("Mordille l'oreille de ${j1}", 'Alice', duo);
+    expect(result).toBe("Mordille l'oreille de Bob");
+  });
+
+  it('should handle French ${de1wp1} with correct elision', () => {
+    const duoAlice = [
+      { id: 1, name: 'Bob' },
+      { id: 2, name: 'Alice' },
+    ];
+    expect(personalizer.personalize('Lèche la joue ${de1wp1}', 'Bob', duoAlice)).toBe(
+      "Lèche la joue d'Alice"
+    );
+
+    const duoCharlie = [
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Charlie' },
+    ];
+    expect(personalizer.personalize('Lèche la joue ${de1wp1}', 'Alice', duoCharlie)).toBe(
+      'Lèche la joue de Charlie'
+    );
+  });
+
+  it('should clean Spanish stray $ before ${toz}', () => {
+    const result = personalizer.personalize('tomar $ ${toz} toz', 'Alice', players);
+    expect(result).not.toContain('$');
+    expect(result).toMatch(/^tomar \d toz$/);
+  });
 });

@@ -27,15 +27,18 @@ const BROWSER_LANG_CODES = [
   'tr',
   'uk',
   'vi',
-  'zh',
 ];
 
 const DEFAULT_LANG_FALLBACK = 'en';
 
 export function detectBrowserLanguage() {
   if (typeof navigator === 'undefined') return DEFAULT_LANG_FALLBACK;
-  const raw = navigator.language || navigator.userLanguage || '';
-  const code = raw.split('-')[0].toLowerCase();
+  const raw = (navigator.language || navigator.userLanguage || '').toLowerCase();
+  if (!raw) return DEFAULT_LANG_FALLBACK;
+  if (raw.startsWith('zh')) {
+    return raw.includes('hant') || raw.includes('tw') || raw.includes('hk') ? 'zh-Hant' : 'zh-Hans';
+  }
+  const code = raw.split('-')[0];
   return BROWSER_LANG_CODES.includes(code) ? code : DEFAULT_LANG_FALLBACK;
 }
 

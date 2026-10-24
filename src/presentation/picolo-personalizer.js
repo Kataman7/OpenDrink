@@ -7,7 +7,8 @@ export class PicoloPersonalizer {
     const picker = new PlayerPicker(allPlayers);
 
     return sentence
-      .replace(/%s/g, () => picker.pick() || allPlayers[0]?.name || '')
+      .replace(/\$(?=[a-zA-Z])/g, '$ ')
+      .replace(/%s/gi, () => picker.pick() || allPlayers[0]?.name || '')
       .replace(/\$(?!\d)/g, () => String(randomInt(PICOL0_MIN, PICOL0_MAX)))
       .replace(/%t/g, () => (randomBoolean() ? '1' : '2'));
   }

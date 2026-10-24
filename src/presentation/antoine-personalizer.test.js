@@ -78,13 +78,58 @@ describe('AntoinePersonalizer', () => {
     expect(result).toBe('couple text');
   });
 
-  it('should remove {cash#N} blocks', () => {
+  it('should format {cash#N} blocks with currency', () => {
     const result = personalizer.personalize(
       'Earn {cash#1500} points',
       { id: 1, name: 'Alice' },
       players
     );
-    expect(result).toBe('Earn points');
+    expect(result).toBe('Earn 1500 € points');
+  });
+
+  it('should format {Timer} blocks with duration', () => {
+    const result = personalizer.personalize(
+      'Hold this for {Timer}',
+      { id: 1, name: 'Alice' },
+      players,
+      45
+    );
+    expect(result).toBe('Hold this for 45s');
+  });
+
+  it('should handle Russian {RuD#...} tokens with player name', () => {
+    const result = personalizer.personalize(
+      '%P, поцелуй {RuD#OX*A} в губы',
+      { id: 1, name: 'Alice' },
+      players
+    );
+    expect(result).toMatch(/^Alice, поцелуй (Bob|Charlie) в губы$/);
+  });
+
+  it('should handle German {2 Players#...} with space', () => {
+    const result = personalizer.personalize(
+      '{2 Players#two*many}',
+      { id: 1, name: 'Alice' },
+      players
+    );
+    expect(result).toBe('many');
+  });
+
+  it('should handle genitive %Os properly', () => {
+    const result = personalizer.personalize('%Os Handy', { id: 1, name: 'Alice' }, [
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+    ]);
+    expect(result).toBe('Bobs Handy');
+  });
+
+  it('should avoid self targeting when other players are available', () => {
+    const duo = [
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+    ];
+    const result = personalizer.personalize('%P, kiss %O', { id: 1, name: 'Alice' }, duo);
+    expect(result).toBe('Alice, kiss Bob');
   });
 
   it('should return sentence unchanged if no tokens', () => {

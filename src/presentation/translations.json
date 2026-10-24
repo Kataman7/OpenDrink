@@ -99,6 +99,8 @@
       "ttsReplaceOr": " or "
     },
     "teamBattle": {
+      "team1": "Team 1",
+      "team2": "Team 2",
       "yourTeamWins": "your team wins",
       "wins": "wins",
       "loses": "loses",
@@ -225,6 +227,8 @@
       "ttsReplaceOr": " ou "
     },
     "teamBattle": {
+      "team1": "Équipe 1",
+      "team2": "Équipe 2",
       "yourTeamWins": "votre équipe gagne",
       "wins": "gagne",
       "loses": "perd",

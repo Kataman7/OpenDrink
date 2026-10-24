@@ -11,12 +11,13 @@ export class TeamBattlePersonalizer {
     const t = key => (i18n ? i18n.t(key) : key);
 
     return sentence.replace(/\$\{([^}]+)\}/g, (_, token) => {
-      if (token === 'make_team_win') return t('teamBattle.yourTeamWins');
-      if (token === 'make_team_win_or_lose')
+      const normalizedToken = token.replace(/_loose$/, '_lose');
+      if (normalizedToken === 'make_team_win') return t('teamBattle.yourTeamWins');
+      if (normalizedToken === 'make_team_win_or_lose')
         return randomBoolean() ? t('teamBattle.wins') : t('teamBattle.loses');
-      if (token === 'ot_or_you_lose')
+      if (normalizedToken === 'ot_or_you_lose')
         return randomBoolean() ? t('teamBattle.theOtherTeamLoses') : t('teamBattle.youLose');
-      if (token === 'win_or_lose')
+      if (normalizedToken === 'win_or_lose')
         return randomBoolean() ? t('teamBattle.wins') : t('teamBattle.loses');
       if (/^je\d+/.test(token)) return jePicker.pickFrom(teamOneIds, excludeId) || '';
       if (/^jo\d+/.test(token)) return joPicker.pickFrom(teamTwoIds, excludeId) || '';

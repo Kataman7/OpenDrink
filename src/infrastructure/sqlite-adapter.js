@@ -48,7 +48,7 @@ export class QuestionsDatabaseAdapter {
       case GameMode.DORMELLES:
         return this.getDormellesQuestion({ intensity, lang });
       case GameMode.PICOLO:
-        return this.getPicoloQuestion({ lang });
+        return this.getPicoloQuestion({ lang, playerCount });
       case GameMode.TRUTH_DARE:
         return this.getTruthDareQuestion({ lang, playerCount });
       default:
@@ -106,8 +106,8 @@ export class QuestionsDatabaseAdapter {
     return new Question({ sentence: row[1], promptKind: 'dormelles', cardId: row[0] });
   }
 
-  getPicoloQuestion({ lang }) {
-    const query = buildPicoloQuery();
+  getPicoloQuestion({ lang, playerCount }) {
+    const query = buildPicoloQuery(playerCount);
     const row = this.executeSingleQuery(query, lang);
     if (!row) return null;
     return new Question({ sentence: row[1], promptKind: `picolo_${row[0]}`, packName: row[2] });
@@ -122,6 +122,7 @@ export class QuestionsDatabaseAdapter {
       promptKind: `truth_dare_${row[1]}`,
       partyType: row[2],
       difficulty: row[3],
+      timer: row[4],
     });
   }
 

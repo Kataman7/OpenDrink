@@ -79,4 +79,42 @@ describe('QuestionTextPersonalizer', () => {
     const names = result.split(' et ');
     expect(names[0]).not.toBe(names[1]);
   });
+
+  it("handles French de / d' prefixes appropriately", () => {
+    const pBob = new QuestionTextPersonalizer([{ id: 2, name: 'Bob' }]);
+    expect(pBob.personalize('Cite un défaut ${de1wp1}', 'Alice')).toBe('Cite un défaut de Bob');
+
+    const pAlice = new QuestionTextPersonalizer([{ id: 1, name: 'Alice' }]);
+    expect(pAlice.personalize('Cite un défaut ${de1wp1}', 'Bob')).toBe("Cite un défaut d'Alice");
+  });
+
+  it("handles French que / qu' prefixes appropriately", () => {
+    const pBob = new QuestionTextPersonalizer([{ id: 2, name: 'Bob' }]);
+    expect(pBob.personalize('Le secret ${que1wp1} a', 'Alice')).toBe('Le secret que Bob a');
+
+    const pAlice = new QuestionTextPersonalizer([{ id: 1, name: 'Alice' }]);
+    expect(pAlice.personalize('Le secret ${que1wp1} a', 'Bob')).toBe("Le secret qu'Alice a");
+  });
+
+  it('preserves dollar currency and does not replace with penalty number', () => {
+    expect(personalizer.personalize('been more than 500$ overdrawn', 'Alice')).toBe(
+      'been more than 500$ overdrawn'
+    );
+    expect(personalizer.personalize('dar 50.000 $ a una persona', 'Alice')).toBe(
+      'dar 50.000 $ a una persona'
+    );
+    expect(personalizer.personalize('R$ 200 de saldo', 'Alice')).toBe('R$ 200 de saldo');
+    expect(personalizer.personalize('Transfiérele 1$ a tu ex', 'Alice')).toBe(
+      'Transfiérele 1$ a tu ex'
+    );
+  });
+
+  it('avoids self targeting when other players are available', () => {
+    const duo = new QuestionTextPersonalizer([
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+    ]);
+    const result = duo.personalize('Dis un secret à ${j1}', 'Alice');
+    expect(result).toBe('Dis un secret à Bob');
+  });
 });

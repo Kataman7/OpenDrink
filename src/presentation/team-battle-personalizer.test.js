@@ -52,6 +52,17 @@ describe('TeamBattlePersonalizer', () => {
     expect(result).toMatch(/^The team (teamBattle\.wins|teamBattle\.loses)$/);
   });
 
+  it('should handle database spelling with double o (_loose)', () => {
+    const resultWinOrLoose = personalize('The team ${win_or_loose}', players[0]);
+    expect(resultWinOrLoose).toMatch(/^The team (teamBattle\.wins|teamBattle\.loses)$/);
+
+    const resultMakeWinOrLoose = personalize('${make_team_win_or_loose}', players[0]);
+    expect(resultMakeWinOrLoose).toMatch(/^(teamBattle\.wins|teamBattle\.loses)$/);
+
+    const resultOtOrYouLoose = personalize('${ot_or_you_loose}', players[0]);
+    expect(resultOtOrYouLoose).toMatch(/^(teamBattle\.theOtherTeamLoses|teamBattle\.youLose)$/);
+  });
+
   it('should replace with i18n translations when provided', () => {
     const i18n = { t: key => ({ 'teamBattle.yourTeamWins': 'your team wins' })[key] || key };
     const result = personalizer.personalize('${make_team_win}', {

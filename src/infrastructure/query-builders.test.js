@@ -76,7 +76,7 @@ describe('buildTruthDareQuery', () => {
   it('should query antoine_dares with party_type and difficulty', () => {
     const query = buildTruthDareQuery(5);
     expect(query.sql).toContain(
-      'SELECT sentence, is_action, party_type, difficulty FROM antoine_dares'
+      'SELECT sentence, is_action, party_type, difficulty, timer FROM antoine_dares'
     );
     expect(query.sql).toContain("party_type = 'Group Only' OR party_type = 'All'");
     expect(query.params('fr')).toEqual(['fr']);

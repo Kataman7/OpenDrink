@@ -57,4 +57,18 @@ describe('PicoloPersonalizer', () => {
     );
     expect(result).toBe('Alice, do something');
   });
+
+  it('should replace uppercase %S with a player name', () => {
+    const result = personalizer.personalize('%S, kom is i %ss glas', { id: 1, name: 'Alice' }, [
+      { id: 1, name: 'Alice' },
+      { id: 2, name: 'Bob' },
+    ]);
+    expect(result).not.toContain('%S');
+    expect(result).not.toContain('%s');
+  });
+
+  it('should separate attached dollar sign and replace with number', () => {
+    const result = personalizer.personalize('saa $rangaistusta', { id: 1, name: 'Alice' }, players);
+    expect(result).toMatch(/^saa \d rangaistusta$/);
+  });
 });

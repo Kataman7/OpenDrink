@@ -20,6 +20,9 @@ export class RoundRenderer {
     const showPlayerName = this.state.shouldDisplayRoundPlayerName();
     const players = this.state.players;
 
+    this.currentRoundPlayer = player;
+    this.currentShowPlayerName = showPlayerName;
+
     const handler = this.getHandler(question.promptKind);
     handler({ player, question, label, showPlayerName, players });
 
@@ -107,11 +110,21 @@ export class RoundRenderer {
   }
 
   renderTeamBattle({ player, question, label, showPlayerName, players }) {
+    if (
+      !this.state.teamOnePlayerIds ||
+      !this.state.teamTwoPlayerIds ||
+      this.state.teamOnePlayerIds.length === 0 ||
+      this.state.teamTwoPlayerIds.length === 0
+    ) {
+      this.state.buildTeams();
+    }
+
     const personalizer = new TeamBattlePersonalizer();
     const mode = question.promptKind ? question.promptKind.replace('team_battle_', '') : '';
     const modeLabel = mode ? this.roundLabelBuilder.i18n.t(`teamBattleModes.${mode}`) || mode : '';
     const displayLabel = modeLabel ? `${label} — ${modeLabel}` : label;
     const personalized = personalizer.personalize(question.sentence, {
+      mode,
       currentPlayer: player,
       allPlayers: players,
       teamOneIds: this.state.teamOnePlayerIds,
@@ -152,9 +165,20 @@ export class RoundRenderer {
   readCurrentQuestion() {
     const text = this.view.getQuestionText();
     if (!text) return;
+
+    let textToRead = text;
+    if (this.currentShowPlayerName && this.currentRoundPlayer && this.currentRoundPlayer.name) {
+      const playerName = this.currentRoundPlayer.name.trim();
+      const escapedName = playerName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const startsWithPlayer = new RegExp(`^${escapedName}\\b`, 'i').test(text.trim());
+      if (!startsWithPlayer) {
+        textToRead = `${playerName} : ${text}`;
+      }
+    }
+
     const lang = this.state.selectedLang;
     this.textToSpeech.speak(
-      text,
+      textToRead,
       this.state.getActiveGameMode(),
       lang,
       this.roundLabelBuilder.i18n

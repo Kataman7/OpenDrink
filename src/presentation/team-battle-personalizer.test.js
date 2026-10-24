@@ -84,4 +84,43 @@ describe('TeamBattlePersonalizer', () => {
     const replacedPart = result.replace(' drinks', '');
     expect(replacedPart).toBe('Bob');
   });
+
+  it('should expand challenge mode with instructions', () => {
+    const i18n = {
+      t: key =>
+        ({
+          'teamBattleTemplates.challenge':
+            'Citez un élément : {sentence}. Le premier qui hésite perd !',
+        })[key] || key,
+    };
+    const result = personalizer.personalize('de sports aquatiques', {
+      mode: 'challenge',
+      currentPlayer: players[0],
+      allPlayers: players,
+      teamOneIds,
+      teamTwoIds,
+      i18n,
+    });
+    expect(result).toBe('Citez un élément : sports aquatiques. Le premier qui hésite perd !');
+  });
+
+  it('should expand same_word mode with duellists and instructions', () => {
+    const i18n = {
+      t: key =>
+        ({
+          'teamBattleTemplates.same_word':
+            '${je1} et ${jo1}, dites un mot associé à : « {sentence} »',
+        })[key] || key,
+    };
+    const result = personalizer.personalize('Chat', {
+      mode: 'same_word',
+      currentPlayer: players[0],
+      allPlayers: players,
+      teamOneIds,
+      teamTwoIds,
+      i18n,
+    });
+    expect(result).toContain('Bob et');
+    expect(result).toContain('dites un mot associé à : « Chat »');
+  });
 });

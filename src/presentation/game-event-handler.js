@@ -268,6 +268,12 @@ export class GameEventHandler {
       if (this.state.selectedGameMode === GameMode.RANDOM) {
         this.state.setCurrentRoundMode(this.state.pickRandomRoundMode());
       }
+      if (
+        this.state.roundState.getActiveGameMode() === GameMode.TEAM_BATTLE &&
+        (!this.state.teamOnePlayerIds?.length || !this.state.teamTwoPlayerIds?.length)
+      ) {
+        this.state.buildTeams();
+      }
       const round = await this.drawQuestionUseCase.execute(this.state.buildRoundRequest());
       this.state.recordSeenQuestion(round.question);
       this.roundRenderer.renderRound(round);

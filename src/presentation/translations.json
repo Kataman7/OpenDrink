@@ -118,11 +118,22 @@
     "teamBattle": {
       "team1": "Team 1",
       "team2": "Team 2",
-      "yourTeamWins": "your team wins",
-      "wins": "wins",
-      "loses": "loses",
-      "theOtherTeamLoses": "the other team loses",
-      "youLose": "you lose"
+      "makeTeamWin": "makes their team win",
+      "makeTeamLose": "makes their team lose",
+      "yourTeamWins": "makes their team win",
+      "wins": "makes their team win",
+      "loses": "makes their team lose",
+      "theOtherTeamLoses": "the opposing team loses",
+      "yourTeamLoses": "your team loses",
+      "youLose": "your team loses"
+    },
+    "teamBattleTemplates": {
+      "challenge": "Taking turns, name an item: {sentence}. The first player to hesitate or repeat makes their team lose!",
+      "same_word": "${je1} and ${jo1}, on 3, say the first word that comes to mind thinking of: \"{sentence}\". If you say the same word, you win for your team!",
+      "themes": "Taking turns, name an item on the theme: \"{sentence}\". The first player to get stuck makes their team lose!",
+      "one_at_time": "Taking turns, the opposing team must guess: {sentence}. The first to get it wrong makes their team lose!",
+      "traitors_fact": "In each team, the player who is {sentence} betrays their side and makes their team lose!",
+      "what_opposite_prefer": "The opposing team must guess what ${jo1} prefers: \"{sentence}\". If they guess right, their team wins!"
     },
     "teamBattleModes": {
       "challenge": "Challenge",
@@ -263,11 +274,22 @@
     "teamBattle": {
       "team1": "Équipe 1",
       "team2": "Équipe 2",
-      "yourTeamWins": "votre équipe gagne",
-      "wins": "gagne",
-      "loses": "perd",
+      "makeTeamWin": "fait gagner son équipe",
+      "makeTeamLose": "fait perdre son équipe",
+      "yourTeamWins": "fait gagner son équipe",
+      "wins": "fait gagner son équipe",
+      "loses": "fait perdre son équipe",
       "theOtherTeamLoses": "l'autre équipe perd",
-      "youLose": "vous perdez"
+      "yourTeamLoses": "votre équipe perd",
+      "youLose": "votre équipe perd"
+    },
+    "teamBattleTemplates": {
+      "challenge": "Chacun votre tour, citez un élément : {sentence}. Le premier joueur qui hésite ou répète fait perdre son équipe !",
+      "same_word": "${je1} et ${jo1}, à 3, dites en même temps le premier mot qui vous vient en pensant à : « {sentence} ». Si vous dites le même mot, vous faites gagner votre équipe !",
+      "themes": "Chacun votre tour, citez un élément sur le thème : « {sentence} ». Le premier joueur qui bloque fait perdre son équipe !",
+      "one_at_time": "À tour de rôle, l'équipe adverse doit deviner : {sentence}. Le premier qui se trompe fait perdre son équipe !",
+      "traitors_fact": "Dans chaque équipe, le joueur {sentence} trahit son camp et fait perdre son équipe !",
+      "what_opposite_prefer": "L'équipe adverse doit deviner ce que ${jo1} préfère : « {sentence} ». Si elle a vu juste, elle fait gagner son équipe !"
     },
     "teamBattleModes": {
       "challenge": "Défi",

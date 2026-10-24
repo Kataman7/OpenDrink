@@ -2,7 +2,23 @@ import { PlayerPicker } from '../shared/player-picker.js';
 import { randomBoolean } from '../shared/random.js';
 
 export class TeamBattlePersonalizer {
-  personalize(sentence, { currentPlayer, allPlayers, teamOneIds, teamTwoIds, i18n }) {
+  expandSentence(sentence, mode, i18n) {
+    if (!mode || !i18n) return sentence;
+    const templateKey = `teamBattleTemplates.${mode}`;
+    const template = i18n.t(templateKey);
+    if (!template || template === templateKey) return sentence;
+
+    let cleanSentence = sentence.trim();
+    if (mode === 'challenge' && cleanSentence.startsWith('de ')) {
+      cleanSentence = cleanSentence.slice(3).trim();
+    } else if (mode === 'challenge' && cleanSentence.startsWith("d'")) {
+      cleanSentence = cleanSentence.slice(2).trim();
+    }
+    return template.replace('{sentence}', cleanSentence);
+  }
+
+  personalize(sentence, { mode = null, currentPlayer, allPlayers, teamOneIds, teamTwoIds, i18n }) {
+    const expandedSentence = this.expandSentence(sentence, mode, i18n);
     const excludeId = currentPlayer ? currentPlayer.id : null;
     const jePicker = new PlayerPicker(allPlayers);
     const joPicker = new PlayerPicker(allPlayers);
@@ -10,7 +26,7 @@ export class TeamBattlePersonalizer {
     const allIds = allPlayers.map(p => p.id);
     const t = key => (i18n ? i18n.t(key) : key);
 
-    return sentence.replace(/\$\{([^}]+)\}/g, (_, token) => {
+    return expandedSentence.replace(/\$\{([^}]+)\}/g, (_, token) => {
       const normalizedToken = token.replace(/_loose$/, '_lose');
       if (normalizedToken === 'make_team_win') return t('teamBattle.yourTeamWins');
       if (normalizedToken === 'make_team_win_or_lose')

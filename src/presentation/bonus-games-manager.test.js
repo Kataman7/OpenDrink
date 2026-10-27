@@ -105,6 +105,22 @@ describe('BonusGamesManager', () => {
       expect(nextState.activePlayer).toEqual(players[manager.bombPlayerIndex]);
       expect(audioService.tick).toHaveBeenCalled();
     });
+
+    it('personalizes questions with %s and $ tokens', async () => {
+      drawQuestionUseCase.execute.mockResolvedValueOnce({
+        player: players[0],
+        question: { sentence: 'Donne $ gorgées à %s et cite 3 fruits' },
+      });
+
+      const state = await manager.startBomb({
+        players,
+        lang: 'fr',
+        durationMs: 5000,
+      });
+
+      expect(state.question).not.toContain('%s');
+      expect(state.question).not.toContain('$');
+    });
   });
 
   describe('Le Tribunal (Court)', () => {
@@ -134,6 +150,18 @@ describe('BonusGamesManager', () => {
       const verdict = manager.renderCourtVerdict();
       expect(verdict.isGuilty).toBe(false);
       expect(verdict.drinks).toBe(2);
+    });
+
+    it('personalizes court charge and formats as accusation', async () => {
+      drawQuestionUseCase.execute.mockResolvedValueOnce({
+        player: players[0],
+        question: { sentence: 'bu dans le verre de %s et pris $ shots' },
+      });
+
+      const state = await manager.startCourt({ players, lang: 'fr' });
+      expect(state.charge).not.toContain('%s');
+      expect(state.charge).not.toContain('$');
+      expect(state.charge).toContain('A déjà :');
     });
   });
 

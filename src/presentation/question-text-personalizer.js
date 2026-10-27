@@ -10,7 +10,7 @@ export class QuestionTextPersonalizer {
     const mappedSlots = new Map();
 
     let result = sentence;
-    result = result.replace(/%s/g, () => {
+    result = result.replace(/%s/gi, () => {
       const slot = mappedSlots.size + 1;
       return this.selectPlayerName(slot, mappedSlots, currentPlayerName);
     });

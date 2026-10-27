@@ -1,4 +1,5 @@
 import { GameMode } from '../domain/game-mode.js';
+import { QuestionTextPersonalizer } from './question-text-personalizer.js';
 
 export class BonusGamesManager {
   constructor({ drawQuestionUseCase, audioService = null }) {
@@ -77,7 +78,11 @@ export class BonusGamesManager {
       lang,
       playerCount: players.length,
     });
-    this.bombQuestion = res.question.sentence;
+    const personalizer = new QuestionTextPersonalizer(players);
+    this.bombQuestion = personalizer.personalize(
+      res.question.sentence,
+      players[this.bombPlayerIndex].name
+    );
 
     // Random duration between 12s and 24s if not provided
     this.bombDurationMs = durationMs ?? 12000 + Math.floor(Math.random() * 12000);
@@ -109,7 +114,11 @@ export class BonusGamesManager {
       lang,
       playerCount: players.length,
     });
-    this.bombQuestion = res.question.sentence;
+    const personalizer = new QuestionTextPersonalizer(players);
+    this.bombQuestion = personalizer.personalize(
+      res.question.sentence,
+      players[this.bombPlayerIndex].name
+    );
 
     if (this.audioService?.tick) {
       this.audioService.tick();
@@ -150,14 +159,20 @@ export class BonusGamesManager {
     const pool = candidates.length > 0 ? candidates : players;
     this.courtAccused = pool[Math.floor(Math.random() * pool.length)];
 
-    const chosenMode = Math.random() < 0.5 ? GameMode.NEVER_HAVE_I_EVER : GameMode.WHO_COULD;
+    // NEVER_HAVE_I_EVER contains thousands of concrete actions/deeds perfect for accusations
     const res = await this.drawQuestionUseCase.execute({
-      gameMode: chosenMode,
+      gameMode: GameMode.NEVER_HAVE_I_EVER,
       intensity: 'mixed',
       lang,
       playerCount: players.length,
     });
-    this.courtCharge = res.question.sentence;
+
+    const prefix = lang === 'fr' ? 'A déjà : ' : 'Has already: ';
+    const rawSentence = res.question.sentence.trim();
+    const chargeText = `${prefix}${rawSentence}`;
+
+    const personalizer = new QuestionTextPersonalizer(players);
+    this.courtCharge = personalizer.personalize(chargeText, this.courtAccused.name);
 
     return {
       accused: this.courtAccused,
@@ -207,7 +222,8 @@ export class BonusGamesManager {
       lang,
       playerCount: players.length,
     });
-    this.barometerSituation = res.question.sentence;
+    const personalizer = new QuestionTextPersonalizer(players);
+    this.barometerSituation = personalizer.personalize(res.question.sentence, players[0].name);
 
     return {
       situation: this.barometerSituation,
@@ -277,8 +293,9 @@ export class BonusGamesManager {
       lang,
       playerCount: players.length,
     });
-    this.consensusChoiceA = res.question.choiceA;
-    this.consensusChoiceB = res.question.choiceB;
+    const personalizer = new QuestionTextPersonalizer(players);
+    this.consensusChoiceA = personalizer.personalize(res.question.choiceA, players[0].name);
+    this.consensusChoiceB = personalizer.personalize(res.question.choiceB, players[0].name);
 
     return {
       choiceA: this.consensusChoiceA,
@@ -351,7 +368,15 @@ export class BonusGamesManager {
       lang,
       playerCount: players.length,
     });
-    this.confessionalPrompt = res.question.sentence;
+
+    const prefix = lang === 'fr' ? "Je n'ai jamais " : 'Never have I ever ';
+    const rawSentence = res.question.sentence.trim();
+    const promptText = rawSentence.toLowerCase().startsWith(prefix.toLowerCase().trim())
+      ? rawSentence
+      : `${prefix}${rawSentence}`;
+
+    const personalizer = new QuestionTextPersonalizer(players);
+    this.confessionalPrompt = personalizer.personalize(promptText, players[0].name);
 
     return {
       prompt: this.confessionalPrompt,
@@ -424,6 +449,24 @@ export class BonusGamesManager {
       lang,
       playerCount: players.length,
     });
+
+    const personalizer = new QuestionTextPersonalizer(players);
+    if (res.question.sentence) {
+      res.question.sentence = personalizer.personalize(
+        res.question.sentence,
+        this.survivalCurrentPlayer.name
+      );
+    }
+    if (res.question.choiceA) {
+      res.question.choiceA = personalizer.personalize(
+        res.question.choiceA,
+        this.survivalCurrentPlayer.name
+      );
+      res.question.choiceB = personalizer.personalize(
+        res.question.choiceB,
+        this.survivalCurrentPlayer.name
+      );
+    }
 
     this.survivalCurrentChallenge = {
       mode: pickedMode,

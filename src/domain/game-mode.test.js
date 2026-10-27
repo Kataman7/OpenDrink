@@ -16,6 +16,7 @@ describe('GameMode', () => {
     expect(GameMode.PICOLO).toBe('picolo');
     expect(GameMode.TRUTH_DARE).toBe('truth_dare');
     expect(GameMode.RANDOM).toBe('random');
+    expect(GameMode.BONUS_GAMES).toBe('bonus_games');
   });
 
   describe('getCandidateGameKeys', () => {
@@ -44,6 +45,7 @@ describe('GameMode', () => {
   describe('needsIntensity', () => {
     it('should return false for modes that do not need intensity', () => {
       expect(GameMode.needsIntensity(GameMode.IMPOSTOR)).toBe(false);
+      expect(GameMode.needsIntensity(GameMode.BONUS_GAMES)).toBe(false);
     });
 
     it('should return true for modes that need intensity', () => {

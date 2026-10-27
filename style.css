@@ -646,3 +646,276 @@ body {
   color: var(--color-accent);
   font-size: 1rem;
 }
+
+/* BONUS GAMES */
+.btn-bonus-game {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  gap: 16px;
+  padding: 18px 20px;
+}
+
+.bonus-game-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.bonus-game-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.bonus-game-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.bonus-badge {
+  display: inline-block;
+  align-self: center;
+  background: rgba(108, 92, 231, 0.25);
+  color: var(--color-secondary);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.bomb-visual {
+  font-size: 4rem;
+  margin: 12px 0;
+  user-select: none;
+}
+
+.bomb-ticking {
+  animation: bomb-pulse 1s infinite alternate ease-in-out;
+}
+
+@keyframes bomb-pulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 2px rgba(253, 121, 168, 0.3));
+  }
+  100% {
+    transform: scale(1.25);
+    filter: drop-shadow(0 0 15px rgba(253, 121, 168, 0.9));
+  }
+}
+
+.bomb-exploded {
+  animation: bomb-shake 0.4s infinite;
+}
+
+@keyframes bomb-shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  20% { transform: translate(-3px, 0px) rotate(3deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  80% { transform: translate(3px, 1px) rotate(-2deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.court-vote-counter {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.vote-tag {
+  background: var(--color-bg);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+}
+
+.guilty-tag {
+  border: 1px solid #ff7675;
+  color: #ff7675;
+}
+
+.innocent-tag {
+  border: 1px solid #55efc4;
+  color: #55efc4;
+}
+
+.mode-buttons-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.btn-danger {
+  background: #d63031;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #e17055;
+}
+
+.barometer-control {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.barometer-slider {
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.barometer-val-display {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fdcb6e;
+}
+
+.rating-chip {
+  background: var(--color-bg);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ratings-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.bonus-divider {
+  border: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  width: 100%;
+  margin: 6px 0;
+}
+
+.btn-consensus {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.consensus-letter {
+  font-size: 1.4rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.consensus-text {
+  flex: 1;
+}
+
+.btn-consensus-a {
+  border: 2px solid #00cec9;
+  background: rgba(0, 206, 201, 0.12);
+}
+
+.btn-consensus-a:hover {
+  background: rgba(0, 206, 201, 0.25);
+}
+
+.btn-consensus-b {
+  border: 2px solid #fd79a8;
+  background: rgba(253, 121, 168, 0.12);
+}
+
+.btn-consensus-b:hover {
+  background: rgba(253, 121, 168, 0.25);
+}
+
+.consensus-scores {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 10px 0;
+}
+
+.consensus-score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-bg);
+  padding: 14px 24px;
+  border-radius: var(--radius-sm);
+  min-width: 90px;
+}
+
+.consensus-score-count {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-secondary);
+}
+
+.consensus-score-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.consensus-score-vs {
+  font-weight: 800;
+  color: var(--color-text-muted);
+  font-size: 1.2rem;
+}
+
+.survival-hp-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.survival-hp-pill {
+  background: var(--color-bg);
+  padding: 6px 12px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s;
+}
+
+.survival-current-pill {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 10px rgba(0, 206, 201, 0.35);
+  transform: scale(1.04);
+}
+
+.survival-dead-pill {
+  opacity: 0.35;
+  text-decoration: line-through;
+}
+
+.bonus-play-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+

@@ -163,6 +163,10 @@
               <span class="btn-mode-icon">🎲</span>
               <span data-i18n="mode.random">Random</span>
             </button>
+            <button class="btn btn-large btn-accent" data-action="select-mode" data-mode="bonus_games" style="background: linear-gradient(135deg, #6c5ce7, #fd79a8);">
+              <span class="btn-mode-icon">🎁</span>
+              <span data-i18n="mode.bonusGames">Jeux bonus</span>
+            </button>
           </div>
           <button
             class="btn btn-large btn-secondary"
@@ -325,6 +329,38 @@
             <div id="card-game-rules" class="card-game-rules"></div>
           </div>
           <button class="btn btn-large btn-secondary" data-action="back-card-games" data-i18n="common.back">Back</button>
+        </div>
+      </section>
+
+      <!-- SCREEN: BONUS GAMES -->
+      <section id="screen-bonus_games" class="screen hidden">
+        <div class="screen-inner">
+          <h2 class="title" data-i18n="bonusGames.title">Jeux bonus</h2>
+          <p class="subtitle" data-i18n="bonusGames.subtitle">Mini-jeux et défis alternatifs</p>
+          <div id="bonus-games-list" class="mode-buttons"></div>
+          <button
+            class="btn btn-large btn-secondary"
+            data-action="back-mode"
+            data-i18n="common.back"
+          >
+            Back
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN: BONUS PLAY -->
+      <section id="screen-bonus_play" class="screen hidden">
+        <div class="screen-inner game-screen-inner">
+          <div id="bonus-play-card" class="game-card"></div>
+          <div id="bonus-play-actions" class="bonus-play-actions"></div>
+          <button
+            id="btn-back-bonus-play"
+            class="btn btn-large btn-secondary"
+            data-action="back-bonus-games"
+            data-i18n="common.back"
+          >
+            Back
+          </button>
         </div>
       </section>
 

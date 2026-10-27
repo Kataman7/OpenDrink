@@ -77,6 +77,14 @@ export class ScreenManager {
     this._push(SCREENS.impostorSettings);
   }
 
+  navigateToBonusGames() {
+    this._push(SCREENS.bonusGames);
+  }
+
+  navigateToBonusPlay() {
+    this._push(SCREENS.bonusPlay);
+  }
+
   _push(screen) {
     this._navStack.push(this.state.screen);
     this._pushHistory();

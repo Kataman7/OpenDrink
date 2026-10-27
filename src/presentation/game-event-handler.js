@@ -2,6 +2,7 @@ import { GameMode } from '../domain/game-mode.js';
 import { RoundRenderer } from './round-renderer.js';
 import { CardGameView } from './card-game-view.js';
 import { CARD_GAMES } from './card-games.js';
+import { BonusGameView } from './bonus-game-view.js';
 import { MODE_HANDLERS } from './mode-handlers.js';
 import { ERROR_DISPLAY_DURATION_MS } from '../config.js';
 
@@ -26,6 +27,11 @@ export class GameEventHandler {
       textToSpeech: dependencies.textToSpeech,
     });
     this.cardGameView = new CardGameView(dependencies.view);
+    this.bonusGamesManager = dependencies.bonusGamesManager;
+    this.bonusGameView = new BonusGameView({
+      view: dependencies.view,
+      i18n: dependencies.i18n,
+    });
     this._quizLocked = false;
     this._errorTimeout = null;
     this._installPrompt = null;
@@ -387,6 +393,283 @@ export class GameEventHandler {
     }
   }
 
+  async handleSelectBonusGame(target) {
+    const bonusId = target.getAttribute('data-bonus');
+    await this.startSelectedBonusGame(bonusId);
+  }
+
+  async startSelectedBonusGame(bonusId) {
+    if (!this.state.hasEnoughPlayers(2)) {
+      this.showError(this.i18n.t('errors.minPlayers', { count: 2 }));
+      return;
+    }
+    this.screenManager.navigateToBonusPlay();
+
+    switch (bonusId) {
+      case 'bomb':
+        await this.startBomb();
+        break;
+      case 'court':
+        await this.startCourt();
+        break;
+      case 'barometer':
+        await this.startBarometer();
+        break;
+      case 'consensus':
+        await this.startConsensus();
+        break;
+      case 'confessional':
+        await this.startConfessional();
+        break;
+      case 'survival':
+        await this.startSurvival();
+        break;
+      default:
+        break;
+    }
+  }
+
+  async startBomb() {
+    const res = await this.bonusGamesManager.startBomb({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+      onExplode: ({ loser }) => {
+        this.bonusGameView.renderBombPlay({
+          activePlayer: loser,
+          isExploded: true,
+          loser,
+        });
+      },
+    });
+    this.bonusGameView.renderBombPlay({
+      activePlayer: res.activePlayer,
+      question: res.question,
+      isExploded: false,
+    });
+  }
+
+  async handleBonusBombPass() {
+    const res = await this.bonusGamesManager.passBomb({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    if (res) {
+      this.bonusGameView.renderBombPlay({
+        activePlayer: res.activePlayer,
+        question: res.question,
+        isExploded: false,
+      });
+    }
+  }
+
+  async handleBonusBombRestart() {
+    await this.startBomb();
+  }
+
+  async startCourt() {
+    const res = await this.bonusGamesManager.startCourt({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderCourtPlay({
+      accused: res.accused,
+      charge: res.charge,
+      guiltyVotes: res.guiltyVotes,
+      innocentVotes: res.innocentVotes,
+      isVerdict: false,
+    });
+  }
+
+  handleBonusCourtGuilty() {
+    this.bonusGamesManager.addGuiltyVote();
+    this.bonusGameView.renderCourtPlay({
+      accused: this.bonusGamesManager.courtAccused,
+      charge: this.bonusGamesManager.courtCharge,
+      guiltyVotes: this.bonusGamesManager.courtGuiltyVotes,
+      innocentVotes: this.bonusGamesManager.courtInnocentVotes,
+      isVerdict: false,
+    });
+  }
+
+  handleBonusCourtInnocent() {
+    this.bonusGamesManager.addInnocentVote();
+    this.bonusGameView.renderCourtPlay({
+      accused: this.bonusGamesManager.courtAccused,
+      charge: this.bonusGamesManager.courtCharge,
+      guiltyVotes: this.bonusGamesManager.courtGuiltyVotes,
+      innocentVotes: this.bonusGamesManager.courtInnocentVotes,
+      isVerdict: false,
+    });
+  }
+
+  handleBonusCourtVerdict() {
+    const verdict = this.bonusGamesManager.renderCourtVerdict();
+    this.bonusGameView.renderCourtPlay({
+      isVerdict: true,
+      verdictResult: verdict,
+    });
+  }
+
+  async handleBonusCourtNext() {
+    await this.startCourt();
+  }
+
+  async startBarometer() {
+    const res = await this.bonusGamesManager.startBarometer({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderBarometerPlay({
+      situation: res.situation,
+      currentRatingPlayer: res.currentRatingPlayer,
+      isFinished: false,
+    });
+  }
+
+  handleBonusBarometerSubmit() {
+    const slider = document.getElementById('barometer-slider');
+    const rating = slider ? slider.value : 5;
+    const res = this.bonusGamesManager.submitBarometerRating({
+      players: this.state.players,
+      rating,
+    });
+    if (res.isFinished) {
+      this.bonusGameView.renderBarometerPlay({
+        isFinished: true,
+        result: res,
+      });
+    } else {
+      this.bonusGameView.renderBarometerPlay({
+        situation: this.bonusGamesManager.barometerSituation,
+        currentRatingPlayer: res.nextPlayer,
+        isFinished: false,
+      });
+    }
+  }
+
+  async handleBonusBarometerNext() {
+    await this.startBarometer();
+  }
+
+  async startConsensus() {
+    const res = await this.bonusGamesManager.startConsensus({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderConsensusPlay({
+      choiceA: res.choiceA,
+      choiceB: res.choiceB,
+      currentVoter: res.currentVoter,
+      isFinished: false,
+    });
+  }
+
+  handleBonusConsensusVote(target) {
+    const choice = target.getAttribute('data-choice');
+    const res = this.bonusGamesManager.submitConsensusVote({
+      players: this.state.players,
+      choice,
+    });
+    if (res.isFinished) {
+      this.bonusGameView.renderConsensusPlay({
+        isFinished: true,
+        result: res,
+      });
+    } else {
+      this.bonusGameView.renderConsensusPlay({
+        choiceA: this.bonusGamesManager.consensusChoiceA,
+        choiceB: this.bonusGamesManager.consensusChoiceB,
+        currentVoter: res.nextVoter,
+        isFinished: false,
+      });
+    }
+  }
+
+  async handleBonusConsensusNext() {
+    await this.startConsensus();
+  }
+
+  async startConfessional() {
+    const res = await this.bonusGamesManager.startConfessional({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderConfessionalPlay({
+      prompt: res.prompt,
+      currentVoter: res.currentVoter,
+      isFinished: false,
+    });
+  }
+
+  handleBonusConfessionalVote(target) {
+    const done = target.getAttribute('data-done') === 'true';
+    const res = this.bonusGamesManager.submitConfession({
+      players: this.state.players,
+      done,
+    });
+    if (res.isFinished) {
+      this.bonusGameView.renderConfessionalPlay({
+        isFinished: true,
+        result: res,
+      });
+    } else {
+      this.bonusGameView.renderConfessionalPlay({
+        prompt: this.bonusGamesManager.confessionalPrompt,
+        currentVoter: res.nextVoter,
+        isFinished: false,
+      });
+    }
+  }
+
+  async handleBonusConfessionalNext() {
+    await this.startConfessional();
+  }
+
+  async startSurvival() {
+    const res = await this.bonusGamesManager.startSurvival({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderSurvivalPlay({
+      currentPlayer: res.currentPlayer,
+      challenge: res.challenge,
+      lives: res.lives,
+      players: this.state.players,
+      isFinished: res.isFinished,
+      winner: res.winner,
+    });
+  }
+
+  async handleBonusSurvivalResult(target) {
+    const success = target.getAttribute('data-success') === 'true';
+    const res = await this.bonusGamesManager.resolveSurvivalTurn({
+      success,
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderSurvivalPlay({
+      currentPlayer: res.currentPlayer,
+      challenge: res.challenge,
+      lives: res.lives,
+      players: this.state.players,
+      isFinished: res.isFinished,
+      winner: res.winner,
+    });
+  }
+
+  async handleBonusSurvivalRestart() {
+    await this.startSurvival();
+  }
+
+  handleBackMode() {
+    this.screenManager.goBack();
+  }
+
+  handleBackBonusGames() {
+    this.bonusGamesManager?.clearTimers();
+    this.screenManager.goBack();
+  }
+
   persistPreferences() {
     this.preferencesManager.persist();
   }
@@ -422,6 +705,23 @@ const CLICK_ACTIONS = {
   'go-lobby': 'handleGoLobby',
   'go-card-games': 'handleGoCardGames',
   'select-card-game': 'handleSelectCardGame',
+  'select-bonus-game': 'handleSelectBonusGame',
+  'bonus-bomb-pass': 'handleBonusBombPass',
+  'bonus-bomb-restart': 'handleBonusBombRestart',
+  'bonus-court-guilty': 'handleBonusCourtGuilty',
+  'bonus-court-innocent': 'handleBonusCourtInnocent',
+  'bonus-court-verdict': 'handleBonusCourtVerdict',
+  'bonus-court-next': 'handleBonusCourtNext',
+  'bonus-barometer-submit': 'handleBonusBarometerSubmit',
+  'bonus-barometer-next': 'handleBonusBarometerNext',
+  'bonus-consensus-vote': 'handleBonusConsensusVote',
+  'bonus-consensus-next': 'handleBonusConsensusNext',
+  'bonus-confessional-vote': 'handleBonusConfessionalVote',
+  'bonus-confessional-next': 'handleBonusConfessionalNext',
+  'bonus-survival-result': 'handleBonusSurvivalResult',
+  'bonus-survival-restart': 'handleBonusSurvivalRestart',
+  'back-mode': 'handleBackMode',
+  'back-bonus-games': 'handleBackBonusGames',
   'back-home': 'handleBackHome',
   'back-card-games': 'handleBackCardGames',
   'install-app': 'handleInstallApp',

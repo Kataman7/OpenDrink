@@ -6,6 +6,7 @@ import { GameState } from './game-state.js';
 import { ScreenManager } from './screen-manager.js';
 import { PreferencesManager } from './preferences-manager.js';
 import { ImpostorManager } from './impostor-manager.js';
+import { BonusGamesManager } from './bonus-games-manager.js';
 import { SCREENS } from './screens.js';
 import { GameEventHandler } from './game-event-handler.js';
 import { createDependencies } from './dependency-injection.js';
@@ -27,12 +28,17 @@ export class GamePresenter {
     this.impostorManager = new ImpostorManager({
       getImpostorWordUseCase: deps.getImpostorWordUseCase,
     });
+    this.bonusGamesManager = new BonusGamesManager({
+      drawQuestionUseCase: deps.drawQuestionUseCase,
+      audioService: this.view.audio,
+    });
 
     this.eventHandler = new GameEventHandler({
       view: this.view,
       state: this.state,
       screenManager: this.screenManager,
       impostorManager: this.impostorManager,
+      bonusGamesManager: this.bonusGamesManager,
       drawQuestionUseCase: deps.drawQuestionUseCase,
       i18n: this.i18n,
       preferencesManager: this.preferencesManager,

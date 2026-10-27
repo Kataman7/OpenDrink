@@ -10,4 +10,6 @@ export const SCREENS = {
   impostorSettings: 'impostor_settings',
   cardGames: 'card_games',
   cardGameDetail: 'card_game_detail',
+  bonusGames: 'bonus_games',
+  bonusPlay: 'bonus_play',
 };

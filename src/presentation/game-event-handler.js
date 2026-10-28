@@ -876,9 +876,6 @@ export class GameEventHandler {
     });
     this.bonusGameView.renderSpicyConfessionPlay({
       prompt: res.prompt,
-      currentVoter: res.currentVoter,
-      isFinished: false,
-      answers: [],
     });
   }
 

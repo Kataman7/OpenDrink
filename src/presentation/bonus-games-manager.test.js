@@ -271,7 +271,7 @@ describe('BonusGamesManager', () => {
     });
   });
 
-  describe('Spicy: Thermomètre du Désir (Thermostat)', () => {
+  describe('Spicy: Heat Wave (Thermostat)', () => {
     it('initializes at level 1 and advances up to level 10', async () => {
       const twoPlayers = [players[0], players[1]];
       const start = await manager.startSpicyThermostat({ players: twoPlayers, lang: 'fr' });
@@ -298,7 +298,7 @@ describe('BonusGamesManager', () => {
     });
   });
 
-  describe('Spicy: Strip-Drink', () => {
+  describe('Spicy: Strip or Sip', () => {
     it('tracks clothes count and ends when a player has 0 clothes left', async () => {
       const twoPlayers = [players[0], players[1]];
       const start = await manager.startSpicyStrip({ players: twoPlayers, lang: 'fr' });
@@ -332,7 +332,7 @@ describe('BonusGamesManager', () => {
     });
   });
 
-  describe('Spicy: Télépathie Coquine (Telepathy)', () => {
+  describe('Spicy: Dirty Telepathy', () => {
     it('processes chooser selection and guesser verification correctly', async () => {
       const twoPlayers = [players[0], players[1]];
       const start = await manager.startSpicyTelepathy({ players: twoPlayers, lang: 'fr' });
@@ -356,7 +356,7 @@ describe('BonusGamesManager', () => {
     });
   });
 
-  describe('Spicy: 7 Secondes Chaudes (Spicy Seven)', () => {
+  describe('Spicy: 7s Quickie', () => {
     it('returns a personalized spicy 7 seconds question', async () => {
       const twoPlayers = [players[0], players[1]];
       const turn = await manager.startSpicySeven({ players: twoPlayers, lang: 'fr' });
@@ -365,7 +365,7 @@ describe('BonusGamesManager', () => {
     });
   });
 
-  describe('Spicy: Avoue ou Bois (Spicy Confession)', () => {
+  describe('Spicy: Never Have I Ever Spicy', () => {
     it('records each partner response and reveals results', async () => {
       const twoPlayers = [players[0], players[1]];
       const start = await manager.startSpicyConfession({ players: twoPlayers, lang: 'fr' });
@@ -384,7 +384,7 @@ describe('BonusGamesManager', () => {
     });
   });
 
-  describe('Spicy: Roulette des Préliminaires (Spicy Roulette)', () => {
+  describe('Spicy: Foreplay Roulette', () => {
     it('generates an action, zone, and timer for the couple', () => {
       const twoPlayers = [players[0], players[1]];
       const spin = manager.startSpicyRoulette({ players: twoPlayers, lang: 'fr' });
@@ -394,7 +394,7 @@ describe('BonusGamesManager', () => {
       expect(spin.giver.id).not.toBe(spin.receiver.id);
       expect(typeof spin.action).toBe('string');
       expect(typeof spin.zone).toBe('string');
-      expect([20, 30, 45, 60]).toContain(spin.timer);
+      expect([5, 10, 15, 20]).toContain(spin.timer);
     });
   });
 });

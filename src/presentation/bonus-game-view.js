@@ -540,54 +540,23 @@ export class BonusGameView {
     `;
   }
 
-  renderSpicyConfessionPlay({ prompt, currentVoter, isFinished, answers }) {
+  renderSpicyConfessionPlay({ prompt }) {
     const card = this.view.getElement('bonus-play-card');
     const actions = this.view.getElement('bonus-play-actions');
     if (!card || !actions) return;
 
-    if (!isFinished) {
-      card.innerHTML = `
-        <div class="bonus-badge spicy-badge">🍷 ${this.i18n.t('bonusSpicy.confessionTitle')}</div>
-        <p class="game-player" style="color: #e84393;">${currentVoter.name}</p>
-        <p class="subtitle">${this.i18n.t('bonusSpicy.confessionPrompt')}</p>
-        <p class="game-text">${prompt}</p>
-      `;
-      actions.innerHTML = `
-        <div class="mode-buttons-row">
-          <button class="btn btn-large btn-accent" data-action="bonus-spicy-confession-vote" data-done="true">
-            ${this.i18n.t('bonusSpicy.confessionDone')}
-          </button>
-          <button class="btn btn-large btn-secondary" data-action="bonus-spicy-confession-vote" data-done="false">
-            ${this.i18n.t('bonusSpicy.confessionNever')}
-          </button>
-        </div>
-      `;
-    } else {
-      const breakdown = answers
-        .map(
-          a => `
-          <div class="confession-answer-row ${a.done ? 'answer-done' : 'answer-never'}">
-            <span>${a.player.name} :</span>
-            <strong>${a.done ? this.i18n.t('bonusSpicy.confessionDoneShort') : this.i18n.t('bonusSpicy.confessionNeverShort')}</strong>
-          </div>
-        `
-        )
-        .join('');
-
-      card.innerHTML = `
-        <div class="bonus-badge spicy-badge">🍷 ${this.i18n.t('bonusSpicy.confessionResultsTitle')}</div>
-        <p class="game-text" style="font-size: 1.1rem; color: var(--color-text-muted);">${prompt}</p>
-        <div class="confession-answers-list">${breakdown}</div>
-        <p class="subtitle" style="font-weight: 700; color: #fdcb6e; margin-top: 10px;">
-          ${this.i18n.t('bonusSpicy.confessionDrinkRule')}
-        </p>
-      `;
-      actions.innerHTML = `
-        <button class="btn btn-large btn-accent" data-action="bonus-spicy-confession-next">
-          ${this.i18n.t('bonusSpicy.nextRound')}
-        </button>
-      `;
-    }
+    card.innerHTML = `
+      <div class="bonus-badge spicy-badge">🍷 ${this.i18n.t('bonusSpicy.confessionTitle')}</div>
+      <p class="game-text" style="margin: 24px 0; font-size: 1.25rem;">${prompt}</p>
+      <div class="spicy-max-badge" style="background: rgba(253, 121, 168, 0.15); color: #fd79a8; border: 1px solid rgba(253, 121, 168, 0.3);">
+        🍷 ${this.i18n.t('bonusSpicy.confessionDrinkRule')}
+      </div>
+    `;
+    actions.innerHTML = `
+      <button class="btn btn-large btn-primary" data-action="bonus-spicy-confession-next">
+        ${this.i18n.t('bonusSpicy.confessionNext')}
+      </button>
+    `;
   }
 
   renderSpicyRoulettePlay({ giver, receiver, action, zone, timer }) {

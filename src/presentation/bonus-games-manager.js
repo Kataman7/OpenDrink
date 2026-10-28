@@ -806,7 +806,10 @@ export class BonusGamesManager {
       : `${prefix}${rawSentence}`;
 
     const personalizer = new QuestionTextPersonalizer(players);
-    this.spicyConfessionPrompt = personalizer.personalize(promptText, players[0].name);
+    this.spicyConfessionPrompt = personalizer.personalize(
+      promptText,
+      players[0] ? players[0].name : ''
+    );
 
     return {
       prompt: this.spicyConfessionPrompt,
@@ -849,7 +852,7 @@ export class BonusGamesManager {
 
     const action = actions[Math.floor(Math.random() * actions.length)];
     const zone = zones[Math.floor(Math.random() * zones.length)];
-    const timers = [20, 30, 45, 60];
+    const timers = [5, 10, 15, 20];
     const timer = timers[Math.floor(Math.random() * timers.length)];
 
     return {

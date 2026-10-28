@@ -278,24 +278,11 @@ describe('BonusGameView', () => {
       expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-seven-start');
     });
 
-    it('renders spicy confession vote and reveal states', () => {
+    it('renders spicy confession play state', () => {
       bonusGameView.renderSpicyConfessionPlay({
         prompt: 'Déjà fantasmer sur un collègue',
-        currentVoter: { name: 'Bob' },
-        isFinished: false,
       });
-      expect(elements['bonus-play-card'].innerHTML).toContain('Bob');
-      expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-confession-vote');
-
-      bonusGameView.renderSpicyConfessionPlay({
-        isFinished: true,
-        answers: [
-          { player: { name: 'Alice' }, done: true },
-          { player: { name: 'Bob' }, done: false },
-        ],
-        prompt: 'Déjà fantasmer sur un collègue',
-      });
-      expect(elements['bonus-play-card'].innerHTML).toContain('Alice');
+      expect(elements['bonus-play-card'].innerHTML).toContain('Déjà fantasmer sur un collègue');
       expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-confession-next');
     });
 

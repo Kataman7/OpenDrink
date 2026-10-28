@@ -59,55 +59,55 @@ export const BONUS_SPICY_GAMES = [
   {
     id: 'spicy_thermostat',
     icon: '🌡️',
-    title: { fr: 'Le Thermomètre du Désir', en: 'Desire Thermometer' },
+    title: { fr: 'Heat Wave', en: 'Heat Wave' },
     description: {
-      fr: '10 paliers de température : du romantisme aux fantasmes les plus chauds !',
-      en: '10 heat levels: from romantic tenderness to burning fantasies!',
+      fr: '10 paliers de température : plus le niveau monte, plus la chaleur grimpe !',
+      en: '10 heat levels: as the levels rise, things get hotter and hotter!',
     },
   },
   {
     id: 'spicy_strip',
     icon: '👙',
-    title: { fr: 'Strip-Drink', en: 'Strip or Drink' },
+    title: { fr: 'Strip or Sip', en: 'Strip or Sip' },
     description: {
       fr: 'Action ou Vérité couple : relève le défi ou retire un vêtement !',
-      en: 'Couple truth or dare: complete the dare or remove a piece of clothing!',
+      en: 'Hot couple challenges: take the dare or take off a piece of clothing!',
     },
   },
   {
     id: 'spicy_telepathy',
     icon: '🔮',
-    title: { fr: 'Télépathie Coquine', en: 'Spicy Telepathy' },
+    title: { fr: 'Dirty Telepathy', en: 'Dirty Telepathy' },
     description: {
-      fr: 'Dilemmes "Tu préfères..." : devine le choix secret de ton partenaire !',
-      en: '"Would you rather..." dilemmas: guess your partner\'s secret pick!',
+      fr: 'Dilemmes intimes secrets : serez-vous sur la même longueur d’onde ?',
+      en: 'Secret intimate dilemmas: are you on the exact same wavelength?',
     },
   },
   {
     id: 'spicy_seven',
     icon: '⏱️',
-    title: { fr: '7 Secondes Chaudes', en: '7 Hot Seconds' },
+    title: { fr: '7s Quickie', en: '7s Quickie' },
     description: {
-      fr: '7 secondes pour lâcher 3 réponses sans filtre ni tabou !',
-      en: '7 seconds to drop 3 answers with zero filter!',
+      fr: '7 secondes chrono pour lâcher 3 réponses sans aucun filtre !',
+      en: '7 seconds on the clock to drop 3 answers with zero filter!',
     },
   },
   {
     id: 'spicy_confession',
     icon: '🍷',
-    title: { fr: 'Avoue ou Bois', en: 'Confess or Drink' },
+    title: { fr: 'Never Have I Ever Spicy', en: 'Never Have I Ever Spicy' },
     description: {
-      fr: "Je n'ai jamais coquin : avouez vos fantasmes et débloquez des anecdotes !",
-      en: 'Spicy never have I ever: confess your fantasies and share anecdotes!',
+      fr: 'Fantasmes et secrets inavouables : celui ou celle qui l’a déjà fait boit !',
+      en: 'Fantasies and dirty confessions: whoever has done it takes a drink!',
     },
   },
   {
     id: 'spicy_roulette',
     icon: '🎲',
-    title: { fr: 'Roulette des Préliminaires', en: 'Foreplay Roulette' },
+    title: { fr: 'Foreplay Roulette', en: 'Foreplay Roulette' },
     description: {
-      fr: 'Une action + une zone du corps + un chrono sensuel guidé !',
-      en: 'An action + a body zone + a guided sensual timer!',
+      fr: 'Une action sensuelle + une zone ciblée + un chrono guidé express !',
+      en: 'A sensual action + a targeted body zone + a quick guided timer!',
     },
   },
 ];

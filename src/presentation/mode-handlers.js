@@ -19,6 +19,11 @@ export async function handleModeBonusGames(ctx) {
   ctx.bonusGameView.renderList(ctx.state.selectedLang);
 }
 
+export async function handleModeBonusSpicy(ctx) {
+  ctx.screenManager.navigateToBonusSpicy();
+  ctx.bonusGameView.renderSpicyList(ctx.state.selectedLang);
+}
+
 export async function handleModeDefault(ctx) {
   if (ctx.state.selectedGameMode === GameMode.TEAM_BATTLE) {
     ctx.state.buildTeams();
@@ -30,5 +35,6 @@ export const MODE_HANDLERS = {
   [GameMode.RANDOM]: handleModeRandom,
   [GameMode.IMPOSTOR]: handleModeImpostor,
   [GameMode.BONUS_GAMES]: handleModeBonusGames,
+  [GameMode.BONUS_SPICY]: handleModeBonusSpicy,
   _default: handleModeDefault,
 };

@@ -11,5 +11,6 @@ export const SCREENS = {
   cardGames: 'card_games',
   cardGameDetail: 'card_game_detail',
   bonusGames: 'bonus_games',
+  bonusSpicy: 'bonus_spicy',
   bonusPlay: 'bonus_play',
 };

@@ -270,4 +270,131 @@ describe('BonusGamesManager', () => {
       expect(endState.winner).toEqual(twoPlayers[1]);
     });
   });
+
+  describe('Spicy: Thermomètre du Désir (Thermostat)', () => {
+    it('initializes at level 1 and advances up to level 10', async () => {
+      const twoPlayers = [players[0], players[1]];
+      const start = await manager.startSpicyThermostat({ players: twoPlayers, lang: 'fr' });
+      expect(start.level).toBe(1);
+      expect(start.isMaxLevel).toBe(false);
+      expect(start.challenge).toBe('Question générale');
+
+      for (let i = 2; i <= 10; i++) {
+        const turn = await manager.nextThermostatTurn({
+          players: twoPlayers,
+          lang: 'fr',
+          advanceLevel: true,
+        });
+        expect(turn.level).toBe(i);
+      }
+
+      const capped = await manager.nextThermostatTurn({
+        players: twoPlayers,
+        lang: 'fr',
+        advanceLevel: true,
+      });
+      expect(capped.level).toBe(10);
+      expect(capped.isMaxLevel).toBe(true);
+    });
+  });
+
+  describe('Spicy: Strip-Drink', () => {
+    it('tracks clothes count and ends when a player has 0 clothes left', async () => {
+      const twoPlayers = [players[0], players[1]];
+      const start = await manager.startSpicyStrip({ players: twoPlayers, lang: 'fr' });
+      expect(start.clothes[1]).toBe(5);
+      expect(start.clothes[2]).toBe(5);
+      expect(start.isFinished).toBe(false);
+
+      // Current player is player 1
+      manager.stripCurrentPlayer = twoPlayers[0];
+
+      // Remove 5 clothes from player 1
+      for (let i = 0; i < 4; i++) {
+        manager.stripCurrentPlayer = twoPlayers[0];
+        const turn = await manager.resolveSpicyStrip({
+          strip: true,
+          players: twoPlayers,
+          lang: 'fr',
+        });
+        expect(turn.isFinished).toBe(false);
+      }
+
+      manager.stripCurrentPlayer = twoPlayers[0];
+      const endState = await manager.resolveSpicyStrip({
+        strip: true,
+        players: twoPlayers,
+        lang: 'fr',
+      });
+      expect(endState.isFinished).toBe(true);
+      expect(endState.winner).toEqual(twoPlayers[1]);
+      expect(endState.clothes[1]).toBe(0);
+    });
+  });
+
+  describe('Spicy: Télépathie Coquine (Telepathy)', () => {
+    it('processes chooser selection and guesser verification correctly', async () => {
+      const twoPlayers = [players[0], players[1]];
+      const start = await manager.startSpicyTelepathy({ players: twoPlayers, lang: 'fr' });
+
+      expect(start.step).toBe('choose');
+      expect(start.choiceA).toBe('Pouvoir voler');
+      expect(start.choiceB).toBe('Être invisible');
+
+      const guessStep = manager.submitSpicyTelepathyChoice('A');
+      expect(guessStep.step).toBe('guess');
+
+      const correctResult = manager.submitSpicyTelepathyGuess('A');
+      expect(correctResult.isCorrect).toBe(true);
+      expect(correctResult.choiceText).toBe('Pouvoir voler');
+      expect(correctResult.isFinished).toBe(true);
+
+      // Test incorrect guess
+      manager.submitSpicyTelepathyChoice('B');
+      const incorrectResult = manager.submitSpicyTelepathyGuess('A');
+      expect(incorrectResult.isCorrect).toBe(false);
+    });
+  });
+
+  describe('Spicy: 7 Secondes Chaudes (Spicy Seven)', () => {
+    it('returns a personalized spicy 7 seconds question', async () => {
+      const twoPlayers = [players[0], players[1]];
+      const turn = await manager.startSpicySeven({ players: twoPlayers, lang: 'fr' });
+      expect(turn.player).toBeDefined();
+      expect(turn.question).toBe('Cite 3 capitales');
+    });
+  });
+
+  describe('Spicy: Avoue ou Bois (Spicy Confession)', () => {
+    it('records each partner response and reveals results', async () => {
+      const twoPlayers = [players[0], players[1]];
+      const start = await manager.startSpicyConfession({ players: twoPlayers, lang: 'fr' });
+      expect(start.prompt).toContain("Je n'ai jamais menti");
+      expect(start.currentVoter).toEqual(twoPlayers[0]);
+
+      const mid = manager.submitSpicyConfession({ done: true, players: twoPlayers });
+      expect(mid.isFinished).toBe(false);
+      expect(mid.nextVoter).toEqual(twoPlayers[1]);
+
+      const end = manager.submitSpicyConfession({ done: false, players: twoPlayers });
+      expect(end.isFinished).toBe(true);
+      expect(end.answers).toHaveLength(2);
+      expect(end.answers[0].done).toBe(true);
+      expect(end.answers[1].done).toBe(false);
+    });
+  });
+
+  describe('Spicy: Roulette des Préliminaires (Spicy Roulette)', () => {
+    it('generates an action, zone, and timer for the couple', () => {
+      const twoPlayers = [players[0], players[1]];
+      const spin = manager.startSpicyRoulette({ players: twoPlayers, lang: 'fr' });
+
+      expect(spin.giver).toBeDefined();
+      expect(spin.receiver).toBeDefined();
+      expect(spin.giver.id).not.toBe(spin.receiver.id);
+      expect(typeof spin.action).toBe('string');
+      expect(typeof spin.zone).toBe('string');
+      expect([20, 30, 45, 60]).toContain(spin.timer);
+    });
+  });
 });

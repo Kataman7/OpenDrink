@@ -16,6 +16,7 @@ export class GameMode {
   static TRUTH_DARE = 'truth_dare';
   static RANDOM = 'random';
   static BONUS_GAMES = 'bonus_games';
+  static BONUS_SPICY = 'bonus_spicy';
 
   static getCandidateGameKeys(gameMode) {
     const keys = GAME_KEY_MAP[gameMode];
@@ -25,6 +26,10 @@ export class GameMode {
 
   static needsIntensity(gameMode) {
     if (gameMode === GameMode.RANDOM) return true;
-    return gameMode !== GameMode.IMPOSTOR && gameMode !== GameMode.BONUS_GAMES;
+    return (
+      gameMode !== GameMode.IMPOSTOR &&
+      gameMode !== GameMode.BONUS_GAMES &&
+      gameMode !== GameMode.BONUS_SPICY
+    );
   }
 }

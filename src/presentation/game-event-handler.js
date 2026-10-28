@@ -661,11 +661,309 @@ export class GameEventHandler {
     await this.startSurvival();
   }
 
+  // ==================== SPICY HANDLERS ====================
+  async handleSelectSpicyGame(target) {
+    const spicyId = target.getAttribute('data-spicy');
+    await this.startSelectedSpicyGame(spicyId);
+  }
+
+  async startSelectedSpicyGame(spicyId) {
+    if (!this.state.hasEnoughPlayers(2)) {
+      this.showError(this.i18n.t('errors.minPlayers', { count: 2 }));
+      return;
+    }
+    this.screenManager.navigateToBonusPlay();
+
+    switch (spicyId) {
+      case 'spicy_thermostat':
+        await this.startSpicyThermostat();
+        break;
+      case 'spicy_strip':
+        await this.startSpicyStrip();
+        break;
+      case 'spicy_telepathy':
+        await this.startSpicyTelepathy();
+        break;
+      case 'spicy_seven':
+        await this.startSpicySeven();
+        break;
+      case 'spicy_confession':
+        await this.startSpicyConfession();
+        break;
+      case 'spicy_roulette':
+        this.startSpicyRoulette();
+        break;
+      default:
+        break;
+    }
+  }
+
+  async startSpicyThermostat() {
+    const res = await this.bonusGamesManager.startSpicyThermostat({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderSpicyThermostatPlay({
+      level: res.level,
+      player: res.player,
+      challenge: res.challenge,
+      isMaxLevel: res.isMaxLevel,
+    });
+  }
+
+  async handleBonusSpicyThermoNext() {
+    const res = await this.bonusGamesManager.nextThermostatTurn({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+      advanceLevel: true,
+    });
+    this.bonusGameView.renderSpicyThermostatPlay({
+      level: res.level,
+      player: res.player,
+      challenge: res.challenge,
+      isMaxLevel: res.isMaxLevel,
+    });
+  }
+
+  async handleBonusSpicyThermoPass() {
+    const res = await this.bonusGamesManager.nextThermostatTurn({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+      advanceLevel: false,
+    });
+    this.bonusGameView.renderSpicyThermostatPlay({
+      level: res.level,
+      player: res.player,
+      challenge: res.challenge,
+      isMaxLevel: res.isMaxLevel,
+    });
+  }
+
+  async handleBonusSpicyThermoRestart() {
+    await this.startSpicyThermostat();
+  }
+
+  async startSpicyStrip() {
+    const res = await this.bonusGamesManager.startSpicyStrip({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderSpicyStripPlay({
+      currentPlayer: res.currentPlayer,
+      challenge: res.challenge,
+      clothes: res.clothes,
+      players: this.state.players,
+      isFinished: false,
+      winner: null,
+    });
+  }
+
+  async handleBonusSpicyStripResolve(target) {
+    const strip = target.getAttribute('data-strip') === 'true';
+    const res = await this.bonusGamesManager.resolveSpicyStrip({
+      strip,
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderSpicyStripPlay({
+      currentPlayer: res.currentPlayer,
+      challenge: res.challenge,
+      clothes: res.clothes,
+      players: this.state.players,
+      isFinished: res.isFinished,
+      winner: res.winner,
+    });
+  }
+
+  async handleBonusSpicyStripRestart() {
+    await this.startSpicyStrip();
+  }
+
+  async startSpicyTelepathy() {
+    const res = await this.bonusGamesManager.startSpicyTelepathy({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderSpicyTelepathyPlay({
+      step: res.step,
+      chooser: res.chooser,
+      guesser: res.guesser,
+      choiceA: res.choiceA,
+      choiceB: res.choiceB,
+      isFinished: false,
+      result: null,
+    });
+  }
+
+  handleBonusSpicyTelepathyChoice(target) {
+    const choice = target.getAttribute('data-choice');
+    const res = this.bonusGamesManager.submitSpicyTelepathyChoice(choice);
+    this.bonusGameView.renderSpicyTelepathyPlay({
+      step: res.step,
+      chooser: res.chooser,
+      guesser: res.guesser,
+      choiceA: res.choiceA,
+      choiceB: res.choiceB,
+      isFinished: false,
+      result: null,
+    });
+  }
+
+  handleBonusSpicyTelepathyGuess(target) {
+    const guess = target.getAttribute('data-choice');
+    const res = this.bonusGamesManager.submitSpicyTelepathyGuess(guess);
+    this.bonusGameView.renderSpicyTelepathyPlay({
+      step: 'result',
+      chooser: res.chooser,
+      guesser: res.guesser,
+      choiceA: res.choiceA,
+      choiceB: res.choiceB,
+      isFinished: true,
+      result: res,
+    });
+  }
+
+  async handleBonusSpicyTelepathyNext() {
+    await this.startSpicyTelepathy();
+  }
+
+  async startSpicySeven() {
+    const res = await this.bonusGamesManager.startSpicySeven({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderSpicySevenPlay({
+      player: res.player,
+      question: res.question,
+    });
+  }
+
+  handleBonusSpicySevenStartTimer() {
+    const timerEl = document.getElementById('spicy-seven-timer');
+    const startBtn = document.getElementById('btn-spicy-start-timer');
+    if (!timerEl) return;
+    timerEl.classList.remove('hidden');
+    if (startBtn) startBtn.classList.add('hidden');
+
+    let remaining = 7;
+    timerEl.textContent = String(remaining);
+    clearInterval(this._spicyTimer);
+    this._spicyTimer = setInterval(() => {
+      this.view.audio.tick();
+      remaining--;
+      if (remaining <= 0) {
+        clearInterval(this._spicyTimer);
+        this._spicyTimer = null;
+        timerEl.textContent = this.i18n.t('game.finished');
+        this.view.audio.ring();
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
+        return;
+      }
+      timerEl.textContent = String(remaining);
+    }, 1000);
+  }
+
+  async handleBonusSpicySevenNext() {
+    clearInterval(this._spicyTimer);
+    this._spicyTimer = null;
+    await this.startSpicySeven();
+  }
+
+  async startSpicyConfession() {
+    const res = await this.bonusGamesManager.startSpicyConfession({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderSpicyConfessionPlay({
+      prompt: res.prompt,
+      currentVoter: res.currentVoter,
+      isFinished: false,
+      answers: [],
+    });
+  }
+
+  handleBonusSpicyConfessionVote(target) {
+    const done = target.getAttribute('data-done') === 'true';
+    const res = this.bonusGamesManager.submitSpicyConfession({
+      done,
+      players: this.state.players,
+    });
+    if (res.isFinished) {
+      this.bonusGameView.renderSpicyConfessionPlay({
+        prompt: res.prompt,
+        currentVoter: null,
+        isFinished: true,
+        answers: res.answers,
+      });
+    } else {
+      this.bonusGameView.renderSpicyConfessionPlay({
+        prompt: res.prompt,
+        currentVoter: res.nextVoter,
+        isFinished: false,
+        answers: [],
+      });
+    }
+  }
+
+  async handleBonusSpicyConfessionNext() {
+    await this.startSpicyConfession();
+  }
+
+  startSpicyRoulette() {
+    const res = this.bonusGamesManager.startSpicyRoulette({
+      players: this.state.players,
+      lang: this.state.selectedLang,
+    });
+    this.bonusGameView.renderSpicyRoulettePlay({
+      giver: res.giver,
+      receiver: res.receiver,
+      action: res.action,
+      zone: res.zone,
+      timer: res.timer,
+    });
+  }
+
+  handleBonusSpicyRouletteStartTimer(target) {
+    const timerEl = document.getElementById('spicy-roulette-timer');
+    const startBtn = document.getElementById('btn-spicy-roulette-timer');
+    if (!timerEl) return;
+    timerEl.classList.remove('hidden');
+    if (startBtn) startBtn.classList.add('hidden');
+
+    const duration = Number(target.getAttribute('data-timer')) || 30;
+    let remaining = duration;
+    timerEl.textContent = `${remaining}s`;
+    clearInterval(this._spicyTimer);
+    this._spicyTimer = setInterval(() => {
+      this.view.audio.tick();
+      remaining--;
+      if (remaining <= 0) {
+        clearInterval(this._spicyTimer);
+        this._spicyTimer = null;
+        timerEl.textContent = this.i18n.t('game.finished');
+        this.view.audio.ring();
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
+        return;
+      }
+      timerEl.textContent = `${remaining}s`;
+    }, 1000);
+  }
+
+  handleBonusSpicyRouletteNext() {
+    clearInterval(this._spicyTimer);
+    this._spicyTimer = null;
+    this.startSpicyRoulette();
+  }
+
   handleBackMode() {
     this.screenManager.goBack();
   }
 
   handleBackBonusGames() {
+    if (this._spicyTimer) {
+      clearInterval(this._spicyTimer);
+      this._spicyTimer = null;
+    }
     this.bonusGamesManager?.clearTimers();
     this.screenManager.goBack();
   }
@@ -720,6 +1018,21 @@ const CLICK_ACTIONS = {
   'bonus-confessional-next': 'handleBonusConfessionalNext',
   'bonus-survival-result': 'handleBonusSurvivalResult',
   'bonus-survival-restart': 'handleBonusSurvivalRestart',
+  'select-spicy-game': 'handleSelectSpicyGame',
+  'bonus-spicy-thermo-next': 'handleBonusSpicyThermoNext',
+  'bonus-spicy-thermo-pass': 'handleBonusSpicyThermoPass',
+  'bonus-spicy-thermo-restart': 'handleBonusSpicyThermoRestart',
+  'bonus-spicy-strip-resolve': 'handleBonusSpicyStripResolve',
+  'bonus-spicy-strip-restart': 'handleBonusSpicyStripRestart',
+  'bonus-spicy-telepathy-choice': 'handleBonusSpicyTelepathyChoice',
+  'bonus-spicy-telepathy-guess': 'handleBonusSpicyTelepathyGuess',
+  'bonus-spicy-telepathy-next': 'handleBonusSpicyTelepathyNext',
+  'bonus-spicy-seven-start-timer': 'handleBonusSpicySevenStartTimer',
+  'bonus-spicy-seven-next': 'handleBonusSpicySevenNext',
+  'bonus-spicy-confession-vote': 'handleBonusSpicyConfessionVote',
+  'bonus-spicy-confession-next': 'handleBonusSpicyConfessionNext',
+  'bonus-spicy-roulette-start-timer': 'handleBonusSpicyRouletteStartTimer',
+  'bonus-spicy-roulette-next': 'handleBonusSpicyRouletteNext',
   'back-mode': 'handleBackMode',
   'back-bonus-games': 'handleBackBonusGames',
   'back-home': 'handleBackHome',

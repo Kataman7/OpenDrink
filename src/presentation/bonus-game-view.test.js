@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BonusGameView } from './bonus-game-view.js';
-import { BONUS_GAMES } from './bonus-games.js';
+import { BONUS_GAMES, BONUS_SPICY_GAMES } from './bonus-games.js';
 
 describe('BonusGameView', () => {
   let elements;
@@ -11,6 +11,7 @@ describe('BonusGameView', () => {
   beforeEach(() => {
     elements = {
       'bonus-games-list': { innerHTML: '' },
+      'bonus-spicy-list': { innerHTML: '' },
       'bonus-play-card': { innerHTML: '' },
       'bonus-play-actions': { innerHTML: '' },
     };
@@ -179,5 +180,140 @@ describe('BonusGameView', () => {
     });
     expect(elements['bonus-play-card'].innerHTML).toContain('survivalWinnerTitle');
     expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-survival-restart');
+  });
+
+  describe('Spicy Bonus Games', () => {
+    it('renders the list of spicy bonus games', () => {
+      bonusGameView.renderSpicyList('fr');
+      expect(elements['bonus-spicy-list'].innerHTML).toContain('btn-bonus-game');
+      expect(elements['bonus-spicy-list'].innerHTML).toContain(BONUS_SPICY_GAMES[0].title.fr);
+      expect(elements['bonus-spicy-list'].innerHTML).toContain('data-spicy="spicy_thermostat"');
+    });
+
+    it('renders thermostat play states', () => {
+      bonusGameView.renderSpicyThermostatPlay({
+        level: 3,
+        player: { name: 'Alice' },
+        challenge: 'Embrasse le cou de Bob',
+        isMaxLevel: false,
+      });
+      expect(elements['bonus-play-card'].innerHTML).toContain('Alice');
+      expect(elements['bonus-play-card'].innerHTML).toContain('Embrasse le cou de Bob');
+      expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-thermo-next');
+      expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-thermo-pass');
+    });
+
+    it('renders strip play and victory states', () => {
+      const players = [
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
+      ];
+      bonusGameView.renderSpicyStripPlay({
+        currentPlayer: players[0],
+        challenge: 'Danse langoureusement',
+        clothes: { 1: 3, 2: 4 },
+        players,
+        isFinished: false,
+      });
+      expect(elements['bonus-play-card'].innerHTML).toContain('Alice');
+      expect(elements['bonus-play-card'].innerHTML).toContain('Danse langoureusement');
+      expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-strip-resolve');
+
+      bonusGameView.renderSpicyStripPlay({
+        players,
+        clothes: { 1: 0, 2: 4 },
+        isFinished: true,
+        winner: players[1],
+      });
+      expect(elements['bonus-play-card'].innerHTML).toContain('stripWinnerTitle');
+      expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-strip-restart');
+    });
+
+    it('renders telepathy choose, guess, and reveal states', () => {
+      const chooser = { name: 'Alice' };
+      const guesser = { name: 'Bob' };
+
+      bonusGameView.renderSpicyTelepathyPlay({
+        step: 'choose',
+        chooser,
+        guesser,
+        choiceA: 'Option A',
+        choiceB: 'Option B',
+      });
+      expect(elements['bonus-play-card'].innerHTML).toContain('Alice');
+      expect(elements['bonus-play-actions'].innerHTML).toContain('Option A');
+      expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-telepathy-choice');
+
+      bonusGameView.renderSpicyTelepathyPlay({
+        step: 'guess',
+        chooser,
+        guesser,
+        choiceA: 'Option A',
+        choiceB: 'Option B',
+      });
+      expect(elements['bonus-play-card'].innerHTML).toContain('Bob');
+      expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-telepathy-guess');
+
+      bonusGameView.renderSpicyTelepathyPlay({
+        isFinished: true,
+        result: {
+          isCorrect: true,
+          chooser,
+          guesser,
+          choiceText: 'Option A',
+          isFinished: true,
+        },
+      });
+      expect(elements['bonus-play-card'].innerHTML).toContain('telepathyCorrectTitle');
+      expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-telepathy-next');
+    });
+
+    it('renders spicy 7 seconds play', () => {
+      bonusGameView.renderSpicySevenPlay({
+        player: { name: 'Alice' },
+        question: 'Cite 3 zones érogènes',
+      });
+      expect(elements['bonus-play-card'].innerHTML).toContain('Alice');
+      expect(elements['bonus-play-card'].innerHTML).toContain('Cite 3 zones érogènes');
+      expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-seven-start');
+    });
+
+    it('renders spicy confession vote and reveal states', () => {
+      bonusGameView.renderSpicyConfessionPlay({
+        prompt: 'Déjà fantasmer sur un collègue',
+        currentVoter: { name: 'Bob' },
+        isFinished: false,
+      });
+      expect(elements['bonus-play-card'].innerHTML).toContain('Bob');
+      expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-confession-vote');
+
+      bonusGameView.renderSpicyConfessionPlay({
+        isFinished: true,
+        answers: [
+          { player: { name: 'Alice' }, done: true },
+          { player: { name: 'Bob' }, done: false },
+        ],
+        prompt: 'Déjà fantasmer sur un collègue',
+      });
+      expect(elements['bonus-play-card'].innerHTML).toContain('Alice');
+      expect(elements['bonus-play-actions'].innerHTML).toContain('bonus-spicy-confession-next');
+    });
+
+    it('renders spicy roulette state', () => {
+      bonusGameView.renderSpicyRoulettePlay({
+        giver: { name: 'Alice' },
+        receiver: { name: 'Bob' },
+        action: 'Embrasser tendrement',
+        zone: 'Le cou',
+        timer: 30,
+      });
+      expect(elements['bonus-play-card'].innerHTML).toContain('Alice');
+      expect(elements['bonus-play-card'].innerHTML).toContain('Bob');
+      expect(elements['bonus-play-card'].innerHTML).toContain('Embrasser tendrement');
+      expect(elements['bonus-play-card'].innerHTML).toContain('Le cou');
+      expect(elements['bonus-play-actions'].innerHTML).toContain(
+        'bonus-spicy-roulette-start-timer'
+      );
+    });
   });
 });

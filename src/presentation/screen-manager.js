@@ -81,6 +81,10 @@ export class ScreenManager {
     this._push(SCREENS.bonusGames);
   }
 
+  navigateToBonusSpicy() {
+    this._push(SCREENS.bonusSpicy);
+  }
+
   navigateToBonusPlay() {
     this._push(SCREENS.bonusPlay);
   }

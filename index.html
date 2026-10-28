@@ -167,6 +167,10 @@
               <span class="btn-mode-icon">🎁</span>
               <span data-i18n="mode.bonusGames">Jeux bonus</span>
             </button>
+            <button class="btn btn-large btn-accent" data-action="select-mode" data-mode="bonus_spicy" style="background: linear-gradient(135deg, #e84393, #d63031);">
+              <span class="btn-mode-icon">🌶️</span>
+              <span data-i18n="mode.bonusSpicy">Jeux bonus Spicy</span>
+            </button>
           </div>
           <button
             class="btn btn-large btn-secondary"
@@ -338,6 +342,22 @@
           <h2 class="title" data-i18n="bonusGames.title">Jeux bonus</h2>
           <p class="subtitle" data-i18n="bonusGames.subtitle">Mini-jeux et défis alternatifs</p>
           <div id="bonus-games-list" class="mode-buttons"></div>
+          <button
+            class="btn btn-large btn-secondary"
+            data-action="back-mode"
+            data-i18n="common.back"
+          >
+            Back
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN: BONUS SPICY -->
+      <section id="screen-bonus_spicy" class="screen hidden">
+        <div class="screen-inner">
+          <h2 class="title" data-i18n="bonusSpicy.title">🌶️ Jeux bonus Spicy</h2>
+          <p class="subtitle" data-i18n="bonusSpicy.subtitle">Mini-jeux et défis coquins pour pimenter votre soirée</p>
+          <div id="bonus-spicy-list" class="mode-buttons"></div>
           <button
             class="btn btn-large btn-secondary"
             data-action="back-mode"

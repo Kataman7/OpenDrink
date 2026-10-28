@@ -919,3 +919,160 @@ body {
   width: 100%;
 }
 
+/* SPICY BONUS STYLES */
+.spicy-badge {
+  background: rgba(232, 67, 147, 0.25);
+  color: #fd79a8;
+  border: 1px solid rgba(232, 67, 147, 0.4);
+}
+
+.btn-bonus-spicy-item:hover {
+  border-color: #e84393;
+}
+
+.thermostat-bar-container {
+  width: 100%;
+  background: var(--color-bg);
+  border-radius: 999px;
+  height: 28px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 10px 0;
+}
+
+.thermostat-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #fdcb6e, #e84393, #d63031);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.thermostat-bar-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  line-height: 28px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.strip-clothes-bar {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.strip-clothes-pill {
+  background: var(--color-bg);
+  padding: 8px 16px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  border: 1px solid rgba(232, 67, 147, 0.3);
+  transition: all 0.2s;
+}
+
+.strip-current-pill {
+  border-color: #e84393;
+  box-shadow: 0 0 12px rgba(232, 67, 147, 0.4);
+  transform: scale(1.04);
+}
+
+.spicy-max-badge {
+  background: rgba(214, 48, 49, 0.2);
+  color: #ff7675;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.roulette-couple-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.roulette-giver {
+  color: #e84393;
+}
+
+.roulette-arrow {
+  font-size: 1.4rem;
+}
+
+.roulette-receiver {
+  color: #00cec9;
+}
+
+.roulette-cards-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin: 12px 0;
+}
+
+.roulette-card {
+  flex: 1;
+  background: var(--color-bg);
+  padding: 16px 12px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.roulette-card-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  letter-spacing: 1px;
+}
+
+.roulette-card-val {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.confession-answers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin: 14px 0;
+}
+
+.confession-answer-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+}
+
+.answer-done {
+  border-left: 4px solid #fd79a8;
+}
+
+.answer-never {
+  border-left: 4px solid #00cec9;
+}
+
+

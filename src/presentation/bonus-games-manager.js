@@ -1,5 +1,52 @@
 import { GameMode } from '../domain/game-mode.js';
 import { QuestionTextPersonalizer } from './question-text-personalizer.js';
+import { AntoinePersonalizer } from './antoine-personalizer.js';
+
+const ROULETTE_ACTIONS = {
+  fr: [
+    'Embrasser tendrement',
+    'Caresser du bout des doigts',
+    'Mordiller délicatement',
+    'Lécher doucement',
+    'Souffler un souffle chaud',
+    'Masser sensuellement',
+    'Effleurer avec les ongles',
+    'Déposer une pluie de baisers',
+  ],
+  en: [
+    'Gently kiss',
+    'Caress with fingertips',
+    'Softly nibble',
+    'Tenderly lick',
+    'Blow warm breath on',
+    'Sensually massage',
+    'Lightly trace with nails',
+    'Shower with sweet kisses',
+  ],
+};
+
+const ROULETTE_ZONES = {
+  fr: [
+    'Le cou et la nuque',
+    'Les lèvres',
+    'Le creux des reins',
+    "L'intérieur des cuisses",
+    'Le lobe des oreilles',
+    'Le ventre',
+    'Les clavicules et épaules',
+    'Le creux du poignet et la paume',
+  ],
+  en: [
+    'The neck and nape',
+    'The lips',
+    'The small of the back',
+    'The inner thighs',
+    'The earlobes',
+    'The belly',
+    'The collarbones and shoulders',
+    'The wrists and palms',
+  ],
+};
 
 export class BonusGamesManager {
   constructor({ drawQuestionUseCase, audioService = null }) {
@@ -56,6 +103,43 @@ export class BonusGamesManager {
     this.survivalCurrentChallenge = null;
     this.survivalWinner = null;
     this.survivalTurnCount = 0;
+
+    // Spicy Thermostat
+    this.thermostatLevel = 1;
+    this.thermostatPlayerIndex = 0;
+    this.thermostatChallenge = '';
+
+    // Spicy Strip
+    this.stripClothes = {};
+    this.stripPlayerIndex = 0;
+    this.stripCurrentPlayer = null;
+    this.stripChallenge = '';
+    this.stripWinner = null;
+
+    // Spicy Telepathy
+    this.telepathyChooser = null;
+    this.telepathyGuesser = null;
+    this.telepathyChoiceA = '';
+    this.telepathyChoiceB = '';
+    this.telepathySecretChoice = null;
+    this.telepathyResult = null;
+
+    // Spicy Seven
+    this.spicySevenPlayer = null;
+    this.spicySevenQuestion = '';
+
+    // Spicy Confession
+    this.spicyConfessionPrompt = '';
+    this.spicyConfessionPlayerIndex = 0;
+    this.spicyConfessionAnswers = [];
+    this.spicyConfessionRevealed = false;
+
+    // Spicy Roulette
+    this.rouletteGiver = null;
+    this.rouletteReceiver = null;
+    this.rouletteAction = '';
+    this.rouletteZone = '';
+    this.rouletteTimer = 30;
   }
 
   clearTimers() {
@@ -488,5 +572,292 @@ export class BonusGamesManager {
     }
 
     return await this.nextSurvivalTurn({ players, lang });
+  }
+
+  personalizeText(sentence, player, players, timer = null) {
+    if (!sentence) return '';
+    const antoine = new AntoinePersonalizer();
+    const personalizedWithAntoine = antoine.personalize(sentence, player, players, timer);
+    const generic = new QuestionTextPersonalizer(players);
+    return generic.personalize(personalizedWithAntoine, player ? player.name : '');
+  }
+
+  // ==================== SPICY: THERMOSTAT ====================
+  async startSpicyThermostat({ players, lang }) {
+    this.clearTimers();
+    this.activeBonusGame = 'spicy_thermostat';
+    this.thermostatLevel = 1;
+    this.thermostatPlayerIndex = 0;
+    return await this.nextThermostatTurn({ players, lang, advanceLevel: false });
+  }
+
+  async nextThermostatTurn({ players, lang, advanceLevel = false }) {
+    if (advanceLevel) {
+      this.thermostatLevel = Math.min(10, this.thermostatLevel + 1);
+    }
+    this.thermostatPlayerIndex = (this.thermostatPlayerIndex + 1) % players.length;
+    const player = players[this.thermostatPlayerIndex];
+
+    const intensity = this.thermostatLevel <= 3 ? 'soft' : 'hot';
+    let res;
+    try {
+      res = await this.drawQuestionUseCase.execute({
+        gameMode: GameMode.TRUTH_DARE,
+        intensity,
+        lang,
+        playerCount: players.length,
+      });
+    } catch {
+      res = await this.drawQuestionUseCase.execute({
+        gameMode: GameMode.ACTION_TRUTH,
+        intensity,
+        lang,
+        playerCount: players.length,
+      });
+    }
+
+    this.thermostatChallenge = this.personalizeText(
+      res.question.sentence,
+      player,
+      players,
+      res.question.timer
+    );
+
+    return {
+      level: this.thermostatLevel,
+      player,
+      challenge: this.thermostatChallenge,
+      isMaxLevel: this.thermostatLevel >= 10,
+    };
+  }
+
+  // ==================== SPICY: STRIP-DRINK ====================
+  async startSpicyStrip({ players, lang }) {
+    this.clearTimers();
+    this.activeBonusGame = 'spicy_strip';
+    this.stripClothes = {};
+    for (const p of players) {
+      this.stripClothes[p.id] = 5;
+    }
+    this.stripPlayerIndex = 0;
+    this.stripWinner = null;
+    return await this.nextStripTurn({ players, lang });
+  }
+
+  async nextStripTurn({ players, lang }) {
+    this.stripCurrentPlayer = players[this.stripPlayerIndex];
+
+    let res;
+    try {
+      res = await this.drawQuestionUseCase.execute({
+        gameMode: GameMode.TRUTH_DARE,
+        intensity: 'hot',
+        lang,
+        playerCount: players.length,
+      });
+    } catch {
+      res = await this.drawQuestionUseCase.execute({
+        gameMode: GameMode.ACTION_TRUTH,
+        intensity: 'hot',
+        lang,
+        playerCount: players.length,
+      });
+    }
+
+    this.stripChallenge = this.personalizeText(
+      res.question.sentence,
+      this.stripCurrentPlayer,
+      players,
+      res.question.timer
+    );
+
+    return {
+      currentPlayer: this.stripCurrentPlayer,
+      challenge: this.stripChallenge,
+      clothes: { ...this.stripClothes },
+      isFinished: false,
+    };
+  }
+
+  async resolveSpicyStrip({ strip, players, lang }) {
+    if (strip && this.stripCurrentPlayer) {
+      const current = this.stripClothes[this.stripCurrentPlayer.id] || 0;
+      this.stripClothes[this.stripCurrentPlayer.id] = Math.max(0, current - 1);
+
+      if (this.stripClothes[this.stripCurrentPlayer.id] <= 0) {
+        this.stripWinner = players.find(p => p.id !== this.stripCurrentPlayer.id) || players[0];
+        return {
+          winner: this.stripWinner,
+          clothes: { ...this.stripClothes },
+          isFinished: true,
+        };
+      }
+    }
+
+    this.stripPlayerIndex = (this.stripPlayerIndex + 1) % players.length;
+    return await this.nextStripTurn({ players, lang });
+  }
+
+  // ==================== SPICY: TELEPATHY ====================
+  async startSpicyTelepathy({ players, lang }) {
+    this.clearTimers();
+    this.activeBonusGame = 'spicy_telepathy';
+    this.telepathyChooser = players[0];
+    this.telepathyGuesser = players[1] || players[0];
+    this.telepathySecretChoice = null;
+    this.telepathyResult = null;
+
+    const res = await this.drawQuestionUseCase.execute({
+      gameMode: GameMode.WOULD_YOU_RATHER,
+      intensity: 'hot',
+      lang,
+      playerCount: players.length,
+    });
+
+    const personalizer = new QuestionTextPersonalizer(players);
+    this.telepathyChoiceA = personalizer.personalize(
+      res.question.choiceA,
+      this.telepathyChooser.name
+    );
+    this.telepathyChoiceB = personalizer.personalize(
+      res.question.choiceB,
+      this.telepathyChooser.name
+    );
+
+    return {
+      chooser: this.telepathyChooser,
+      guesser: this.telepathyGuesser,
+      choiceA: this.telepathyChoiceA,
+      choiceB: this.telepathyChoiceB,
+      step: 'choose',
+    };
+  }
+
+  submitSpicyTelepathyChoice(choice) {
+    this.telepathySecretChoice = choice;
+    return {
+      chooser: this.telepathyChooser,
+      guesser: this.telepathyGuesser,
+      choiceA: this.telepathyChoiceA,
+      choiceB: this.telepathyChoiceB,
+      step: 'guess',
+    };
+  }
+
+  submitSpicyTelepathyGuess(guess) {
+    const isCorrect = guess === this.telepathySecretChoice;
+    const choiceText =
+      this.telepathySecretChoice === 'A' ? this.telepathyChoiceA : this.telepathyChoiceB;
+
+    this.telepathyResult = {
+      isCorrect,
+      chooser: this.telepathyChooser,
+      guesser: this.telepathyGuesser,
+      secretChoice: this.telepathySecretChoice,
+      choiceText,
+      choiceA: this.telepathyChoiceA,
+      choiceB: this.telepathyChoiceB,
+      isFinished: true,
+    };
+    return this.telepathyResult;
+  }
+
+  // ==================== SPICY: SEVEN ====================
+  async startSpicySeven({ players, lang }) {
+    this.clearTimers();
+    this.activeBonusGame = 'spicy_seven';
+    const player = players[Math.floor(Math.random() * players.length)];
+
+    const res = await this.drawQuestionUseCase.execute({
+      gameMode: GameMode.SEVEN_SECONDS,
+      intensity: 'hot',
+      lang,
+      playerCount: players.length,
+    });
+
+    const personalizer = new QuestionTextPersonalizer(players);
+    this.spicySevenQuestion = personalizer.personalize(res.question.sentence, player.name);
+
+    return {
+      player,
+      question: this.spicySevenQuestion,
+    };
+  }
+
+  // ==================== SPICY: CONFESSION ====================
+  async startSpicyConfession({ players, lang }) {
+    this.clearTimers();
+    this.activeBonusGame = 'spicy_confession';
+    this.spicyConfessionPlayerIndex = 0;
+    this.spicyConfessionAnswers = [];
+    this.spicyConfessionRevealed = false;
+
+    const res = await this.drawQuestionUseCase.execute({
+      gameMode: GameMode.NEVER_HAVE_I_EVER,
+      intensity: 'hot',
+      lang,
+      playerCount: players.length,
+    });
+
+    const prefix = lang === 'fr' ? "Je n'ai jamais " : 'Never have I ever ';
+    const rawSentence = res.question.sentence.trim();
+    const promptText = rawSentence.toLowerCase().startsWith(prefix.toLowerCase().trim())
+      ? rawSentence
+      : `${prefix}${rawSentence}`;
+
+    const personalizer = new QuestionTextPersonalizer(players);
+    this.spicyConfessionPrompt = personalizer.personalize(promptText, players[0].name);
+
+    return {
+      prompt: this.spicyConfessionPrompt,
+      currentVoter: players[0],
+      totalPlayers: players.length,
+    };
+  }
+
+  submitSpicyConfession({ done, players }) {
+    const player = players[this.spicyConfessionPlayerIndex];
+    this.spicyConfessionAnswers.push({ player, done: Boolean(done) });
+    this.spicyConfessionPlayerIndex++;
+
+    if (this.spicyConfessionPlayerIndex >= players.length) {
+      this.spicyConfessionRevealed = true;
+      return {
+        prompt: this.spicyConfessionPrompt,
+        answers: this.spicyConfessionAnswers,
+        isFinished: true,
+      };
+    }
+
+    return {
+      prompt: this.spicyConfessionPrompt,
+      nextVoter: players[this.spicyConfessionPlayerIndex],
+      isFinished: false,
+    };
+  }
+
+  // ==================== SPICY: ROULETTE ====================
+  startSpicyRoulette({ players, lang }) {
+    this.clearTimers();
+    this.activeBonusGame = 'spicy_roulette';
+
+    const giver = players[Math.floor(Math.random() * players.length)];
+    const receiver = players.find(p => p.id !== giver.id) || players[0];
+
+    const actions = ROULETTE_ACTIONS[lang] || ROULETTE_ACTIONS.fr;
+    const zones = ROULETTE_ZONES[lang] || ROULETTE_ZONES.fr;
+
+    const action = actions[Math.floor(Math.random() * actions.length)];
+    const zone = zones[Math.floor(Math.random() * zones.length)];
+    const timers = [20, 30, 45, 60];
+    const timer = timers[Math.floor(Math.random() * timers.length)];
+
+    return {
+      giver,
+      receiver,
+      action,
+      zone,
+      timer,
+    };
   }
 }

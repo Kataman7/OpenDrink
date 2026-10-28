@@ -80,10 +80,10 @@ export class BonusGameView {
       actions.innerHTML = `
         <div class="mode-buttons-row">
           <button class="btn btn-large btn-danger" data-action="bonus-court-guilty">
-            ⚖️ ${this.i18n.t('bonusGames.guilty')} (+1)
+            ⚖️ ${this.i18n.t('bonusGames.guilty')}
           </button>
           <button class="btn btn-large btn-secondary" data-action="bonus-court-innocent">
-            🕊️ ${this.i18n.t('bonusGames.innocent')} (+1)
+            🕊️ ${this.i18n.t('bonusGames.innocent')}
           </button>
         </div>
         <button class="btn btn-large btn-accent" data-action="bonus-court-verdict">
@@ -532,7 +532,7 @@ export class BonusGameView {
     `;
     actions.innerHTML = `
       <button id="btn-spicy-start-timer" class="btn btn-large btn-accent" data-action="bonus-spicy-seven-start-timer">
-        ⏱️ ${this.i18n.t('bonusSpicy.startTimer')}
+        ${this.i18n.t('bonusSpicy.startTimer')}
       </button>
       <button class="btn btn-large btn-primary" data-action="bonus-spicy-seven-next">
         ${this.i18n.t('bonusSpicy.nextRound')}
@@ -586,7 +586,7 @@ export class BonusGameView {
 
     actions.innerHTML = `
       <button id="btn-spicy-roulette-timer" class="btn btn-large btn-accent" data-action="bonus-spicy-roulette-start-timer" data-timer="${timer}">
-        ⏱️ ${this.i18n.t('bonusSpicy.startTimerDuration', { timer })}
+        ${this.i18n.t('bonusSpicy.startTimerDuration')}
       </button>
       <button class="btn btn-large btn-primary" data-action="bonus-spicy-roulette-next">
         ${this.i18n.t('bonusSpicy.rouletteNext')}

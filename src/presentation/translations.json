@@ -31,7 +31,7 @@
       "truthDare": "Truth or Dare (Party & Dares)",
       "random": "Random",
       "bonusGames": "Bonus Games",
-      "bonusSpicy": "Spicy Bonus (Couple)"
+      "bonusSpicy": "Spicy Bonus"
     },
     "modeRandom": {
       "title": "Select modes",
@@ -157,7 +157,7 @@
       "survivalLives": "Remaining HP:"
     },
     "bonusSpicy": {
-      "title": "Spicy Bonus (Couple)",
+      "title": "Spicy Bonus",
       "subtitle": "Hot games and challenges to spice up your night",
       "thermostatTitle": "Heat Wave",
       "thermostatLevel": "Level {level}",
@@ -408,7 +408,7 @@
       "survivalLives": "Vies restantes :"
     },
     "bonusSpicy": {
-      "title": "Jeux bonus Spicy (Couple)",
+      "title": "Jeux bonus Spicy",
       "subtitle": "Mini-jeux et défis coquins pour pimenter votre soirée",
       "thermostatTitle": "Heat Wave",
       "thermostatLevel": "Niveau {level}",

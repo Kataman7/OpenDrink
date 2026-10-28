@@ -591,14 +591,16 @@ export class BonusGamesManager {
     return await this.nextThermostatTurn({ players, lang, advanceLevel: false });
   }
 
-  async nextThermostatTurn({ players, lang, advanceLevel = false }) {
-    if (advanceLevel) {
+  async nextThermostatTurn({ players, lang, advanceLevel = false, resetToStart = false }) {
+    if (resetToStart) {
+      this.thermostatLevel = 1;
+    } else if (advanceLevel) {
       this.thermostatLevel = Math.min(10, this.thermostatLevel + 1);
     }
     this.thermostatPlayerIndex = (this.thermostatPlayerIndex + 1) % players.length;
     const player = players[this.thermostatPlayerIndex];
 
-    const intensity = this.thermostatLevel <= 3 ? 'soft' : 'hot';
+    const intensity = this.thermostatLevel <= 4 ? 'soft' : 'hot';
     let res;
     try {
       res = await this.drawQuestionUseCase.execute({
@@ -606,6 +608,7 @@ export class BonusGamesManager {
         intensity,
         lang,
         playerCount: players.length,
+        coupleOnly: true,
       });
     } catch {
       res = await this.drawQuestionUseCase.execute({
@@ -613,6 +616,7 @@ export class BonusGamesManager {
         intensity,
         lang,
         playerCount: players.length,
+        coupleOnly: true,
       });
     }
 
@@ -654,6 +658,7 @@ export class BonusGamesManager {
         intensity: 'hot',
         lang,
         playerCount: players.length,
+        coupleOnly: true,
       });
     } catch {
       res = await this.drawQuestionUseCase.execute({
@@ -661,6 +666,7 @@ export class BonusGamesManager {
         intensity: 'hot',
         lang,
         playerCount: players.length,
+        coupleOnly: true,
       });
     }
 

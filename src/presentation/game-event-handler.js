@@ -726,10 +726,14 @@ export class GameEventHandler {
   }
 
   async handleBonusSpicyThermoPass() {
+    if (this.view.audio) {
+      this.view.audio.ring();
+    }
     const res = await this.bonusGamesManager.nextThermostatTurn({
       players: this.state.players,
       lang: this.state.selectedLang,
       advanceLevel: false,
+      resetToStart: true,
     });
     this.bonusGameView.renderSpicyThermostatPlay({
       level: res.level,

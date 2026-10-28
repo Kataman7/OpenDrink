@@ -13,6 +13,7 @@ export class DrawQuestionUseCase {
     previousPlayerId = null,
     playerCount = null,
     excludeSentences = [],
+    coupleOnly = false,
   }) {
     const players = await this.playerRepositoryPort.getAllPlayers();
     if (!players || players.length === 0) {
@@ -25,6 +26,9 @@ export class DrawQuestionUseCase {
       lang,
       playerCount: playerCount || players.length,
     };
+    if (coupleOnly) {
+      questionRequest.coupleOnly = true;
+    }
     if (excludeSentences && excludeSentences.length > 0) {
       questionRequest.excludeSentences = excludeSentences;
     }

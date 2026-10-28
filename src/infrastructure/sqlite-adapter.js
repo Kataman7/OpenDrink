@@ -35,12 +35,26 @@ export class QuestionsDatabaseAdapter {
     this.db = new SQL.Database(new Uint8Array(buffer));
   }
 
-  getRandomQuestion({ gameMode, intensity, lang, playerCount, packId, excludeSentences = [] }) {
+  getRandomQuestion({
+    gameMode,
+    intensity,
+    lang,
+    playerCount,
+    packId,
+    excludeSentences = [],
+    coupleOnly = false,
+  }) {
     switch (gameMode) {
       case GameMode.IMPOSTOR:
         return this.getImpostorQuestion({ lang, packId, excludeSentences });
       case GameMode.ACTION_TRUTH:
-        return this.getActionTruthQuestion({ intensity, lang, playerCount, excludeSentences });
+        return this.getActionTruthQuestion({
+          intensity,
+          lang,
+          playerCount,
+          excludeSentences,
+          coupleOnly,
+        });
       case GameMode.WOULD_YOU_RATHER:
         return this.getWouldYouRatherQuestion({ intensity, lang, excludeSentences });
       case GameMode.QUIZ:
@@ -52,16 +66,34 @@ export class QuestionsDatabaseAdapter {
       case GameMode.PICOLO:
         return this.getPicoloQuestion({ lang, playerCount, intensity, excludeSentences });
       case GameMode.TRUTH_DARE:
-        return this.getTruthDareQuestion({ lang, playerCount, intensity, excludeSentences });
+        return this.getTruthDareQuestion({
+          lang,
+          playerCount,
+          intensity,
+          excludeSentences,
+          coupleOnly,
+        });
       default:
         return this.getGenericQuestion({ gameMode, intensity, lang, excludeSentences });
     }
   }
 
-  getActionTruthQuestion({ intensity, lang, playerCount, excludeSentences = [] }) {
+  getActionTruthQuestion({
+    intensity,
+    lang,
+    playerCount,
+    excludeSentences = [],
+    coupleOnly = false,
+  }) {
     const key = this.selectRandomGameKey(GameMode.ACTION_TRUTH);
-    if (key === 'antoine_dares') {
-      return this.getTruthDareQuestion({ lang, playerCount, intensity, excludeSentences });
+    if (key === 'antoine_dares' || coupleOnly) {
+      return this.getTruthDareQuestion({
+        lang,
+        playerCount,
+        intensity,
+        excludeSentences,
+        coupleOnly,
+      });
     }
     return this.getGenericQuestion({
       gameMode: GameMode.ACTION_TRUTH,
@@ -143,8 +175,9 @@ export class QuestionsDatabaseAdapter {
     intensity = null,
     isAction = null,
     excludeSentences = [],
+    coupleOnly = false,
   }) {
-    const query = buildTruthDareQuery(playerCount, intensity, isAction);
+    const query = buildTruthDareQuery(playerCount, intensity, isAction, coupleOnly);
     const row = this.executeCandidateQuery(query, lang, excludeSentences, r => r[0]);
     if (!row) return null;
     return new Question({

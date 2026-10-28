@@ -296,6 +296,22 @@ describe('BonusGamesManager', () => {
       expect(capped.level).toBe(10);
       expect(capped.isMaxLevel).toBe(true);
     });
+
+    it('resets level to 1 when resetToStart is true', async () => {
+      const twoPlayers = [players[0], players[1]];
+      await manager.startSpicyThermostat({ players: twoPlayers, lang: 'fr' });
+      await manager.nextThermostatTurn({ players: twoPlayers, lang: 'fr', advanceLevel: true });
+      await manager.nextThermostatTurn({ players: twoPlayers, lang: 'fr', advanceLevel: true });
+      expect(manager.thermostatLevel).toBe(3);
+
+      const resetTurn = await manager.nextThermostatTurn({
+        players: twoPlayers,
+        lang: 'fr',
+        resetToStart: true,
+      });
+      expect(resetTurn.level).toBe(1);
+      expect(manager.thermostatLevel).toBe(1);
+    });
   });
 
   describe('Spicy: Strip or Sip', () => {

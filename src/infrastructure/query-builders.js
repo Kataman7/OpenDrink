@@ -120,15 +120,28 @@ const ANTOINE_LANG_MAP = {
   el: 'el',
 };
 
-export function buildTruthDareQuery(playerCount, intensity = null, isAction = null) {
+export function buildTruthDareQuery(
+  playerCount,
+  intensity = null,
+  isAction = null,
+  coupleOnly = false
+) {
   let partyFilter = '';
-  if (playerCount <= 2) {
+  if (coupleOnly) {
+    partyFilter = "AND (party_type = 'Couple Only' OR sentence LIKE '%Couple#%')";
+  } else if (playerCount <= 2) {
     partyFilter = "AND (party_type = 'Couple Only' OR party_type = 'All')";
   } else {
     partyFilter = "AND (party_type = 'Group Only' OR party_type = 'All')";
   }
   let diffFilter = '';
-  if (intensity === 'soft') {
+  if (coupleOnly) {
+    if (intensity === 'soft') {
+      diffFilter = 'AND difficulty <= 3';
+    } else if (intensity === 'hot') {
+      diffFilter = 'AND difficulty >= 1';
+    }
+  } else if (intensity === 'soft') {
     diffFilter = 'AND difficulty <= 4';
   } else if (intensity === 'hot') {
     diffFilter = 'AND difficulty >= 5';

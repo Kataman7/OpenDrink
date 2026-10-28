@@ -122,4 +122,10 @@ describe('buildTruthDareQuery', () => {
     const query = buildTruthDareQuery(3);
     expect(query.sql).toContain("party_type = 'Group Only' OR party_type = 'All'");
   });
+
+  it('should filter strictly Couple Only and Couple# when coupleOnly is true', () => {
+    const query = buildTruthDareQuery(2, 'hot', null, true);
+    expect(query.sql).toContain("party_type = 'Couple Only' OR sentence LIKE '%Couple#%'");
+    expect(query.sql).not.toContain("party_type = 'All'");
+  });
 });

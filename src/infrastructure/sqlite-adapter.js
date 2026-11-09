@@ -252,8 +252,8 @@ export class SqlJsQuestionRepositoryAdapter extends QuestionRepositoryPort {
     this.questionsDb = questionsDb;
   }
 
-  async getRandomQuestion({ gameMode, intensity, lang, playerCount }) {
-    return this.questionsDb.getRandomQuestion({ gameMode, intensity, lang, playerCount });
+  async getRandomQuestion(request) {
+    return this.questionsDb.getRandomQuestion(request);
   }
 }
 

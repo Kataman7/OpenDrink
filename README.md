@@ -1,16 +1,16 @@
 # OpenDrink 🍻
 
-[![CI](https://github.com/anomalyco/opendrink/actions/workflows/ci.yml/badge.svg)](https://github.com/anomalyco/opendrink/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Online drinking game — Vanilla HTML/JS/CSS + SQLite (via sql.js).
 
 ## Features
 
-- 🎮 Multiple game modes: Never Have I Ever, Truth or Dare, Would You Rather, Who Could
+- 🎮 14+ game modes: Never Have I Ever, Truth or Dare, Would You Rather, Who Could, Impostor, 7 Seconds, It's a 10, Quiz, Team Battle, Dormelles, Picolo, Random Mix, Bonus Games, Spicy Bonus Games
+- 🃏 Card game rule references (Dutch, 99, …)
 - 🌐 30 languages supported
-- 📱 Responsive design
-- 🔒 No server required (runs entirely in browser)
+- 📱 Responsive, mobile-friendly design (web app manifest, install prompt)
+- 🔒 No server required (runs entirely in the browser)
 - 🐳 Easy Docker deployment
 
 ## Quick Start
@@ -43,8 +43,8 @@ Open http://localhost:5173
 
 ### Database
 
-- `public/questions.sqlite` — read-only database with ~103,000 questions
-- In-memory database for players in current game
+- `public/questions.sqlite` — read-only database with ~264,500 questions/words/cards
+- In-memory SQLite database for players in the current game
 
 ## Architecture
 
@@ -54,25 +54,36 @@ Clean Architecture following domain → application → infrastructure → prese
 src/
 ├── domain/              # Entities, business errors, value objects
 ├── application/
-│   ├── ports/           # Interfaces (Repository ports)
+│   ├── ports/           # Interfaces (repository ports)
 │   └── usecases/        # Application use cases
 ├── infrastructure/      # sql.js adapters
-├── presentation/        # UI controllers, views
+├── presentation/        # UI controllers, views, personalizers
 ├── shared/              # Generic helpers
 └── main.js             # Entry point
 ```
 
-See [`agent.md`](agent.md) for detailed architecture guidelines.
+See [`.agents/agent.md`](.agents/agent.md) for detailed architecture guidelines.
 
 ## Game Modes
 
-| Mode | Game Key | Category |
-|------|----------|----------|
-| Never Have I Ever | `jnj` | soft=0 / hot=1 / mixed |
-| Truth or Dare | `tod`, `dare_chooser` | soft=0 / hot=1 / mixed |
-| Would You Rather | `tpf` | soft=0 / hot=1 / mixed |
-| Who Could | `qpr` | soft=0 / hot=1 / mixed |
-| Impostor | special | no intensity |
+| Mode | Game key(s) | Source table | Intensity |
+|------|-------------|--------------|-----------|
+| Never Have I Ever | `jnj` | `questions` | soft / hot / mixed |
+| Truth or Dare | `tod`, `dare_chooser` (+ Antoine dares) | `questions`, `antoine_dares` | soft / hot / mixed |
+| Would You Rather | — | `tpf_questions` | soft / hot / mixed |
+| Who Could | `qpr` | `questions` | soft / hot / mixed |
+| Impostor | — | `imposter_words` | none |
+| 7 Seconds | `7seconds` | `questions` | soft / hot / mixed |
+| It's a 10 | `a_10` | `questions` | soft / hot / mixed |
+| Quiz | — | `quiz_questions` | soft / hot / mixed |
+| Team Battle | — | `team_battle_questions` | soft / hot / mixed |
+| Dormelles | — | `dormelles_questions` | soft / hot / mixed |
+| Picolo | — | `picolo_rules` | none (packs) |
+| Truth or Dare (Classic) | — | `antoine_dares` | none |
+| Random Mix | any of the above | — | soft / hot / mixed |
+| Bonus Games / Spicy | — | multiple sources | varies |
+
+See [`.agents/GAMES.md`](.agents/GAMES.md) for full details and content counts.
 
 ## Supported Languages
 
@@ -101,6 +112,9 @@ npm run format
 
 # Build for production
 npm run build
+
+# Full check (lint + prettier + tests + build)
+npm run check
 ```
 
 ## Contributing
@@ -113,7 +127,8 @@ MIT License - see [LICENSE](LICENSE)
 
 ## Game Flow
 
-1. **Lobby**: Choose language, add players
-2. **Mode**: Choose game mode
-3. **Intensity**: Choose difficulty (Soft, Hot, Mixed)
-4. **Game**: Questions displayed randomly → Next button
+1. **Home**: Choose language, open game or card-game rules
+2. **Lobby**: Add players
+3. **Mode**: Choose game mode
+4. **Intensity**: Choose difficulty (Soft, Hot, Mixed) when applicable
+5. **Game**: Questions displayed randomly → Next button

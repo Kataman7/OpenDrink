@@ -23,7 +23,11 @@ export function preprocessForTts(text, gameMode, i18n) {
   if (prefixKey) {
     const prefix = i18n.t(prefixKey);
     if (prefix && prefix !== prefixKey) {
-      result = prefix + result;
+      const trimmedResult = result.trimStart().toLowerCase();
+      const trimmedPrefix = prefix.trim().toLowerCase();
+      if (!trimmedResult.startsWith(trimmedPrefix)) {
+        result = prefix + result;
+      }
     }
   }
 

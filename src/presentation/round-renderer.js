@@ -1,4 +1,5 @@
 import { PromptKind } from '../domain/prompt-kind.js';
+import { GameMode } from '../domain/game-mode.js';
 import { QuestionTextPersonalizer } from './question-text-personalizer.js';
 import { DormellesPersonalizer } from './dormelles-personalizer.js';
 import { TeamBattlePersonalizer } from './team-battle-personalizer.js';
@@ -154,7 +155,17 @@ export class RoundRenderer {
 
   renderDefault({ player, question, label, showPlayerName, players }) {
     const personalizer = new QuestionTextPersonalizer(players);
-    const sentence = personalizer.personalize(question.sentence, player.name);
+    let sentence = personalizer.personalize(question.sentence, player.name);
+    if (this.state.getActiveGameMode() === GameMode.NEVER_HAVE_I_EVER) {
+      const prefix = this.roundLabelBuilder.i18n.t('round.ttsPrefixNeverHaveIEver');
+      if (prefix && prefix !== 'round.ttsPrefixNeverHaveIEver') {
+        const trimmedSentence = sentence.trimStart();
+        const trimmedPrefix = prefix.trim();
+        if (!trimmedSentence.toLowerCase().startsWith(trimmedPrefix.toLowerCase())) {
+          sentence = `${prefix}${trimmedSentence}`;
+        }
+      }
+    }
     if (this.state.getActiveGameMode() === 'seven_seconds') {
       this.view.renderSevenSeconds({ player, label, sentence });
     } else {

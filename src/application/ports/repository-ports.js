@@ -4,6 +4,7 @@ export class QuestionRepositoryPort {
     intensity: _intensity,
     lang: _lang,
     playerCount: _playerCount,
+    ..._rest
   }) {
     throw new Error('QuestionRepositoryPort.getRandomQuestion must be implemented');
   }
